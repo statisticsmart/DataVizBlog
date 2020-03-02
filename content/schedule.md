@@ -3,6 +3,8 @@ date: "2016-05-05T21:48:51-07:00"
 title: STA 479 2.0 Special Topics in Statistics
 ---
 
+Course outline: [here](/slides/2020dataviz.pdf)
+
 Here's your roadmap for the semester! Class materials will be added on the day of the class.
 
  📊 Week 1: [Introduction to data visualization](/slides/lesson1viz.html) 

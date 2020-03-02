@@ -1,7 +1,7 @@
 ---
 title: "Data Visualization"
 author: "Dr Thiyanga Talagala"
-date: "`r Sys.Date()`"
+date: "2020 - 02 - 13"
 output:
   xaringan::moon_reader:
     chakra: libs/remark-latest.min.js
@@ -233,7 +233,7 @@ background-size: contain
 
 ## Stage 2: Working with data
 
-- gathering, handling and preparing your data
+- Gathering, handling and preparing your data
 
 - Qualitative vs Quantitative
 

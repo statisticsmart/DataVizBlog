@@ -339,5 +339,5 @@ background-size: contain
 
 Acknowledgement
 
-Kirk, A. (2016). Data visualisation: a handbook for data driven design. Sage.
+Kirk, A. (2016). Data visualisation: a handbook for data driven design. 
 

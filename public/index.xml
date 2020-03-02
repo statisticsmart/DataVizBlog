@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>A Hugo website</title>
+    <title>Data Visualization</title>
     <link>/</link>
-    <description>Recent content on A Hugo website</description>
+    <description>Recent content on Data Visualization</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 05 May 2016 21:48:51 -0700</lastBuildDate>
@@ -18,23 +18,30 @@
       
       <guid>/about/</guid>
       <description>Here&#39;s your roadmap for the semester! Class materials will be added on the day of the class.
-Week 1: Introduction to data visualization
-Week 2: Scientific design choices in data visualization
-Week 3: Introduction to the grammar of graphics
-Week 4: Introduction to the ggplot2 package
-Week 5: Create different types of static graphics with ggplot2
-Week 6: Higher-dimensional displays and special structurs in graphics
-Week 7: Visualisation of high-dimensional data</description>
+📊 Week 1: Introduction to data visualization
+Readings
+📊 Week 2: Scientific design choices in data visualization
+Readings
+📊 Week 3: Introduction to the grammar of graphics
+Readings
+📊 Week 4: Introduction to the ggplot2 package
+📊 Week 5: Create different types of static graphics with ggplot2
+📊 Week 6: Higher-dimensional displays and special structurs in graphics</description>
     </item>
     
     <item>
       <title>STA 479 2.0 Special Topics in Statistics</title>
       <link>/schedule/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
       
       <guid>/schedule/</guid>
-      <description>Course roadmap:
-Week 1:</description>
+      <description>Here&#39;s your roadmap for the semester! Class materials will be added on the day of the class.
+📊 Week 1: Introduction to data visualization
+📊 Week 2: Scientific design choices in data visualization
+📊 Week 3: Introduction to the grammar of graphics
+📊 Week 4: Introduction to the ggplot2 package
+📊 Week 5: Create different types of static graphics with ggplot2
+📊 Week 6: Higher-dimensional displays and special structurs in graphics</description>
     </item>
     
   </channel>

@@ -14,7 +14,7 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 📊 Week 3: [Introduction to the grammar of graphics](/slides/lesson3viz.html)
 
 
-📊 Week 4: [Introduction to the ggplot2 package](/slides/lesson4dataviz.html)
+📊 Week 4: [Introduction to the ggplot2 package](/slides/lecture4dataviz.html)
 
 📊 Week 5: Create different types of static graphics with ggplot2
 

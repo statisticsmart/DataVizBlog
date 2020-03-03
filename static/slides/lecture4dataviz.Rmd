@@ -2,7 +2,7 @@
 title: "Data Visualization"
 subtitle: "Grammar of Graphics"
 author: "Dr Thiyanga Talagala"
-date: "2020 -03-02"
+date: "2020-03-03"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -26,3 +26,121 @@ class: center, middle
 # Grammar of graphics
 
 Mapping data to **aesthetic** attributes (colour, shape, size) of **geometric** objects (points, lines, bars).
+
+---
+
+## Elements of ggplot2 object
+
+- Data: data to be plotted
+
+- Aes: mapping between variables to their visualization
+
+- Geoms: objects/shapes you add as layers to the graph (How the plot will work?)
+
+- Stats: statistical transformations when you are not plotting the raw data
+
+- Faceting: multiple panels
+
+---
+
+### Layer grammatical elements
+![](ggplotlayers.png)
+
+---
+## Making your first plot with ggplot
+
+```{r, comment=NA}
+library(ggplot2)
+ggplot()
+
+```
+
+---
+
+## Making your first plot with ggplot
+
+- Data
+
+```{r, comment=NA}
+ggplot(iris)
+```
+
+---
+
+## Making your first plot with ggplot
+
+- Data + Aes
+
+```{r, comment=NA}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) 
+```
+
+---
+
+## Making your first plot with ggplot
+
+- Data + Aes + Geom
+
+```{r, comment=NA}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point()
+```
+
+---
+
+## Making your first plot with ggplot
+
+- Data + Aes + Geom + Facets
+
+```{r, comment=NA}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point() + facet_grid(. ~ Species)
+```
+
+---
+
+## Making your first plot with ggplot
+
+- Data + Aes + Geom + Facets + Statistics
+
+```{r, comment=NA}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_point() +
+  facet_grid(. ~ Species) +
+  stat_smooth(method = "lm", se=F, col="red")
+  
+```
+
+---
+## Making your first plot with ggplot
+
+- Data + Aes + Geom + Facets + Statistics + Coordinates
+
+```{r, comment=NA}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_point() +
+  facet_grid(. ~ Species) +
+  stat_smooth(method = "lm", se=F, col="red") + 
+  scale_y_continuous("Sepal Width (cm)")+
+  scale_x_continuous("Sepal Width (cm)")+
+  coord_equal()
+  
+  
+```
+
+---
+
+## Making your first plot with ggplot
+
+- Data + Aes + Geom + Facets + Statistics + Coordinates + Theme
+
+```{r, comment=NA}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_point() +
+  facet_grid(. ~ Species) +
+  stat_smooth(method = "lm", se=F, col="red") + 
+  scale_y_continuous("Sepal Width (cm)")+
+  scale_x_continuous("Sepal Width (cm)")+
+  coord_equal()+
+  theme(panel.background = element_blank())
+  
+  
+```

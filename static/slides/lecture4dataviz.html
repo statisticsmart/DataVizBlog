@@ -4,6 +4,7 @@
     <title>Data Visualization</title>
     <meta charset="utf-8" />
     <meta name="author" content="Dr Thiyanga Talagala" />
+    <meta name="date" content="2020-03-03" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
     <link href="libs/remark-css/duke-blue.css" rel="stylesheet" />
@@ -18,7 +19,7 @@ class: center, middle, inverse, title-slide
 # Data Visualization
 ## Grammar of Graphics
 ### Dr Thiyanga Talagala
-### 2020 -03-02
+### 2020-03-03
 
 ---
 
@@ -28,6 +29,142 @@ class: center, middle
 # Grammar of graphics
 
 Mapping data to **aesthetic** attributes (colour, shape, size) of **geometric** objects (points, lines, bars).
+
+---
+
+## Elements of ggplot2 object
+
+- Data: data to be plotted
+
+- Aes: mapping between variables to their visualization
+
+- Geoms: objects/shapes you add as layers to the graph (How the plot will work?)
+
+- Stats: statistical transformations when you are not plotting the raw data
+
+- Faceting: multiple panels
+
+---
+
+### Layer grammatical elements
+![](ggplotlayers.png)
+
+---
+## Making your first plot with ggplot
+
+
+```r
+library(ggplot2)
+ggplot()
+```
+
+![](lecture4dataviz_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+
+---
+
+## Making your first plot with ggplot
+
+- Data
+
+
+```r
+ggplot(iris)
+```
+
+![](lecture4dataviz_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+---
+
+## Making your first plot with ggplot
+
+- Data + Aes
+
+
+```r
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) 
+```
+
+![](lecture4dataviz_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+---
+
+## Making your first plot with ggplot
+
+- Data + Aes + Geom
+
+
+```r
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point()
+```
+
+![](lecture4dataviz_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+---
+
+## Making your first plot with ggplot
+
+- Data + Aes + Geom + Facets
+
+
+```r
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point() + facet_grid(. ~ Species)
+```
+
+![](lecture4dataviz_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+---
+
+## Making your first plot with ggplot
+
+- Data + Aes + Geom + Facets + Statistics
+
+
+```r
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_point() +
+  facet_grid(. ~ Species) +
+  stat_smooth(method = "lm", se=F, col="red")
+```
+
+![](lecture4dataviz_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+
+---
+## Making your first plot with ggplot
+
+- Data + Aes + Geom + Facets + Statistics + Coordinates
+
+
+```r
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_point() +
+  facet_grid(. ~ Species) +
+  stat_smooth(method = "lm", se=F, col="red") + 
+  scale_y_continuous("Sepal Width (cm)")+
+  scale_x_continuous("Sepal Width (cm)")+
+  coord_equal()
+```
+
+![](lecture4dataviz_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+
+---
+
+## Making your first plot with ggplot
+
+- Data + Aes + Geom + Facets + Statistics + Coordinates + Theme
+
+
+```r
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+  geom_point() +
+  facet_grid(. ~ Species) +
+  stat_smooth(method = "lm", se=F, col="red") + 
+  scale_y_continuous("Sepal Width (cm)")+
+  scale_x_continuous("Sepal Width (cm)")+
+  coord_equal()+
+  theme(panel.background = element_blank())
+```
+
+![](lecture4dataviz_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

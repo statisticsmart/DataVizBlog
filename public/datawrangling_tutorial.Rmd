@@ -1,0 +1,322 @@
+---
+title: "ASP 460 2.0 Special topics in Statistics: Data Wrangling"
+date: "13/05/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Packages 
+
+## Install tidyverse into your computer.
+
+```r
+install.packages("tidyverse")
+```
+
+## We are going to work with datasets in `EDAWR`.
+
+Installation of EDAWR is bit different. Use the following command.
+
+**Step 1**
+
+```r
+install.packages("devtools")
+```
+
+**Step 2**
+
+```r
+devtools::install_github("rstudio/EDAWR")
+```
+
+## Load packages
+
+```{r}
+library(tidyverse)
+library(EDAWR) # load data
+```
+
+# Pipe operator, dplyr, and tidyr
+
+
+- `dplyr` is a package for data wrangling, with several key verbs (functions).
+
+- `slice()` and `filter()`: subset rows based on numbers or conditions.
+
+- `select()` and `pull()`: select columns or a single column as a vector.
+
+- `arrange()`: order rows by one or multiple columns.
+
+- `rename()` and `mutate()`: rename or create columns.
+
+- `mutate_at()`: apply a function to given columns.
+
+Recall: Pipe operator (`%>%`)
+===
+
+See the slides in STA 326 2.0
+
+Link: : https://hellor.netlify.app/slides/l7_intro_tidyverse.html#43 
+
+```{r, message=FALSE, warning =F, comment=NA}
+iris %>% 
+  filter(Sepal.Length >= 7) 
+
+iris %>% 
+  filter(Sepal.Length >= 7) %>% 
+  head(2)
+```
+
+
+## `tidyr` functions (They are also called tidy R verbs)
+
+Main verbs (functions) in `tidyr`:
+
+- `pivot_longer()`: makes datasets longer by increasing the number of rows and decreasing the number of columns. 
+
+- `pivot_wider()`: is the opposite of pivot_longer() : it makes a dataset wider by increasing the number of columns and decreasing the number of rows.
+
+- `separate()`: splits a single column into multiple columns.
+
+- `unite()`: combines multiple columns into a single column.
+
+
+`pivot_longer()`
+===
+
+
+```{r warning=F, message=F}
+# EDAWR::cases means cases dataset in EDAWR
+EDAWR::cases %>% 
+  head(3)
+
+EDAWR::cases %>% 
+  pivot_longer(names_to = "year", values_to = "n", cols = 2:4) %>% 
+  head(5)
+```
+
+
+- Here the columns 2:4 are transposed into a `year` column.
+- We put the corresponding count values into a column called `n`.
+
+## Other approaches to do the same thing.
+
+```{r}
+# Method 2
+EDAWR::cases %>% 
+  pivot_longer(names_to = "year", values_to = "n", -country) %>% 
+  head(5)
+# Method 3
+# EDAWR::cases %>% 
+#   pivot_longer(names_to = "year", values_to = "n", c(`2011`, `2012`, `2013`)) 
+# Method 4
+# EDAWR::cases %>% 
+#   pivot_longer(names_to = "year", values_to = "n",  `2011`:`2013`) 
+```
+
+`pivot_wider()`: Makes longer data formats wider.
+===
+
+
+```{r}
+EDAWR::pollution %>% 
+  head(5)
+
+EDAWR::pollution %>% 
+  pivot_wider(names_from = "size", 
+              values_from = "amount")
+```
+
+
+
+When could I use these operations?
+===
+
+- Data visualization with `ggplot2`.
+
+**Read**:  https://tidyr.tidyverse.org/articles/pivot.html#manual-specs
+
+## `separate()` 
+
+To separate a character column into multiple columns using a regular expression separator.
+
+The following code seperates date into multiple columns. "-" is used to seperate between words.
+
+```{r, cache=TRUE}
+EDAWR::storms %>% 
+  head(3)
+
+storms2 <- EDAWR::storms %>% 
+  separate(date, c("y", "m", "d"), sep="-") # sep = "-"
+storms2
+```
+
+`unite()`
+===
+
+Paste together multiple columns into one. 
+
+The following code combines `y`, `m` and `d` in `storm2` using "-".
+
+```{r}
+storms2 %>%
+  unite(date, y, m, d, sep = "-")
+```
+
+
+
+Note that `unite()` and `separate()` are inverse operations.
+
+
+# `dplyr` package
+
+`group_by()`
+===
+
+To define a grouping of rows based on a column:
+
+```{r}
+iris %>% 
+  group_by(Species) %>%
+  head(4)
+
+iris %>% 
+  group_by(Species) %>%
+  head(4) %>% class
+```
+
+
+- This doesn't actually change anything in the output.
+
+- The only difference is that when it prints, we're told about the groups.
+
+- But it will play a big role in how other `dplyr` functions work. 
+
+`summarize()` (American) or `summarise()` (British)
+===
+
+`summarize()` or `summarise()` in `dplyr` gives you single numerical summaries.
+
+```{r}
+# Ungrouped
+iris %>% 
+  summarize(Sepal.Length = mean(Sepal.Length),
+            Sepal.Width = mean(Sepal.Width))
+
+# Grouped by number of Species
+iris %>%
+  group_by(Species) %>%
+  summarize(Sepal.Length = mean(Sepal.Length),
+            Sepal.Width = mean(Sepal.Width))
+```
+
+---
+
+```{r}
+iris %>%
+  group_by(Species) %>%
+  summarize(Sepal.Width_mean = mean(Sepal.Width),
+            Sepal.Width_max = max(Sepal.Width),
+            Sepal.Length_mean = mean(Sepal.Length),
+            Sepal.Length_max = max(Sepal.Length))
+```
+
+`ungroup()`
+===
+
+To remove groupings structure from a data frame or a tibble.
+
+```{r}
+iris %>%
+  group_by(Species) %>%
+  ungroup() %>%
+  summarize(Sepal.Width = mean(Sepal.Width),
+            Petal.Width = mean(Petal.Width))
+```
+
+
+
+Join operations
+===
+
+A "join" operation combines two data sets. There are 4 types of join operations.
+
+- **Inner join** (or just **join**): keeps just the rows each table that match the condition.
+- **Left outer join** (or just **left join**): keeps all rows in the first table, and just the rows in the second table that match the condition.
+- **Right outer join** (or just **right join**): keeps just the rows in the first table that match the condition, and all rows in the second table.
+- **Full outer join** (or just **full join**): keeps all rows in both tables.
+
+Note Column values that cannot be filled in are assigned `NA` values.
+
+
+
+Illustration with two simple data sets.
+===
+
+```{r}
+tab1_age <- data.frame(name = c("Ann", "Jenny", "Andrew"), 
+                  age = c(70, 52, 40),
+                  stringsAsFactors = FALSE)
+tab2_testresult <- data.frame(name = c("Ann", "Nick", "Anderw"),
+                  result = c("negative", "positive", "negative"),
+                  stringsAsFactors = FALSE)
+tab1_age
+tab2_testresult
+```
+
+`inner_join()`
+===
+
+name column is common to both `tab1_age` and `tab2_testresult`. This keeps only the common rows (intersection) in both datasets.
+
+```{r}
+inner_join(x = tab1_age, y = tab2_testresult, by = "name")
+```
+
+
+
+
+`left_join()`
+===
+
+This keeps all names from `tab1_age`.
+
+```{r}
+left_join(x = tab1_age, y = tab2_testresult, by = c("name" = "name"))
+```
+
+`right_join()`
+===
+
+This keeps all names from `tab2_testresult`.
+
+```{r}
+right_join(x = tab1_age, y = tab2_testresult, by = "name")
+```
+
+`full_join()`
+===
+
+This keeps all rows from both data frames.
+
+```{r}
+full_join(x = tab1_age, y = tab2_testresult, by = "name")
+```
+
+
+Summary
+===
+
+- `tidyr` is a package for manipulating the structure of data frames
+- `pivot_longer()`: make wide data longer
+- `pivot_wider()`: make long data wider
+- `unite()` and `separate()`: combine or split columns
+- `dplyr` has advanced functionality that mirrors SQL
+- `group_by()`: create groups of rows according to a condition
+- `summarize()`: apply computations across groups of rows
+- `*_join()` where `*` = `inner`, `left`, `right`, or `full`: join two data frames together according to common values in certain columns, and `*` indicates how many rows to keep.
+
+

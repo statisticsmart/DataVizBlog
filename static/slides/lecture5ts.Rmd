@@ -1,0 +1,432 @@
+---
+title: "Data Visualization"
+subtitle: "Introduction to Time Series"
+author: "Dr Thiyanga Talagala"
+date: "2020-03-12"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: 
+      - default
+      - default-fonts
+      - duke-blue
+      - hygge-duke
+      - libs/cc-fonts.css
+      - libs/figure-captions.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+
+## Time series
+
+- A time series is a sequence of observations taken sequentially in time. 
+
+## Time series data vs Cross sectional data
+
+.pull-left[
+
+- Time series data
+
+```{r, comment=NA, echo=FALSE}
+library(knitr)
+library(magrittr)
+library(kableExtra)
+ts <- data.frame(Year=c(2012, 2013, 2014, 2015),
+                 Values =c(120, 122, 140, 150))
+kable(ts, format="html", align = "l", booktabs = T, escape = FALSE)
+```
+
+- a set of observations, along with some information about what times those observations were recorded.
+
+- usually discrete and equally spaced time intervals.
+
+]
+
+.pull-right[
+
+- Cross-sectional data
+
+```{r, comment=NA, echo=FALSE}
+library(knitr)
+library(magrittr)
+library(kableExtra)
+ts <- data.frame(ID=c(1, 2, 3, 4),
+                 Values =c(200, 350, 480, 250))
+kable(ts, format="html", align = "l", booktabs = T, escape = FALSE)
+```
+
+- observations that come from different individuals or groups at a single point in time.
+
+]
+---
+
+## Deterministic  vs Non-deterministic time series
+
+.pull-left[
+- **Deterministic time series:** future values can be exactly determined by using some mathematical function.
+
+
+
+```{r, echo=FALSE, comment=NA, message=FALSE}
+library(ggplot2)
+library(forecast)
+x <- 0:5000
+y <- cos(2*3.14*x)
+y <- ts(y, frequency=1)
+autoplot(y)
+
+```
+
+
+$$y_t = cos(2\pi t)$$
+
+]
+
+.pull-right[
+- **Non-deterministic time series:** future values can be determined only in terms of a probability distribution.
+
+
+
+```{r, echo=FALSE, comment=NA, message=FALSE}
+library(mozzie)
+y <- ts(mozzie$Colombo)
+#y <- ts(mozzie$Colombo, frequency=52, start=c(2008, 51))
+autoplot(y)+ylab("Number of dengue cases in Colombo")
+
+```
+
+]
+---
+
+## Frequency of a time series: Seasonal periods
+
+- Frequency: number of observation per natural time interval of measurement (usually year,  but sometimes a week, a day or an hour)
+
+```{r, comment=NA, echo=FALSE}
+library(knitr)
+library(magrittr)
+library(kableExtra)
+ts <- data.frame(Data=c("Annual", "Quarterly", "Monthly", "Weekly"),
+                  Frequency =c("1", "4", "12", "52 or 52.18"))
+kable(ts, format="html", align = "l", booktabs = T, escape = FALSE)
+```
+
+- Multiple frequency setting
+
+```{r, comment=NA, echo=FALSE}
+library(knitr)
+library(magrittr)
+library(kableExtra)
+tsf <- data.frame(Data=c("Daily", "Hourly", "Half-Hourly", "Minutes", "Seconds"), Minute=c("", "", "", "", "60"),
+                 Hour=c("", "", "", "60", "3600"),
+                 Day=c("", "24", "48", "1440", "86400"),
+                 Week=c("7", "168", "336", "10080", "604800"),
+                 Year=c("365.25", "8766", "17532", "525960", "31557600")
+                 )
+kable(tsf, format="html", align = "l", booktabs = T, escape = FALSE)
+```  
+
+
+
+---
+.pull-left[
+
+## Monthly time series
+
+```{r, echo=FALSE}
+
+y <- ts(USAccDeaths, start=1949, frequency = 12)
+autoplot(y)
+```
+
+- Length of the series: 72
+
+- Monthly seasonality
+
+]
+
+
+.pull-right[
+
+## Half-hourly Time Series
+
+```{r, echo=FALSE}
+x <- msts(taylor, seasonal.periods=c(48,336), start=2000+22/52)
+autoplot(x)
+```
+
+- Length of the series: 4032
+
+- Daily seasonality and weekly seasonality
+
+]
+
+--
+Note: Monthly seasonality with high-frequency data (daily, hourly, etc.) is tricky due to variable month lengths. You can't specify that using seasonal periods. It could be possibly handled using a dummy variable. 
+
+---
+
+class: duke-orange
+
+# Your turn
+
+- What are the frequencies for a monthly time series with semi-annual and annual pattern?
+
+
+---
+
+# `ts` object in R
+
+- Annual time series
+
+```{r, comment=NA, echo=FALSE}
+library(knitr)
+library(magrittr)
+library(kableExtra)
+tsdataset <- data.frame(Year=c(2012, 2013, 2014, 2015),
+                 Values =c(120, 122, 140, 150))
+kable(tsdataset, format="html", align = "l", booktabs = T, escape = FALSE)
+```
+
+
+
+```{r, comment=NA}
+y <- ts(c(120, 122, 140, 150), start=2012)
+y
+```
+
+---
+
+# `ts` object in R
+
+- Quarterly time series
+
+```{r, comment=NA, echo=FALSE}
+library(knitr)
+library(magrittr)
+library(kableExtra)
+tsdataset <- data.frame(Quarter=c("2012-Q1", "2012-Q2", "2012-Q3", "2012-Q4", "2013-Q1"),
+                 Values =c(120, 122, 140, 150, 200))
+kable(tsdataset, format="html", align = "l", booktabs = T, escape = FALSE)
+```
+
+
+
+```{r, comment=NA}
+y <- ts(c(120, 122, 140, 150, 200), start=c(2012, 1), frequency = 4)
+y
+```
+
+
+
+---
+# `ts` object in R
+
+- Monthly time series
+
+```{r, comment=NA, echo=FALSE}
+library(knitr)
+library(magrittr)
+library(kableExtra)
+tsdataset <- data.frame(Month=c("2012-Jan", "2012-Feb", "2012-March", "2012-April"),
+                 Values =c(120, 122, 140, 150))
+kable(tsdataset, format="html", align = "l", booktabs = T, escape = FALSE)
+```
+
+
+
+```{r, comment=NA}
+y <- ts(c(120, 122, 140, 150), start=c(2012, 1), frequency = 12)
+y
+```
+
+---
+# `ts` object in R
+
+- Weekly time series
+
+```{r, comment=NA, echo=FALSE}
+library(knitr)
+library(magrittr)
+library(kableExtra)
+tsdataset <- data.frame(Week=c("2012-W1", "2012-W2", "2012-W3", "2012-W4"),
+                 Values =c(120, 122, 140, 150))
+kable(tsdataset, format="html", align = "l", booktabs = T, escape = FALSE)
+```
+
+
+
+```{r, comment=NA}
+y <- ts(c(120, 122, 140, 150), start=c(2012, 1), frequency = 52)
+y
+```
+
+---
+
+## Time series plots
+
+.pull-left[
+
+```{r, comment=NA, echo=FALSE}
+library(knitr)
+library(magrittr)
+library(kableExtra)
+tsdataset <- data.frame(Year=c(2012, 2013, 2014, 2015, 2016, 2017),
+                 Values =c(120, 122, 140, 150, 200, 250))
+kable(tsdataset, format="html", align = "l", booktabs = T, escape = FALSE)
+```
+
+```{r, comment=NA}
+y <- ts(c(120, 122, 140, 150, 200, 250), start=2012)
+y
+class(y)
+```
+
+]
+
+
+.pull-right[
+
+```{r, comment=NA}
+autoplot(y)
+```
+
+
+]
+
+---
+
+## Add title and labels 
+
+.pull-left[
+
+```{r, comment=NA}
+autoplot(y)
+```
+
+]
+
+.pull-right[
+
+```{r, comment=NA}
+autoplot(y)+ylab("Number of sales")+
+  xlab("Year")+
+  ggtitle("Time series plot of sales from 2012 to 2017")
+```
+
+]
+
+---
+
+class: duke-orange
+
+## Your turn
+
+Create plots of the following time series: dengue counts in Gampaha (Use `mozzie` package), a10 series (`fpp2` package). 
+
+Use help() to find out about the data in each series.
+
+Modify the axes labels and title.
+
+---
+
+#### Time series patterns
+
+**Trend**
+
+- Long-term increase or decrease in the data.
+
+**Seasonal**
+
+
+- A seasonal pattern exists when a series is influenced by seasonal factors (e.g.,
+the quarter of the year, the month, or day of the week). Seasonality is always
+of a **fixed** and **known period**. Hence, seasonal time series are sometimes called
+periodic time series.
+
+- Period is unchanging and associated with some aspect of the
+calendar.
+
+
+**Cyclic**
+
+- A cyclic pattern exists when data exhibit rises and falls that are not of fixed
+period. The duration of these fluctuations is usually of at least 2 years.
+
+
+
+In general, 
+
+  - the average length of cycles is longer than the length of a seasonal pattern.
+
+  - the magnitude of cycles tends to be more variable than the magnitude of seasonal patterns.
+  
+---
+
+## Cyclic pattern
+
+```{r, echo=FALSE, comment=NA, message=F}
+library(fpp2)
+autoplot(lynx) + xlab("Year") + ylab("Number of lynx trapped")
+
+```
+  
+---
+
+## Cyclic and seasonal pattern
+
+```{r, echo=FALSE, comment=NA}
+library(fpp2)
+autoplot(hsales) + xlab("Year") + ylab("Monthly housing sales
+(millions)")
+
+```
+
+---
+
+
+## Multiple seasonal pattern
+
+```{r, echo=FALSE, comment=NA}
+library(fpp2)
+autoplot(taylor) + xlab("Week") + ylab("Electricity demand (GW)")
+
+```
+  
+---
+
+## Seasonal pattern
+
+```{r, echo=FALSE, comment=NA}
+beer <- window(ausbeer,start=1992)
+autoplot(beer)
+```  
+---
+
+## Trend
+
+
+```{r, echo=FALSE, comment=NA}
+library(fpp2)
+x <- 1:20
+y <- 5*x+rnorm(20)
+y <- ts(y, frequency = 1, start=1980)
+autoplot(y)
+
+```
+
+---
+
+## Trend and seasonal
+
+```{r, comment=NA, echo=FALSE}
+autoplot(a10) + ylab("$ million") + xlab("Year") +
+ggtitle("Antidiabetic drug sales")
+```
+

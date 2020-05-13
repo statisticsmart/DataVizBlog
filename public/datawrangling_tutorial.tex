@@ -1,0 +1,791 @@
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\usepackage{hyperref}
+\hypersetup{
+            pdftitle={ASP 460 2.0 Special topics in Statistics: Data Wrangling},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+
+\title{ASP 460 2.0 Special topics in Statistics: Data Wrangling}
+\author{}
+\date{\vspace{-2.5em}13/05/2020}
+
+\begin{document}
+\maketitle
+
+\hypertarget{packages}{%
+\section{Packages}\label{packages}}
+
+\hypertarget{install-tidyverse-into-your-computer.}{%
+\subsection{Install tidyverse into your
+computer.}\label{install-tidyverse-into-your-computer.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{install.packages}\NormalTok{(}\StringTok{"tidyverse"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{we-are-going-to-work-with-datasets-in-edawr.}{%
+\subsection{\texorpdfstring{We are going to work with datasets in
+\texttt{EDAWR}.}{We are going to work with datasets in EDAWR.}}\label{we-are-going-to-work-with-datasets-in-edawr.}}
+
+Installation of EDAWR is bit different. Use the following command.
+
+\textbf{Step 1}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{install.packages}\NormalTok{(}\StringTok{"devtools"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Step 2}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{devtools}\OperatorTok{::}\KeywordTok{install_github}\NormalTok{(}\StringTok{"rstudio/EDAWR"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{load-packages}{%
+\subsection{Load packages}\label{load-packages}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching packages ------------------ tidyverse 1.3.0 --
+\end{verbatim}
+
+\begin{verbatim}
+## v ggplot2 3.3.0     v purrr   0.3.4
+## v tibble  3.0.1     v dplyr   0.8.5
+## v tidyr   1.0.3     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.5.0
+\end{verbatim}
+
+\begin{verbatim}
+## -- Conflicts --------------------- tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(EDAWR) }\CommentTok{# load data}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'EDAWR'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:dplyr':
+## 
+##     storms
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:tidyr':
+## 
+##     population, who
+\end{verbatim}
+
+\hypertarget{pipe-operator-dplyr-and-tidyr}{%
+\section{Pipe operator, dplyr, and
+tidyr}\label{pipe-operator-dplyr-and-tidyr}}
+
+\begin{itemize}
+\item
+  \texttt{dplyr} is a package for data wrangling, with several key verbs
+  (functions).
+\item
+  \texttt{slice()} and \texttt{filter()}: subset rows based on numbers
+  or conditions.
+\item
+  \texttt{select()} and \texttt{pull()}: select columns or a single
+  column as a vector.
+\item
+  \texttt{arrange()}: order rows by one or multiple columns.
+\item
+  \texttt{rename()} and \texttt{mutate()}: rename or create columns.
+\item
+  \texttt{mutate\_at()}: apply a function to given columns.
+\end{itemize}
+
+\hypertarget{recall-pipe-operator}{%
+\section{\texorpdfstring{Recall: Pipe operator
+(\texttt{\%\textgreater{}\%})}{Recall: Pipe operator (\%\textgreater{}\%)}}\label{recall-pipe-operator}}
+
+See the slides in STA 326 2.0
+
+Link: :
+\url{https://hellor.netlify.app/slides/l7_intro_tidyverse.html\#43}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{iris }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(Sepal.Length }\OperatorTok{>=}\StringTok{ }\DecValTok{7}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+   Sepal.Length Sepal.Width Petal.Length Petal.Width    Species
+1           7.0         3.2          4.7         1.4 versicolor
+2           7.1         3.0          5.9         2.1  virginica
+3           7.6         3.0          6.6         2.1  virginica
+4           7.3         2.9          6.3         1.8  virginica
+5           7.2         3.6          6.1         2.5  virginica
+6           7.7         3.8          6.7         2.2  virginica
+7           7.7         2.6          6.9         2.3  virginica
+8           7.7         2.8          6.7         2.0  virginica
+9           7.2         3.2          6.0         1.8  virginica
+10          7.2         3.0          5.8         1.6  virginica
+11          7.4         2.8          6.1         1.9  virginica
+12          7.9         3.8          6.4         2.0  virginica
+13          7.7         3.0          6.1         2.3  virginica
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{iris }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(Sepal.Length }\OperatorTok{>=}\StringTok{ }\DecValTok{7}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+  Sepal.Length Sepal.Width Petal.Length Petal.Width    Species
+1          7.0         3.2          4.7         1.4 versicolor
+2          7.1         3.0          5.9         2.1  virginica
+\end{verbatim}
+
+\hypertarget{tidyr-functions-they-are-also-called-tidy-r-verbs}{%
+\subsection{\texorpdfstring{\texttt{tidyr} functions (They are also
+called tidy R
+verbs)}{tidyr functions (They are also called tidy R verbs)}}\label{tidyr-functions-they-are-also-called-tidy-r-verbs}}
+
+Main verbs (functions) in \texttt{tidyr}:
+
+\begin{itemize}
+\item
+  \texttt{pivot\_longer()}: makes datasets longer by increasing the
+  number of rows and decreasing the number of columns.
+\item
+  \texttt{pivot\_wider()}: is the opposite of pivot\_longer() : it makes
+  a dataset wider by increasing the number of columns and decreasing the
+  number of rows.
+\item
+  \texttt{separate()}: splits a single column into multiple columns.
+\item
+  \texttt{unite()}: combines multiple columns into a single column.
+\end{itemize}
+
+\hypertarget{pivot_longer}{%
+\section{\texorpdfstring{\texttt{pivot\_longer()}}{pivot\_longer()}}\label{pivot_longer}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# EDAWR::cases means cases dataset in EDAWR}
+\NormalTok{EDAWR}\OperatorTok{::}\NormalTok{cases }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   country  2011  2012  2013
+## 1      FR  7000  6900  7000
+## 2      DE  5800  6000  6200
+## 3      US 15000 14000 13000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{EDAWR}\OperatorTok{::}\NormalTok{cases }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{pivot_longer}\NormalTok{(}\DataTypeTok{names_to =} \StringTok{"year"}\NormalTok{, }\DataTypeTok{values_to =} \StringTok{"n"}\NormalTok{, }\DataTypeTok{cols =} \DecValTok{2}\OperatorTok{:}\DecValTok{4}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 3
+##   country year      n
+##   <chr>   <chr> <dbl>
+## 1 FR      2011   7000
+## 2 FR      2012   6900
+## 3 FR      2013   7000
+## 4 DE      2011   5800
+## 5 DE      2012   6000
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  Here the columns 2:4 are transposed into a \texttt{year} column.
+\item
+  We put the corresponding count values into a column called \texttt{n}.
+\end{itemize}
+
+\hypertarget{other-approaches-to-do-the-same-thing.}{%
+\subsection{Other approaches to do the same
+thing.}\label{other-approaches-to-do-the-same-thing.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Method 2}
+\NormalTok{EDAWR}\OperatorTok{::}\NormalTok{cases }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{pivot_longer}\NormalTok{(}\DataTypeTok{names_to =} \StringTok{"year"}\NormalTok{, }\DataTypeTok{values_to =} \StringTok{"n"}\NormalTok{, }\OperatorTok{-}\NormalTok{country) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 5 x 3
+##   country year      n
+##   <chr>   <chr> <dbl>
+## 1 FR      2011   7000
+## 2 FR      2012   6900
+## 3 FR      2013   7000
+## 4 DE      2011   5800
+## 5 DE      2012   6000
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Method 3}
+\CommentTok{# EDAWR::cases %>% }
+\CommentTok{#   pivot_longer(names_to = "year", values_to = "n", c(`2011`, `2012`, `2013`)) }
+\CommentTok{# Method 4}
+\CommentTok{# EDAWR::cases %>% }
+\CommentTok{#   pivot_longer(names_to = "year", values_to = "n",  `2011`:`2013`) }
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{pivot_wider-makes-longer-data-formats-wider.}{%
+\section{\texorpdfstring{\texttt{pivot\_wider()}: Makes longer data
+formats
+wider.}{pivot\_wider(): Makes longer data formats wider.}}\label{pivot_wider-makes-longer-data-formats-wider.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{EDAWR}\OperatorTok{::}\NormalTok{pollution }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       city  size amount
+## 1 New York large     23
+## 2 New York small     14
+## 3   London large     22
+## 4   London small     16
+## 5  Beijing large    121
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{EDAWR}\OperatorTok{::}\NormalTok{pollution }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{pivot_wider}\NormalTok{(}\DataTypeTok{names_from =} \StringTok{"size"}\NormalTok{, }
+              \DataTypeTok{values_from =} \StringTok{"amount"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 3
+##   city     large small
+##   <chr>    <dbl> <dbl>
+## 1 New York    23    14
+## 2 London      22    16
+## 3 Beijing    121    56
+\end{verbatim}
+
+\hypertarget{when-could-i-use-these-operations}{%
+\section{When could I use these
+operations?}\label{when-could-i-use-these-operations}}
+
+\begin{itemize}
+\tightlist
+\item
+  Data visualization with \texttt{ggplot2}.
+\end{itemize}
+
+\textbf{Read}:
+\url{https://tidyr.tidyverse.org/articles/pivot.html\#manual-specs}
+
+\hypertarget{separate}{%
+\subsection{\texorpdfstring{\texttt{separate()}}{separate()}}\label{separate}}
+
+To separate a character column into multiple columns using a regular
+expression separator.
+
+The following code seperates date into multiple columns. ``-'' is used
+to seperate between words.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{EDAWR}\OperatorTok{::}\NormalTok{storms }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{3}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     storm wind pressure       date
+## 1 Alberto  110     1007 2000-08-03
+## 2    Alex   45     1009 1998-07-27
+## 3 Allison   65     1005 1995-06-03
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{storms2 <-}\StringTok{ }\NormalTok{EDAWR}\OperatorTok{::}\NormalTok{storms }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{separate}\NormalTok{(date, }\KeywordTok{c}\NormalTok{(}\StringTok{"y"}\NormalTok{, }\StringTok{"m"}\NormalTok{, }\StringTok{"d"}\NormalTok{), }\DataTypeTok{sep=}\StringTok{"-"}\NormalTok{) }\CommentTok{# sep = "-"}
+\NormalTok{storms2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 6
+##   storm    wind pressure y     m     d    
+##   <chr>   <int>    <int> <chr> <chr> <chr>
+## 1 Alberto   110     1007 2000  08    03   
+## 2 Alex       45     1009 1998  07    27   
+## 3 Allison    65     1005 1995  06    03   
+## 4 Ana        40     1013 1997  06    30   
+## 5 Arlene     50     1010 1999  06    11   
+## 6 Arthur     45     1010 1996  06    17
+\end{verbatim}
+
+\hypertarget{unite}{%
+\section{\texorpdfstring{\texttt{unite()}}{unite()}}\label{unite}}
+
+Paste together multiple columns into one.
+
+The following code combines \texttt{y}, \texttt{m} and \texttt{d} in
+\texttt{storm2} using ``-''.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{storms2 }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{unite}\NormalTok{(date, y, m, d, }\DataTypeTok{sep =} \StringTok{"-"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 4
+##   storm    wind pressure date      
+##   <chr>   <int>    <int> <chr>     
+## 1 Alberto   110     1007 2000-08-03
+## 2 Alex       45     1009 1998-07-27
+## 3 Allison    65     1005 1995-06-03
+## 4 Ana        40     1013 1997-06-30
+## 5 Arlene     50     1010 1999-06-11
+## 6 Arthur     45     1010 1996-06-17
+\end{verbatim}
+
+Note that \texttt{unite()} and \texttt{separate()} are inverse
+operations.
+
+\hypertarget{dplyr-package}{%
+\section{\texorpdfstring{\texttt{dplyr}
+package}{dplyr package}}\label{dplyr-package}}
+
+\hypertarget{group_by}{%
+\section{\texorpdfstring{\texttt{group\_by()}}{group\_by()}}\label{group_by}}
+
+To define a grouping of rows based on a column:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{iris }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(Species) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 4 x 5
+## # Groups:   Species [1]
+##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+##          <dbl>       <dbl>        <dbl>       <dbl> <fct>  
+## 1          5.1         3.5          1.4         0.2 setosa 
+## 2          4.9         3            1.4         0.2 setosa 
+## 3          4.7         3.2          1.3         0.2 setosa 
+## 4          4.6         3.1          1.5         0.2 setosa
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{iris }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(Species) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{4}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\NormalTok{class}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "grouped_df" "tbl_df"     "tbl"        "data.frame"
+\end{verbatim}
+
+\begin{itemize}
+\item
+  This doesn't actually change anything in the output.
+\item
+  The only difference is that when it prints, we're told about the
+  groups.
+\item
+  But it will play a big role in how other \texttt{dplyr} functions
+  work.
+\end{itemize}
+
+\hypertarget{summarize-american-or-summarise-british}{%
+\section{\texorpdfstring{\texttt{summarize()} (American) or
+\texttt{summarise()}
+(British)}{summarize() (American) or summarise() (British)}}\label{summarize-american-or-summarise-british}}
+
+\texttt{summarize()} or \texttt{summarise()} in \texttt{dplyr} gives you
+single numerical summaries.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Ungrouped}
+\NormalTok{iris }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{Sepal.Length =} \KeywordTok{mean}\NormalTok{(Sepal.Length),}
+            \DataTypeTok{Sepal.Width =} \KeywordTok{mean}\NormalTok{(Sepal.Width))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   Sepal.Length Sepal.Width
+## 1     5.843333    3.057333
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Grouped by number of Species}
+\NormalTok{iris }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(Species) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{Sepal.Length =} \KeywordTok{mean}\NormalTok{(Sepal.Length),}
+            \DataTypeTok{Sepal.Width =} \KeywordTok{mean}\NormalTok{(Sepal.Width))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 3
+##   Species    Sepal.Length Sepal.Width
+##   <fct>             <dbl>       <dbl>
+## 1 setosa             5.01        3.43
+## 2 versicolor         5.94        2.77
+## 3 virginica          6.59        2.97
+\end{verbatim}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{iris }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(Species) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{Sepal.Width_mean =} \KeywordTok{mean}\NormalTok{(Sepal.Width),}
+            \DataTypeTok{Sepal.Width_max =} \KeywordTok{max}\NormalTok{(Sepal.Width),}
+            \DataTypeTok{Sepal.Length_mean =} \KeywordTok{mean}\NormalTok{(Sepal.Length),}
+            \DataTypeTok{Sepal.Length_max =} \KeywordTok{max}\NormalTok{(Sepal.Length))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 3 x 5
+##   Species    Sepal.Width_mean Sepal.Width_max Sepal.Length_mean Sepal.Length_max
+##   <fct>                 <dbl>           <dbl>             <dbl>            <dbl>
+## 1 setosa                 3.43             4.4              5.01              5.8
+## 2 versicolor             2.77             3.4              5.94              7  
+## 3 virginica              2.97             3.8              6.59              7.9
+\end{verbatim}
+
+\hypertarget{ungroup}{%
+\section{\texorpdfstring{\texttt{ungroup()}}{ungroup()}}\label{ungroup}}
+
+To remove groupings structure from a data frame or a tibble.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{iris }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(Species) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{Sepal.Width =} \KeywordTok{mean}\NormalTok{(Sepal.Width),}
+            \DataTypeTok{Petal.Width =} \KeywordTok{mean}\NormalTok{(Petal.Width))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1 x 2
+##   Sepal.Width Petal.Width
+##         <dbl>       <dbl>
+## 1        3.06        1.20
+\end{verbatim}
+
+\hypertarget{join-operations}{%
+\section{Join operations}\label{join-operations}}
+
+A ``join'' operation combines two data sets. There are 4 types of join
+operations.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Inner join} (or just \textbf{join}): keeps just the rows each
+  table that match the condition.
+\item
+  \textbf{Left outer join} (or just \textbf{left join}): keeps all rows
+  in the first table, and just the rows in the second table that match
+  the condition.
+\item
+  \textbf{Right outer join} (or just \textbf{right join}): keeps just
+  the rows in the first table that match the condition, and all rows in
+  the second table.
+\item
+  \textbf{Full outer join} (or just \textbf{full join}): keeps all rows
+  in both tables.
+\end{itemize}
+
+Note Column values that cannot be filled in are assigned \texttt{NA}
+values.
+
+\hypertarget{illustration-with-two-simple-data-sets.}{%
+\section{Illustration with two simple data
+sets.}\label{illustration-with-two-simple-data-sets.}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tab1_age <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{name =} \KeywordTok{c}\NormalTok{(}\StringTok{"Ann"}\NormalTok{, }\StringTok{"Jenny"}\NormalTok{, }\StringTok{"Andrew"}\NormalTok{), }
+                  \DataTypeTok{age =} \KeywordTok{c}\NormalTok{(}\DecValTok{70}\NormalTok{, }\DecValTok{52}\NormalTok{, }\DecValTok{40}\NormalTok{),}
+                  \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{)}
+\NormalTok{tab2_testresult <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{name =} \KeywordTok{c}\NormalTok{(}\StringTok{"Ann"}\NormalTok{, }\StringTok{"Nick"}\NormalTok{, }\StringTok{"Anderw"}\NormalTok{),}
+                  \DataTypeTok{result =} \KeywordTok{c}\NormalTok{(}\StringTok{"negative"}\NormalTok{, }\StringTok{"positive"}\NormalTok{, }\StringTok{"negative"}\NormalTok{),}
+                  \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{)}
+\NormalTok{tab1_age}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     name age
+## 1    Ann  70
+## 2  Jenny  52
+## 3 Andrew  40
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{tab2_testresult}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     name   result
+## 1    Ann negative
+## 2   Nick positive
+## 3 Anderw negative
+\end{verbatim}
+
+\hypertarget{inner_join}{%
+\section{\texorpdfstring{\texttt{inner\_join()}}{inner\_join()}}\label{inner_join}}
+
+name column is common to both \texttt{tab1\_age} and
+\texttt{tab2\_testresult}. This keeps only the common rows
+(intersection) in both datasets.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{inner_join}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ tab1_age, }\DataTypeTok{y =}\NormalTok{ tab2_testresult, }\DataTypeTok{by =} \StringTok{"name"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   name age   result
+## 1  Ann  70 negative
+\end{verbatim}
+
+\hypertarget{left_join}{%
+\section{\texorpdfstring{\texttt{left\_join()}}{left\_join()}}\label{left_join}}
+
+This keeps all names from \texttt{tab1\_age}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{left_join}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ tab1_age, }\DataTypeTok{y =}\NormalTok{ tab2_testresult, }\DataTypeTok{by =} \KeywordTok{c}\NormalTok{(}\StringTok{"name"}\NormalTok{ =}\StringTok{ "name"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     name age   result
+## 1    Ann  70 negative
+## 2  Jenny  52     <NA>
+## 3 Andrew  40     <NA>
+\end{verbatim}
+
+\hypertarget{right_join}{%
+\section{\texorpdfstring{\texttt{right\_join()}}{right\_join()}}\label{right_join}}
+
+This keeps all names from \texttt{tab2\_testresult}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{right_join}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ tab1_age, }\DataTypeTok{y =}\NormalTok{ tab2_testresult, }\DataTypeTok{by =} \StringTok{"name"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     name age   result
+## 1    Ann  70 negative
+## 2   Nick  NA positive
+## 3 Anderw  NA negative
+\end{verbatim}
+
+\hypertarget{full_join}{%
+\section{\texorpdfstring{\texttt{full\_join()}}{full\_join()}}\label{full_join}}
+
+This keeps all rows from both data frames.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{full_join}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ tab1_age, }\DataTypeTok{y =}\NormalTok{ tab2_testresult, }\DataTypeTok{by =} \StringTok{"name"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     name age   result
+## 1    Ann  70 negative
+## 2  Jenny  52     <NA>
+## 3 Andrew  40     <NA>
+## 4   Nick  NA positive
+## 5 Anderw  NA negative
+\end{verbatim}
+
+\hypertarget{summary}{%
+\section{Summary}\label{summary}}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{tidyr} is a package for manipulating the structure of data
+  frames
+\item
+  \texttt{pivot\_longer()}: make wide data longer
+\item
+  \texttt{pivot\_wider()}: make long data wider
+\item
+  \texttt{unite()} and \texttt{separate()}: combine or split columns
+\item
+  \texttt{dplyr} has advanced functionality that mirrors SQL
+\item
+  \texttt{group\_by()}: create groups of rows according to a condition
+\item
+  \texttt{summarize()}: apply computations across groups of rows
+\item
+  \texttt{*\_join()} where \texttt{*} = \texttt{inner}, \texttt{left},
+  \texttt{right}, or \texttt{full}: join two data frames together
+  according to common values in certain columns, and \texttt{*}
+  indicates how many rows to keep.
+\end{itemize}
+
+\end{document}

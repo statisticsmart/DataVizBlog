@@ -49,7 +49,7 @@ Mapping data to **aesthetic** attributes (colour, shape, size) of **geometric** 
 ---
 ## Making your first plot with ggplot
 
-```{r, comment=NA}
+```{r, comment=NA, fig.height=6}
 library(ggplot2)
 ggplot()
 
@@ -61,7 +61,7 @@ ggplot()
 
 - Data
 
-```{r, comment=NA}
+```{r, comment=NA, fig.height=6}
 ggplot(iris)
 ```
 
@@ -71,7 +71,7 @@ ggplot(iris)
 
 - Data + Aes
 
-```{r, comment=NA}
+```{r, comment=NA, fig.height=6}
 ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) 
 ```
 
@@ -81,7 +81,7 @@ ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width))
 
 - Data + Aes + Geom
 
-```{r, comment=NA}
+```{r, comment=NA, fig.height=6}
 ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point()
 ```
 
@@ -91,7 +91,7 @@ ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point()
 
 - Data + Aes + Geom + Facets
 
-```{r, comment=NA}
+```{r, comment=NA, fig.height=6}
 ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point() + facet_grid(. ~ Species)
 ```
 
@@ -101,7 +101,7 @@ ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point() + facet_grid
 
 - Data + Aes + Geom + Facets + Statistics
 
-```{r, comment=NA}
+```{r, comment=NA, fig.height=5}
 ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
   geom_point() +
   facet_grid(. ~ Species) +
@@ -114,7 +114,7 @@ ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
 
 - Data + Aes + Geom + Facets + Statistics + Coordinates
 
-```{r, comment=NA}
+```{r, comment=NA, warning=FALSE, message=FALSE, fig.height=6}
 ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
   geom_point() +
   facet_grid(. ~ Species) +
@@ -122,8 +122,6 @@ ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
   scale_y_continuous("Sepal Width (cm)")+
   scale_x_continuous("Sepal Width (cm)")+
   coord_equal()
-  
-  
 ```
 
 ---
@@ -132,7 +130,7 @@ ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
 
 - Data + Aes + Geom + Facets + Statistics + Coordinates + Theme
 
-```{r, comment=NA}
+```{r, comment=NA, warning=FALSE, message=FALSE, fig.height=5}
 ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
   geom_point() +
   facet_grid(. ~ Species) +
@@ -141,6 +139,4 @@ ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
   scale_x_continuous("Sepal Width (cm)")+
   coord_equal()+
   theme(panel.background = element_blank())
-  
-  
 ```

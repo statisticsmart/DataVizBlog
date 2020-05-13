@@ -1,0 +1,24 @@
+---
+title: "Data Visualization"
+subtitle: "Introduction to Time Series"
+author: "Dr Thiyanga Talagala"
+date: "2020-03-12"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: 
+      - default
+      - default-fonts
+      - duke-blue
+      - hygge-duke
+      - libs/cc-fonts.css
+      - libs/figure-captions.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+

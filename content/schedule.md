@@ -16,8 +16,9 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 
 📊 Week 4: [Introduction to the ggplot2 package](/slides/lecture4dataviz.html)
 
-📊 Week 5-1: [Visualisation of time series data - Introuction](/slides/lecture5ts.html)
+📊 Week 5: [Visualisation of time series data - Introduction](/slides/lecture5ts.html)
 
+To be continued in Week 11.
 
 #### COVID-19 outbreak
 
@@ -27,22 +28,22 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 
 ```
 
-📊 Week 5-2: [Data Wrangling](/datawrangling_tutorial.pdf)
+📊 Week 6: [Data Wrangling](/datawrangling_tutorial.pdf)
 
-📊 Week 5-3: Visualisation of time series data
+📊 Week 7: Create different types of static graphics with ggplot2
 
-📊 Week 6: Create different types of static graphics with ggplot2
+📊 Week 8: Higher-dimensional displays and special structurs in graphics
 
-📊 Week 7: Higher-dimensional displays and special structurs in graphics
+📊 Week 9: Visualisation of high-dimensional data
 
-📊 Week 8: Visualisation of high-dimensional data
+📊 Week 10: Visualisation of multivariate data
 
-📊 Week 9: Visualisation of multivariate data
+📊 Week 11: Visualisation of time series data
 
-📊 Week 10: Visualisation of spatial data
+📊 Week 12: Visualisation of spatial data
 
-📊 Week 11: Linked data views of visual exploration
+📊 Week 13: Linked data views of visual exploration
 
-📊 Week 12: Dashboard, interactive and animated displays
+📊 Week 14: Dashboard, interactive and animated displays
 
-📊 Week 13: Recap
+📊 Week 15: Recap

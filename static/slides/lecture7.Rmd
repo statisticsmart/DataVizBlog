@@ -1,5 +1,5 @@
 ---
-title: "Data Visualization"
+title: "ASP 460 2.0 Special Topics in Statistics"
 subtitle: "Coordinate Systems and Axes"
 author: "Thiyanga Talagala"
 date: "2020-05-19"
@@ -207,7 +207,7 @@ library(patchwork)
 p1|p2
 ```
 ]
-- Grist 3 plots are correct. Fourth graph is incorrect.
+- Frist 3 plots are correct. Fourth graph is incorrect.
 
 - No difference between plotting the log-transformed data on a
 linear scale or plotting the original data on a logarithmic scale. The only difference lies in labelling values. 
@@ -238,6 +238,7 @@ Both logarithm scale and square-root scale compresses larger range into a smalle
 
 > When the dataset contains wide range of values.
 
+<!--There are two main reasons to use logarithmic scales in charts and graphs. The first is to respond to skewness towards large values; i.e., cases in which one or a few points are much larger than the bulk of the data. The second is to show percent change or multiplicative factors.-->
 
 - Square-root scale
 

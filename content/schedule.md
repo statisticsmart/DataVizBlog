@@ -30,9 +30,9 @@ To be continued in Week 11.
 
 📊 Week 6: [Data Wrangling](/datawrangling_tutorial.pdf)
 
-📊 Week 7: Create different types of static graphics with ggplot2
+📊 Week 7: [Coordinate Systems and Axes](/slides/lecture7.html)
 
-📊 Week 8: Higher-dimensional displays and special structurs in graphics
+📊 Week 8: Create different types of static graphics with ggplot2 and Higher-dimensional displays and special structurs in graphics
 
 📊 Week 9: Visualisation of high-dimensional data
 

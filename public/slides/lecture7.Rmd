@@ -1,5 +1,5 @@
 ---
-title: "Data Visualization"
+title: "ASP 460 2.0 Special Topics in Statistics"
 subtitle: "Coordinate Systems and Axes"
 author: "Thiyanga Talagala"
 date: "2020-05-19"
@@ -41,7 +41,7 @@ without placing different data points at different locations,-->
   
 
 
-## Definiation: coordinate systems
+## Definition: coordinate systems
 
 "The combination of a set of position scales and their relative geometric arrangement is called a coordinate system." (Claus O. Wilke)
 
@@ -232,12 +232,13 @@ the axis.-->
 
 # Transformations
 
-Both logarithm sclae and square-root scale compresses larger range into a smaller range.
+Both logarithm scale and square-root scale compresses larger range into a smaller range.
 
 - Logarithmic scales 
 
 > When the dataset contains wide range of values.
 
+<!--There are two main reasons to use logarithmic scales in charts and graphs. The first is to respond to skewness towards large values; i.e., cases in which one or a few points are much larger than the bulk of the data. The second is to show percent change or multiplicative factors.-->
 
 - Square-root scale
 
@@ -247,7 +248,7 @@ Both logarithm sclae and square-root scale compresses larger range into a smalle
 
 # Logarithmic scales 
 
-Logarithmic scales can emphasize the rate of change in a way that linear scales do not. Italy seems to be slowing the coronavirus infection rate, while the number of cases in Spain continues to double every few days.
+Logarithmic scales can emphasize the rate of change in a way that linear scales do not. Italy seems to be slowing the corona virus infection rate, while the number of cases in Spain continues to double every few days.
 
 .pull-left[
 ```{r, comment=NA, message=FALSE, echo=FALSE, fig.height=5}
@@ -328,6 +329,8 @@ x = 10 are the same locations in this coordinate system.
 ## Coordinate Systems with Curved Axes (cont.)
 
 ![](angular_coordinate_on_graph.jpg)
+
+A Polar chart draws the x and y coordinates in each series as ($\theta$,$r$), where $\theta$ is amount of rotation from the origin and $r$ is the distance from the origin.
 ---
 
 ## Coordinate Systems with Curved Axes (cont.)
@@ -398,20 +401,226 @@ one end of the scale can be meaningfully joined to data values at the other end)
 - The polar version
 shows how similar the sales are in December and January. In the Cartesian coordinate system, this fact is
 obscured because the values in December and in January are
-shown in opposite parts of the graph..
+shown in opposite parts of the graph.
 ]
 
 
-<!--A second setting in which we encounter curved axes is in the context of geospatial
-data, i.e., maps. Locations on the globe are specified by their longitude and latitude.
-But because the earth is a sphere, drawing latitude and longitude as Cartesian axes is
-misleading and not recommended (Figure 3-11). -->
+---
+
+## Coordinate Systems with Curved Axes (cont.)
+
+.pull-left[
+
+
+```{r, comment=NA, echo=FALSE, message=FALSE, warning=FALSE, fig.height=5}
+
+ggseasonplot(a10, year.labels=FALSE, continuous=TRUE)
+
+ggseasonplot(a10, year.labels=FALSE, continuous=TRUE, polar = TRUE)
+
+```
+
+]
+
+.pull-right[
+
+- What is the angular coordinate?
+
+- What is the radial coordinate?
+]
+---
+# Coordinate systems in ggplot2
+
+1) `coord_cartesian()`: Zooming into a plot
+
+```{r, comment=NA, warning=FALSE, message=FALSE, fig.height=3}
+base1 <- ggplot(iris, aes(Sepal.Length, Sepal.Width)) + 
+  geom_point() + 
+  geom_smooth()+ggtitle("base1")
+# Scaling to 5--7 throws away data outside that range
+base2 <- base1 + scale_x_continuous(limits = c(5, 7))+ggtitle("base2")
+# Zooming to 5--7 keeps all the data but only shows some of it
+base3 <- base2 + coord_cartesian(xlim = c(5, 7))+ggtitle("base3")
+base4 <- base2 + coord_cartesian(ylim = c(2, 3.5))+ggtitle("base4")
+library(patchwork)
+base1|base2|base3|base4
+```
+
+<!--Setting coordinate system limits is like looking at the plot under a magnifying glass.-->
+---
+# Coordinate systems in ggplot2 (cont.)
+
+2) `coord_flip()`:  Flipping the axes
+
+```{r, comment=NA, message=FALSE, fig.height=3.5}
+base1 <- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width)) + 
+  geom_point() + geom_smooth()+ggtitle("base1")
+# curve is fitted to the original data, and then rotates
+base2 <- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width)) + 
+  geom_point() + geom_smooth()+
+  coord_flip()+ggtitle("base2")
+# curve is fit to the rotated data
+base3 <- ggplot(iris, aes(x=Sepal.Width, y=Sepal.Length)) + 
+  geom_point() + geom_smooth()+ggtitle("base3")
+base1|base2|base3
+```
+
+---
+# Coordinate systems in ggplot2 (cont.)
+
+3) `coord_fixed()`: Equal scales
+
+A fixed scale coordinate system forces a specified ratio between the physical representation of data units on the axes.
+
+**ratio:**	aspect ratio, expressed as $\frac{y}{x}$
+
+```{r, comment=NA, message=FALSE, fig.height=5}
+p <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
+```
+
+.pull-left[
+```{r, comment=NA, message=FALSE, fig.height=5}
+p + coord_fixed(ratio = 1)
+```
+]
+
+.pull-right[
+```{r, comment=NA, message=FALSE, fig.height=5}
+p + coord_fixed(ratio = 5)
+```
+]
+
+
+
+
+---
+# Non-linear coordinate with ggplot2
+
+```{r, warning=FALSE, message=FALSE, comment=NA, fig.height=5}
+#Acknowledgement- ggplot2: Elegant Graphics for Data Analysis Hadley Wickham
+rect <- data.frame(x = 50, y = 50)
+line <- data.frame(x = c(1, 200), y = c(100, 1))
+base <- ggplot(mapping = aes(x, y)) + 
+  geom_tile(data = rect, aes(width = 50, height = 50)) + 
+  geom_line(data = line) + 
+  xlab(NULL) + ylab(NULL)
+base1 <- base + ggtitle("base1")
+base2 <- base + coord_polar("x") + ggtitle("base2 (line 50-60)")
+base3 <- base + coord_polar("y") + ggtitle("base3 (line:  60-75)")
+base1|base2|base3
+```
+
 
 ---
 
-# Radar chart vs Polar Coordinate
+## Pie Chart vs Bar Chart
 
-- Polar chart shows values for multiple quantitative variables in the same
-display. It uses a radial (circular) layout comprising several equal-angled slices for each variable.
+The polar coordinates gives rise to pie charts, radar charts, etc.
 
-- Radar chart 
+### sample dataset
+
+.pull-left[
+```{r, comment=NA}
+# Load ggplot2
+library(ggplot2)
+library(dplyr)
+
+# Create Data
+data <- data.frame(
+  group=LETTERS[1:5],
+  value=c(13,7,9,21,2)
+)
+
+data
+
+```
+]
+
+.pull-right[
+```{r, comment=NA}
+# Compute the position of labels
+data <- data %>% 
+  arrange(desc(group)) %>%
+  mutate(prop = value / sum(data$value) *100) 
+data
+```
+]
+
+---
+### Pie Chart vs Bar Chart
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5}
+# Basic barchart
+ggplot(data, aes(x="", y=prop, 
+                 fill=group)) +
+  geom_bar(stat="identity", 
+           width=1, color="white") 
+```
+
+]
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5}
+# Basic piechart
+ggplot(data, aes(x="", y=prop, fill=group)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0)
+```
+
+
+]
+
+Angles are harder read accurately than aligned bars.
+
+---
+
+## Map projections: `coord_map()` 
+
+- This is another use of polar coordinates.
+
+- `coord_map` projects a portion of the earth, which is approximately spherical, onto a flat 2D plane using any projection defined by the `mapproj` package
+
+- The earth is a sphere and its locations are specified by their longitude and latitude.Plotting raw latitude and longitude as Cartesian axes is
+misleading due to the spherical shape of the globe. Hence, we project data to  balances between conserving areas or angles relative to the true shape lines on the globe.
+
+---
+## Map projections (cont.)
+
+```{r}
+world <- map_data("world")
+worldmap <- ggplot(world, aes(long, lat, group = group)) +
+  geom_path() +
+  scale_y_continuous(NULL, breaks = (-2:3) * 30, labels = NULL) +
+  scale_x_continuous(NULL, breaks = (-4:4) * 45, labels = NULL)
+
+w1 <- worldmap + coord_map()
+# Some crazier projections
+w2 <- worldmap + coord_map("ortho")
+```
+
+.pull-left[
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=4}
+w1
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=4}
+w2
+```
+
+]
+
+---
+
+
+ASSIGNMENT
+
+- Radar chart (star chart, spider diagram, web chart)
+
+- Polar chart (Coxcomb plot, polar area plot)
+

@@ -483,9 +483,14 @@ ggplot(four, aes(x = vals)) + geom_density(fill = "forestgreen") + coord_cartesi
 ```
 
 ---
-![](kernel1.PNG)
+background-image: url('kernel1.png')
+background-position: center
+background-size: contain
+
 ---
-![](kernel2.PNG)
+background-image: url('kernel2.png')
+background-position: center
+background-size: contain
 ---
 
 # Density plot

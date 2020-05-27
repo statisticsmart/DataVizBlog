@@ -2,7 +2,7 @@
 title: "ASP 460 2.0 Special Topics in Statistics"
 subtitle: "Visualizing Distributions"
 author: "Thiyanga Talagala"
-date: "2020-05-25"
+date: "2020-05-27"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -29,7 +29,7 @@ options(htmltools.dir.version = FALSE)
 
 - Density plot
 
-- Cummulative density
+- Cumulative density
 
 - Quantile-Quantile plot
 
@@ -263,7 +263,7 @@ alpha = .5)+stat_summary(fun.y=mean, geom="crossbar", colour="red")
 
 ---
 
-# Dotplot type Boxplot
+# Boxplot using geom_dotplot
 
 **Small to Medium**
 
@@ -284,6 +284,7 @@ scale_y_continuous(name = "") +
 coord_cartesian(ylim = c(-4, 4))
 ```
 
+Previous
 
 ]
 
@@ -301,11 +302,13 @@ scale_x_discrete(name = "") +
 scale_y_continuous(name = "") +
 coord_cartesian(ylim = c(-4, 4))+stat_summary(fun.y=median, geom="crossbar", colour="red")
 ```
+
+Now
 ]
 
 ---
 
-# Dotplot type Boxplot - Example
+# Boxplot using geom_dotplot - Example
 
 .pull-left[
 ```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5}
@@ -333,10 +336,33 @@ fill = "#7570b3", colour = "#7570b3")
 ]
 
 ---
+# Bee swarm
 
+![](honeybees.jpg)
+---
 # Beeswarm
 
-```{r, comment=NA, echo=FALSE, eval=FALSE}
+.pull-left[
+```{r, comment=NA, echo=FALSE, warning=FALSE}
+ggplot(four, aes(x = dist, y = vals)) +
+geom_dotplot(stackdir = "center",
+binaxis = "y",
+binwidth = .1,
+binpositions = "all",
+stackratio = 1.5,
+fill = "orange",
+colour = "orange") +
+scale_x_discrete(name = "") +
+scale_y_continuous(name = "") +
+coord_cartesian(ylim = c(-4, 4))+stat_summary(fun.y=median, geom="crossbar", colour="red")
+```
+
+Previous
+
+]
+
+.pull-right[
+```{r, comment=NA, echo=FALSE}
 #install.packages("ggbeeswarm")
 library(ggbeeswarm)
 ggplot(four, aes(x = dist, y = vals)) +
@@ -347,6 +373,9 @@ scale_y_continuous(name = "") +
 coord_cartesian(ylim = c(-4, 4))
 ```
 
+Now
+
+]
 ---
 # Boxplot with dot points
 
@@ -401,6 +430,8 @@ coord_cartesian(ylim = c(-4, 4))
 
 ```
 
+Previous
+
 ]
 
 .pull-right[
@@ -419,6 +450,8 @@ scale_y_continuous(name = "") +
 coord_cartesian(ylim = c(-4, 4))
 
 ```
+
+Now
 
 with `geom="jitter"`
 
@@ -450,6 +483,10 @@ ggplot(four, aes(x = vals)) + geom_density(fill = "forestgreen") + coord_cartesi
 ```
 
 ---
+![](kernel1.PNG)
+---
+![](kernel2.PNG)
+---
 
 # Density plot
 
@@ -460,6 +497,8 @@ ggplot(four, aes(x = vals)) + geom_density(fill = "forestgreen") + coord_cartesi
 
 ```
 
+Previous
+
 ]
 
 .pull-right[
@@ -468,6 +507,8 @@ ggplot(four, aes(x = vals)) + geom_density(fill = "forestgreen") + coord_cartesi
 ggplot(four, aes(x = vals, fill = dist)) +
 geom_density(alpha = .5)
 ```
+
+Now
 
 ]
 
@@ -480,6 +521,9 @@ ggplot(iris, aes(x = Sepal.Length)) +
   geom_density(fill = "#7570b3") + 
   facet_wrap(~ Species)
 ```
+
+Previous
+
 ]
 
 .pull-right[
@@ -488,6 +532,8 @@ ggplot(iris, aes(x = Sepal.Length,
                  fill=Species)) + 
   geom_density(alpha=0.5)
 ```
+
+Now
 
 ]
 ---
@@ -498,6 +544,8 @@ ggplot(iris, aes(x = Sepal.Length,
 ```{r, comment=NA, message=TRUE, warning=TRUE, echo=FALSE}
 ggplot(four, aes(x = vals)) + geom_density(fill = "forestgreen") + coord_cartesian(xlim = c(-5, 5)) + facet_wrap(~ dist)
 ```
+
+Previous
 
 ]
 
@@ -513,6 +561,8 @@ geom_density(alpha = .5, fill = "forestgreen") +
 coord_cartesian(xlim = c(-5,5)) +
 facet_wrap(~ dist)
 ```
+
+Now
 
 ]
 
@@ -538,6 +588,9 @@ facet_wrap(~ Species)
 ```{r, comment=NA, echo=FALSE, warning=FALSE, message=FALSE}
 ggplot(four, aes(x = vals)) + geom_density(fill = "orange") + coord_cartesian(xlim = c(-5, 5)) + facet_wrap(~ dist)
 ```
+
+Previous
+
 ]
 
 .pull-right[
@@ -550,6 +603,8 @@ na.rm = TRUE,
 scale = "count") + 
 coord_cartesian(ylim = c(-4, 4))
 ```
+
+Now
 ]
 
 ---
@@ -577,7 +632,7 @@ scale = "count") +
 coord_cartesian(ylim = c(-4, 4))
 ```
 
-
+Previous
 
 ]
 
@@ -596,6 +651,8 @@ na.rm = TRUE) +
 coord_cartesian(ylim = c(-4, 4))
 ```
 
+Now
+
 ]
 ---
 
@@ -613,18 +670,10 @@ geom_violin(alpha = .2, fill = "#7570b3")
 
 .pull-left[
 ```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
-ggplot(four, aes(x = dist, y = vals)) +
-geom_boxplot(outlier.size = 2,
-colour = "orange",
-fill = "black",
-na.rm = TRUE,
-width = .1) +
-geom_violin(alpha = .2,
-fill = "orange",
-colour = NA,
-na.rm = TRUE) +
-coord_cartesian(ylim = c(-4, 4))
+ggplot(four, aes(x = vals)) + geom_density(fill = "forestgreen") + coord_cartesian(xlim = c(-5, 5)) + facet_grid(rows = vars(dist))
 ```
+
+Previous
 ]
 
 .pull-right[
@@ -635,8 +684,55 @@ geom_density_ridges(scale = 0.9,
 fill = "forestgreen",
 alpha = .5)
 ```
+
+Now
 ]
 
 ---
 
+# Ridgeline plots - Example
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5}
+library(ggridges)
+ggplot(iris, aes(x = Sepal.Length, y = Species)) +
+geom_density_ridges(scale = 0.9,
+fill = "#7570b3", alpha = .5)
+```
+
+---
+
 # Raincloud plot
+
+.pull-left[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(four, aes(x = vals, y = dist)) +
+geom_density_ridges(scale = 0.9,
+fill = "orange",
+alpha = .5)
+```
+
+Previous
+]
+
+.pull-right[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+library(ggridges)
+ggplot(four, aes(x = vals, y = dist)) +
+geom_density_ridges(scale = 0.9,
+position= "raincloud",
+fill = "forestgreen",
+jittered_points = TRUE,
+alpha = .5)
+```
+
+Now
+]
+---
+# Raincloud plots - Example
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5}
+library(ggridges)
+ggplot(iris, aes(x = Sepal.Length, y = Species)) +
+geom_density_ridges(scale = 0.9,
+                    position= "raincloud",
+                    jittered_points = TRUE,
+fill = "#7570b3", alpha = .5)
+```

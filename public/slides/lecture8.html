@@ -4,7 +4,7 @@
     <title>ASP 460 2.0 Special Topics in Statistics</title>
     <meta charset="utf-8" />
     <meta name="author" content="Thiyanga Talagala" />
-    <meta name="date" content="2020-05-25" />
+    <meta name="date" content="2020-05-27" />
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
     <link href="libs/remark-css/duke-blue.css" rel="stylesheet" />
@@ -19,7 +19,7 @@ class: center, middle, inverse, title-slide
 # ASP 460 2.0 Special Topics in Statistics
 ## Visualizing Distributions
 ### Thiyanga Talagala
-### 2020-05-25
+### 2020-05-27
 
 ---
 
@@ -32,7 +32,7 @@ class: center, middle, inverse, title-slide
 
 - Density plot
 
-- Cummulative density
+- Cumulative density
 
 - Quantile-Quantile plot
 
@@ -190,23 +190,26 @@ Your turn: Add min, max, Q1, Q2, Q3
 
 ---
 
-# Dotplot type Boxplot
+# Boxplot using geom_dotplot
 
 **Small to Medium**
 
 .pull-left[
 ![](lecture8_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
 
+Previous
 
 ]
 
 .pull-right[
 ![](lecture8_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+
+Now
 ]
 
 ---
 
-# Dotplot type Boxplot - Example
+# Boxplot using geom_dotplot - Example
 
 .pull-left[
 
@@ -240,15 +243,29 @@ fill = "#7570b3", colour = "#7570b3")
 ]
 
 ---
+# Bee swarm
 
+![](honeybees.jpg)
+---
 # Beeswarm
 
+.pull-left[
+![](lecture8_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
 
+Previous
 
+]
+
+.pull-right[
+![](lecture8_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+
+Now
+
+]
 ---
 # Boxplot with dot points
 
-![](lecture8_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
 ---
 # Boxplot with dot points - Example
 
@@ -261,19 +278,23 @@ stackdir = 'center', fill = "#7570b3", colour = "#7570b3",
 binwidth = .05) 
 ```
 
-![](lecture8_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
 ---
 # Boxplot with dot points
 
 .pull-left[
-![](lecture8_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-25-1.png)&lt;!-- --&gt;
+
+Previous
 
 ]
 
 .pull-right[
 
 
-![](lecture8_files/figure-html/unnamed-chunk-25-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+
+Now
 
 with `geom="jitter"`
 
@@ -291,7 +312,7 @@ geom_jitter(fill = "#7570b3", colour = "#7570b3",
 position = position_jitter(height = 0, width = .1), alpha = .5) 
 ```
 
-![](lecture8_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
 
 
 ---
@@ -303,21 +324,29 @@ position = position_jitter(height = 0, width = .1), alpha = .5)
 
 &lt;!--attempt to visualize the underlying probability distribution of the data by drawing an appropriate continuous curve--&gt;
 
-![](lecture8_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
 
+---
+![](kernel1.PNG)
+---
+![](kernel2.PNG)
 ---
 
 # Density plot
 
 .pull-left[
 
-![](lecture8_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+
+Previous
 
 ]
 
 .pull-right[
 
-![](lecture8_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+
+Now
 
 ]
 
@@ -332,7 +361,10 @@ ggplot(iris, aes(x = Sepal.Length)) +
   facet_wrap(~ Species)
 ```
 
-![](lecture8_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+
+Previous
+
 ]
 
 .pull-right[
@@ -343,7 +375,9 @@ ggplot(iris, aes(x = Sepal.Length,
   geom_density(alpha=0.5)
 ```
 
-![](lecture8_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+
+Now
 
 ]
 ---
@@ -351,13 +385,17 @@ ggplot(iris, aes(x = Sepal.Length,
 # Density plot and Histogram
 
 .pull-left[
-![](lecture8_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+
+Previous
 
 ]
 
 .pull-right[
 
-![](lecture8_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
+
+Now
 
 ]
 
@@ -375,7 +413,7 @@ geom_density(alpha = .5, fill = "#7570b3") +
 facet_wrap(~ Species)
 ```
 
-![](lecture8_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -383,12 +421,17 @@ facet_wrap(~ Species)
 
 .pull-left[
 
-![](lecture8_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;
+
+Previous
+
 ]
 
 .pull-right[
 
-![](lecture8_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-37-1.png)&lt;!-- --&gt;
+
+Now
 ]
 
 ---
@@ -402,7 +445,7 @@ fill = "#7570b3", na.rm = TRUE,
 scale = "count") 
 ```
 
-![](lecture8_files/figure-html/unnamed-chunk-37-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-38-1.png)&lt;!-- --&gt;
 
 
 ---
@@ -410,14 +453,16 @@ scale = "count")
 
 .pull-left[
 
-![](lecture8_files/figure-html/unnamed-chunk-38-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-39-1.png)&lt;!-- --&gt;
 
-
+Previous
 
 ]
 
 .pull-right[
-![](lecture8_files/figure-html/unnamed-chunk-39-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-40-1.png)&lt;!-- --&gt;
+
+Now
 
 ]
 ---
@@ -431,7 +476,65 @@ geom_boxplot(outlier.size = 2, colour="#7570b3", width=.1) +
 geom_violin(alpha = .2, fill = "#7570b3") 
 ```
 
-![](lecture8_files/figure-html/unnamed-chunk-40-1.png)&lt;!-- --&gt;
+![](lecture8_files/figure-html/unnamed-chunk-41-1.png)&lt;!-- --&gt;
+
+---
+
+# Ridgeline plots
+
+.pull-left[
+![](lecture8_files/figure-html/unnamed-chunk-42-1.png)&lt;!-- --&gt;
+
+Previous
+]
+
+.pull-right[
+![](lecture8_files/figure-html/unnamed-chunk-43-1.png)&lt;!-- --&gt;
+
+Now
+]
+
+---
+
+# Ridgeline plots - Example
+
+```r
+library(ggridges)
+ggplot(iris, aes(x = Sepal.Length, y = Species)) +
+geom_density_ridges(scale = 0.9,
+fill = "#7570b3", alpha = .5)
+```
+
+![](lecture8_files/figure-html/unnamed-chunk-44-1.png)&lt;!-- --&gt;
+
+---
+
+# Raincloud plot
+
+.pull-left[
+![](lecture8_files/figure-html/unnamed-chunk-45-1.png)&lt;!-- --&gt;
+
+Previous
+]
+
+.pull-right[
+![](lecture8_files/figure-html/unnamed-chunk-46-1.png)&lt;!-- --&gt;
+
+Now
+]
+---
+# Raincloud plots - Example
+
+```r
+library(ggridges)
+ggplot(iris, aes(x = Sepal.Length, y = Species)) +
+geom_density_ridges(scale = 0.9,
+                    position= "raincloud",
+                    jittered_points = TRUE,
+fill = "#7570b3", alpha = .5)
+```
+
+![](lecture8_files/figure-html/unnamed-chunk-47-1.png)&lt;!-- --&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

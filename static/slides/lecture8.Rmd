@@ -483,6 +483,10 @@ ggplot(four, aes(x = vals)) + geom_density(fill = "forestgreen") + coord_cartesi
 ```
 
 ---
+![](kernel1.PNG)
+---
+![](kernel2.PNG)
+---
 
 # Density plot
 

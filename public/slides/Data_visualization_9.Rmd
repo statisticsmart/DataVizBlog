@@ -1,0 +1,494 @@
+---
+title: "Categorical Data "
+author: "Thiyanga S. Talagala"
+date: "3 June 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, echo=FALSE, message=FALSE}
+library(tidyverse)
+library(skimr)
+library(magrittr)
+```
+
+
+```{r, comment=NA, echo=FALSE}
+skim(diamonds)
+```
+
+## Univariate
+
+```{r, comment=NA}
+p1 <- ggplot(data=diamonds, aes(x=cut))
+```
+
+1. R code: _______________________________
+
+```{r, comment=NA, echo=FALSE}
+p1 + geom_bar()
+```
+
+<!--The majorith of cuts are ideal, followed by Premium, with very few fair cuts.-->
+
+2. R code: _______________________________
+
+```{r, comment=NA, echo=FALSE}
+p1 + geom_bar(fill="forestgreen")
+```
+
+3. R code: _______________________________
+
+```{r, comment=NA, echo=FALSE}
+p1 + geom_bar(fill="forestgreen")+
+  labs(title="Composition of diamonds by cuts")
+```
+
+_____________
+
+```{r, comment=NA}
+#..count..: special variable to represent frequency
+p1 <- ggplot(data=diamonds, aes(x=cut, y=..count..))
+p2 <- ggplot(data=diamonds, aes(x=cut, y=..count../sum(..count..)))
+```
+
+
+4. R code: _______________________________
+
+```{r, comment=NA, echo=FALSE}
+p2 + geom_bar(fill="forestgreen")+
+  labs(title="Composition of diamonds by cuts")
+```
+
+5. R code: _______________________________
+
+```{r, comment=NA, echo=FALSE}
+p2 + geom_bar(fill="forestgreen")+
+  labs(title="Composition of diamonds by cuts")+
+  scale_y_continuous(labels = scales::percent)+
+  labs(y="Percent")
+```
+
+ 
+6. R code: _______________________________
+
+```{r, comment=NA, echo=FALSE}
+cut.percent <- data.frame(cut=c("Fair", "Good", "Very Good", "Premium", "Ideal"),
+      percent=c(3, 9, 22.4, 25.6, 40))
+cut.percent
+```
+
+
+```{r, comment=NA}
+p3 <- ggplot(data=cut.percent, aes(x=cut, y=percent))
+```
+
+```{r, comment=NA, echo=FALSE}
+p3+geom_bar(stat="identity")
+```
+
+7. R code: _______________________________
+
+```{r, comment=NA, echo=FALSE}
+cut.percent$cut <- factor(cut.percent$cut, levels = c("Fair", "Good", "Very Good", "Premium", "Ideal"))
+
+```
+
+```{r, comment=NA}
+# Need to rerun this once you change the factor levels (can't use p3)
+ggplot(data=cut.percent, aes(x=cut, y=percent))+geom_bar(stat="identity")
+```
+
+8. Labeling bars: what is the suitable geom to add here?
+
+```{r, comment=NA, echo=FALSE}
+# Need to rerun this once you change the factor levels (can't use p3)
+ggplot(data=cut.percent, aes(x=cut, y=percent))+geom_bar(stat="identity")+
+  geom_text(aes(label = percent),
+vjust=-0.5)
+```
+
+9. R code:___________
+
+Help: use `coord_flip`
+
+```{r, comment=NA, echo=FALSE}
+p2 + geom_bar(fill="forestgreen")+
+  labs(title="Composition of diamonds by cuts")+
+  scale_y_continuous(labels = scales::percent)+
+  labs(y="Percent")+
+  coord_flip()
+```
+
+10. R Code:____________
+
+```{r, comment=NA, echo=FALSE}
+cut.prop <- cut.percent %>%
+  mutate(prop=percent/100)
+cut.prop
+```
+
+
+```{r, comment=NA}
+
+ggplot(data=cut.prop, aes(x="", y=prop, fill=cut))+geom_bar(stat="identity", width=1)
+```
+
+```{r, comment=NA}
+
+ggplot(data=cut.prop, aes(x="", y=prop, fill=cut))+geom_bar(stat="identity", width=1, position = "dodge")
+```
+
+11. R Code:____________
+
+Pie charts are controversial in statistics.
+
+<!--humans are better at judging the length of bars than the volume of pie slices).-->
+
+```{r, comment=NA, echo=FALSE}
+
+ggplot(data=cut.prop, aes(x="", y=prop, fill=cut))+geom_bar(stat="identity", width=1)+coord_polar("y",
+start = 0,
+direction = -1) 
+```
+
+Some extra work is needed to make the pie chart appealing to human eye.
+
+
+
+<!--An alternative to a pie chart is a tree map. Unlike pie charts, it can handle categorical variables that have
+many levels.-->
+_______
+
+## Bi-variate
+
+### Stacked bar chart
+
+**Encoding by colour**
+
+Position: `stack`
+
+```{r, comment=NA, message=FALSE}
+b1 <- ggplot(data=diamonds, aes(x=cut, fill=color))
+```
+
+12: R code:___________
+
+```{r, echo=FALSE}
+#  stack is default
+b1 + geom_bar(position = "stack")
+```
+
+### Grouped bar chart
+
+**Encoding by colour**
+
+Position: `dodge`
+
+13: R code:___________
+
+```{r, echo=FALSE}
+#  stack is default
+b1 + geom_bar(position = "dodge")
+```
+
+### Segmented bar chart
+
+Position: `fill`
+
+14: R code:___________
+
+```{r, echo=FALSE}
+#  stack is default
+b1 + geom_bar(position = "fill")
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+df <- data.frame(x1 = as.factor(c(1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0)),
+                 x2= as.factor(c(1,1,0,0,0,1,1,1,0,0,0,0,0,0,1,1,0,0)))
+ggplot(data=df, aes(x=x1, fill=x2))+
+  geom_bar(position = "fill")
+```
+
+15: Rcode:_______________
+
+**Encoding by position**
+
+```{r, comment=NA, message==FALSE}
+ggplot(data=diamonds, aes(x=color))+geom_bar()+facet_wrap(~cut)
+
+```
+----
+
+## Categorical vs Quantitative
+
+### Cleveland dot chart
+
+
+<!--This is useful when you have large number of categories-->
+
+```{r, echo=FALSE, comment=NA, message=FALSE, warning=FALSE}
+library(gapminder)
+gap2007 <- gapminder %>%
+filter(continent == "Asia" &
+year == 2007)
+
+ggplot(gap2007,
+aes(x= lifeExp, y = country)) +
+geom_point()
+
+ggplot(gap2007,
+aes(x=lifeExp,
+y=reorder(country, lifeExp))) +
+geom_point()+ggtitle("life expectancy at birth, in 2007")
+
+ggplot(gap2007,
+aes(x=lifeExp,
+y=reorder(country, lifeExp))) +
+geom_bar(stat="identity")+ggtitle("life expectancy at birth, in 2007")
+
+```
+
+### Heat map
+
+```{r comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+gapminderAsia <- gapminder %>%
+filter(continent == "Asia")
+
+ggplot(gapminderAsia, aes(x=year, fill=lifeExp, y=country))+
+  geom_raster()+
+  scale_fill_viridis_c()
+
+ggplot(gapminderAsia, aes(x=year, fill=lifeExp, y=reorder(country, lifeExp)))+
+  geom_raster()+
+  scale_fill_viridis_c()
+```
+---
+
+### Summary statistics
+
+16. R code:___________________
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+cut.summary <- diamonds %>%
+  group_by(cut) %>%
+  summarize(mean_carat=mean(carat))
+cut.summary
+```
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+ggplot(cut.summary,
+aes(x = cut,
+y = mean_carat)) +
+geom_bar(stat = "identity")
+
+```
+
+### Plotting summary statistics: `stat_summary`
+
+17. R code:___________________
+
+`mean_se`: mean and standard error
+
+```{r, comment=NA, message=FALSE}
+g1 <- ggplot(diamonds, aes(x = cut, y = carat)) 
+
+```
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+ggplot(diamonds,
+aes(x = cut, y = carat)) +
+  geom_boxplot()
+
+```
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+g1+stat_summary(fun.data = "mean_se")
+
+```
+
+18. R code:___________________
+
+`mean_cl_normal`: 95 per cent confidence interval assuming normality. (Use `library(Hmisc)`)
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+library(Hmisc)
+g1+stat_summary(fun.data = "mean_cl_normal")
+
+```
+
+
+19. R code:___________________
+
+
+```{r, comment=NA, message=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+g1+stat_summary(fun.y = mean)
+
+```
+
+
+20. R code:___________________
+
+
+```{r, comment=NA, message=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+g1+stat_summary(fun.y = summary)
+
+```
+
+21. R code:___________________
+
+
+```{r, comment=NA, message=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+g1+stat_summary(fun.y = summary, alpha=0.5)+
+  stat_summary(fun.y = "mean", geom="point", color="red")
+
+```
+
+22. R code:___________________
+
+
+```{r, comment=NA, message=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+g1+stat_summary(fun.y = summary, alpha=0.5)+
+  stat_summary(fun.y = "mean", geom="point", color="red")+
+  stat_summary(fun.y = "median", geom="point", color="forestgreen")
+
+```
+
+23. R code:___________________
+
+`mean_cl_boot`: Bootstrap confidence interval (95%)
+
+```{r, comment=NA, message=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+g1 + stat_summary(fun.data = "mean_cl_boot") 
+
+```
+
+<!--Confidence limits may give us a better idea than standard error limits of whether two means
+would be deemed statistically different when modeling, so we frequently use-->
+
+24. R code:___________________
+
+`mean_hilow`: Median, Q1, Q3
+
+
+```{r, comment=NA, message=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+g1 + stat_summary(fun.data = "mean_cl_boot") 
+
+```
+
+## Design of Experiments
+
+Description
+
+The response is the length of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three dose levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery methods, orange juice or ascorbic acid (a form of vitamin C and coded as VC).
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, comment=NA}
+data(ToothGrowth)
+skim(ToothGrowth)
+head(ToothGrowth)
+```
+
+25. R code:___________________
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(ToothGrowth, aes(x = dose, y = len, colour = supp)) +
+stat_summary(fun.data = "mean_se")
+```
+
+26. R code:___________________
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(ToothGrowth, aes(x = dose, y = len, colour = supp)) +
+stat_summary(fun.data = "mean_se")+
+  stat_summary(fun.y = mean, geom = "line")
+```
+
+27. R code:____________________
+
+Avoid overlapping in the last category `position_dodge(0.1)`
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(ToothGrowth, aes(x = dose, y = len, colour = supp)) +
+stat_summary(fun.data = "mean_se", position= position_dodge(0.1))+
+stat_summary(fun.y = mean, geom = "line", position= position_dodge(0.1))
+```
+
+28. R code: ___________
+
+Not suitable for this example: Why?
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(ToothGrowth, aes(x = dose, y = len, colour = supp, fill = supp)) +
+stat_summary(fun.y = mean, geom = "line") +
+stat_summary(fun.data = mean_se, geom = "ribbon", alpha = .5)
+```
+
+## Categorical with two Quantitative variables
+
+29. R code: ___________
+
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(diamonds, aes(y = price,
+x = carat,
+color=color)) +
+geom_point()
+
+```
+
+<!--Price colour relasionship changes according to the colour-->
+
+30. R code: ___________
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(diamonds, aes(y = price,
+x = carat,
+color=color)) +
+geom_point(alpha=0.5)
+
+```
+
+31. R code: ___________
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(diamonds, aes(y = price,
+x = carat,
+color=color)) +
+geom_point(alpha=0.5)+
+  geom_smooth(se=FALSE)
+
+```
+
+32. R code: ___________
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(diamonds, aes(y = price,
+x = carat,
+color=color)) +
+  geom_smooth(se=FALSE)
+
+```
+
+33. R code: ___________
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(diamonds, aes(y = price,
+x = carat,
+color=color)) +
+  geom_smooth(se=TRUE)
+
+```
+
+34. R code: ___________
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(diamonds, aes(y = price,
+x = carat,
+color=color)) +
+  geom_smooth(se=FALSE)+facet_grid(~color)
+
+```

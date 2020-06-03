@@ -34,9 +34,9 @@ To be continued in Week 11.
 
 📊 Week 8: [Visualizing Distributions of Data](/slides/lecture8.html)
 
-📊 Week 9: Visualisation of high-dimensional data
+📊 Week 9: [Create different types of static graphics with ggplot2: Categorical Data](/slides/Data_visualization_9.html)
 
-📊 Week 10: Visualisation of multivariate data
+📊 Week 10: Visualisation of high-dimensional data
 
 📊 Week 11: Visualisation of time series data
 

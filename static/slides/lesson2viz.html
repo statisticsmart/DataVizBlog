@@ -8,8 +8,8 @@
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
     <link href="libs/remark-css/duke-blue.css" rel="stylesheet" />
     <link href="libs/remark-css/hygge-duke.css" rel="stylesheet" />
-    <link rel="stylesheet" href="libs\cc-fonts.css" type="text/css" />
-    <link rel="stylesheet" href="libs\figure-captions.css" type="text/css" />
+    <link rel="stylesheet" href="libs/cc-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="libs/figure-captions.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
@@ -100,27 +100,60 @@ Read [here](https://eagereyes.org/basics/encoding-vs-decoding)
 
 ## Data transformation 
 
-- plotting on a logarithmic vertical axis can remove skewness in datasets with ranges that include very large and small values (Cleveland, 1994)
+- plotting on a logarithmic vertical axis can remove skewness in datasets with ranges that include very large and small values (Cleveland, 1994).
 
-![](log.png)
-
----
-
-## Graph aspect ratio
-
-- ratio of a graph's height to width
-
-![](ratio.png)
----
-## Plot overlapping points in a way that density differences become clear in scatter plots
-
-### Method 1
+.pull-left[
 
 ![](lesson2viz_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
 
+]
+
+
+.pull-right[
+
+![](lesson2viz_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+]
+---
+# Graph aspect ratio
+
+- ratio of a graph's height to width
+
+![](lesson2viz_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+.pull-left[
+![](lesson2viz_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+![](lesson2viz_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+]
+
+
+---
+# Overlapping points
+
+Plot overlapping points in a way that density differences become clear in scatter plots
+
+### Method 1
+
+.pull-left[
+
+![](lesson2viz_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+
+]
+
+
+.pull-right[
+
+![](lesson2viz_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+
+]
+
 ---
 
-## Plot overlapping points in a way that density differences become clear in scatter plots
+# Overlapping points (cont.)
 
 ### Method 2
 
@@ -205,6 +238,32 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
 // adds .remark-code-has-line-highlighted class to <pre> parent elements
 // of code chunks containing highlighted lines with class .remark-code-line-highlighted
 (function(d) {
@@ -222,17 +281,6 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   }
   preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
 })(document);</script>
-
-<script>
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
-</script>
 
 <script>
 slideshow._releaseMath = function(el) {

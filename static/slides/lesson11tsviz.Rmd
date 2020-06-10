@@ -51,7 +51,7 @@ ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
 
 ]
 
-This is NOT a scatterplot. Why?
+This is NOT a scatter plot. Why?
 
 
 - the points are spaced equally along the x-axis.

@@ -36,11 +36,11 @@ To be continued in Week 11.
 
 📊 Week 9: [Create different types of static graphics with ggplot2: Categorical Data](/slides/Data_visualization_9.html)
 
-📊 Week 10: Visualisation of high-dimensional data
+📊 Week 10: [Higher-dimensional Displays and Special Structures](/slides/lecture10.html)
 
-📊 Week 11: Visualisation of time series data
+📊 Week 11: [Visualization of time series data](/slides/lecture11.html)
 
-📊 Week 12: Visualisation of spatial data
+📊 Week 12: Visualization of spatial data
 
 📊 Week 13: Linked data views of visual exploration
 

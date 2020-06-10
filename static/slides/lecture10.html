@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ASP 460 2.0 Special Topics in Statistics</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Thiyanga Talagala" />
+    <meta name="date" content="2020-06-10" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/duke-blue.css" rel="stylesheet" />
+    <link href="libs/remark-css/hygge-duke.css" rel="stylesheet" />
+    <link rel="stylesheet" href="libs/cc-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="libs/figure-captions.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# ASP 460 2.0 Special Topics in Statistics
+## Higher-dimensional Displays and Special Structures
+### Thiyanga Talagala
+### 2020-06-10
+
+---
+
+
+
+
+## Higher-dimensional Displays and Special Structures
+
+- Scatterplot Matrices (Sploms) 
+
+- Parallel Coordinates 
+
+- Mosaic Plots 
+
+- Small Multiples and Trellis Displays 
+
+- Time Series
+
+---
+## Scatterplot Matrices
+
+
+
+![](lecture10_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+---
+
+
+![](lecture10_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+---
+
+![](lecture10_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+---
+
+
+
+```r
+set.seed(2020)
+x &lt;- as.factor(c(rep(1, 100), rep(0, 100)))
+y &lt;- as.factor(sample(x))
+z &lt;- as.factor(c(rep(1, 25), rep(2, 75), rep(3, 50), rep(4, 50)))
+x &lt;- factor(x, label=c("A", "B"))
+y &lt;- factor(y, label=c("Yes", "No"))
+z &lt;- factor(z, label=c("High", "Middle", "Low", "Never"))
+df &lt;- data.frame(v1=x, v2=y, v3=z)
+summary(df)
+```
+
+```
+ v1        v2           v3    
+ A:100   Yes:100   High  :25  
+ B:100   No :100   Middle:75  
+                   Low   :50  
+                   Never :50  
+```
+
+---
+
+
+
+```r
+table(df$v1,df$v2)
+```
+
+```
+   
+    Yes No
+  A  54 46
+  B  46 54
+```
+
+```r
+table(df$v1, df$v3)
+```
+
+```
+   
+    High Middle Low Never
+  A    0      0  50    50
+  B   25     75   0     0
+```
+
+```r
+table(df$v2, df$v3)
+```
+
+```
+     
+      High Middle Low Never
+  Yes   12     34  28    26
+  No    13     41  22    24
+```
+
+---
+
+# Mosaic Plot (1 ~ X)
+
+.pull-left[
+
+
+```
+   
+    Yes No
+  A  54 46
+  B  46 54
+```
+
+```
+   
+    High Middle Low Never
+  A    0      0  50    50
+  B   25     75   0     0
+```
+
+```
+     
+      High Middle Low Never
+  Yes   12     34  28    26
+  No    13     41  22    24
+```
+
+]
+
+.pull-right[
+
+
+```r
+library(ggmosaic)
+ggplot(df)+
+  geom_mosaic(aes(x=product(v1)))+
+  ggtitle("V1")
+```
+
+![](lecture10_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+
+]
+---
+
+
+# Mosaic Plot (1 ~ X)
+
+.pull-left[
+
+
+```
+ v1        v2           v3    
+ A:100   Yes:100   High  :25  
+ B:100   No :100   Middle:75  
+                   Low   :50  
+                   Never :50  
+```
+
+```
+   
+    Yes No
+  A  54 46
+  B  46 54
+```
+
+```
+   
+    High Middle Low Never
+  A    0      0  50    50
+  B   25     75   0     0
+```
+
+```
+     
+      High Middle Low Never
+  Yes   12     34  28    26
+  No    13     41  22    24
+```
+
+]
+
+.pull-right[
+
+
+```r
+ggplot(df)+
+  geom_mosaic(aes(x=product(v1), 
+                  fill=v1))+
+  ggtitle("V1")
+```
+
+![](lecture10_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+
+# Mosaic Plot (1 ~ X)
+
+.pull-left[
+
+
+```
+ v1        v2           v3    
+ A:100   Yes:100   High  :25  
+ B:100   No :100   Middle:75  
+                   Low   :50  
+                   Never :50  
+```
+
+```
+   
+    Yes No
+  A  54 46
+  B  46 54
+```
+
+```
+   
+    High Middle Low Never
+  A    0      0  50    50
+  B   25     75   0     0
+```
+
+```
+     
+      High Middle Low Never
+  Yes   12     34  28    26
+  No    13     41  22    24
+```
+
+]
+
+.pull-right[
+
+
+```r
+ggplot(df)+
+  geom_mosaic(aes(x=product(v3), 
+                  fill=v3))+
+  ggtitle("V3")
+```
+
+![](lecture10_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+# Mosaic Plot (1 ~ Y + X)
+
+
+.pull-left[
+
+
+```
+ v1        v2           v3    
+ A:100   Yes:100   High  :25  
+ B:100   No :100   Middle:75  
+                   Low   :50  
+                   Never :50  
+```
+
+```
+   
+    Yes No
+  A  54 46
+  B  46 54
+```
+
+```
+   
+    High Middle Low Never
+  A    0      0  50    50
+  B   25     75   0     0
+```
+
+```
+     
+      High Middle Low Never
+  Yes   12     34  28    26
+  No    13     41  22    24
+```
+
+]
+
+.pull-right[
+
+
+```r
+ggplot(df)+
+geom_mosaic(aes(x=product(v1, v2),
+fill=v2))+ggtitle("V1 and V2*")
+```
+
+![](lecture10_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+# Mosaic Plot (1 ~ Y + X)
+
+
+.pull-left[
+
+
+```
+ v1        v2           v3    
+ A:100   Yes:100   High  :25  
+ B:100   No :100   Middle:75  
+                   Low   :50  
+                   Never :50  
+```
+
+```
+   
+    Yes No
+  A  54 46
+  B  46 54
+```
+
+```
+   
+    High Middle Low Never
+  A    0      0  50    50
+  B   25     75   0     0
+```
+
+```
+     
+      High Middle Low Never
+  Yes   12     34  28    26
+  No    13     41  22    24
+```
+
+]
+
+.pull-right[
+
+
+```r
+ggplot(df)+
+geom_mosaic(aes(x=product(v1, v2),
+fill=v1))+ggtitle("V1* and V2")
+```
+
+![](lecture10_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+
+# Mosaic Plot (1 ~ Y + X)
+
+
+.pull-left[
+
+
+```
+ v1        v2           v3    
+ A:100   Yes:100   High  :25  
+ B:100   No :100   Middle:75  
+                   Low   :50  
+                   Never :50  
+```
+
+```
+   
+    Yes No
+  A  54 46
+  B  46 54
+```
+
+```
+   
+    High Middle Low Never
+  A    0      0  50    50
+  B   25     75   0     0
+```
+
+```
+     
+      High Middle Low Never
+  Yes   12     34  28    26
+  No    13     41  22    24
+```
+
+]
+
+.pull-right[
+
+
+```r
+ggplot(df)+
+geom_mosaic(aes(x=product(v1, v3),
+fill=v1))+ggtitle("V1 and V3*")
+```
+
+![](lecture10_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+
+]
+---
+
+
+# Mosaic Plot (1 ~ Y + X)
+
+
+.pull-left[
+
+
+```
+ v1        v2           v3    
+ A:100   Yes:100   High  :25  
+ B:100   No :100   Middle:75  
+                   Low   :50  
+                   Never :50  
+```
+
+```
+   
+    Yes No
+  A  54 46
+  B  46 54
+```
+
+```
+   
+    High Middle Low Never
+  A    0      0  50    50
+  B   25     75   0     0
+```
+
+```
+     
+      High Middle Low Never
+  Yes   12     34  28    26
+  No    13     41  22    24
+```
+
+]
+
+.pull-right[
+
+
+```r
+ggplot(df)+
+geom_mosaic(aes(x=product(v3, v1),
+fill=v1))+ggtitle("V1 and V3*")
+```
+
+![](lecture10_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+
+# Mosaic Plot (1 ~ Y + X)
+
+
+.pull-left[
+
+
+```
+ v1        v2           v3    
+ A:100   Yes:100   High  :25  
+ B:100   No :100   Middle:75  
+                   Low   :50  
+                   Never :50  
+```
+
+```
+   
+    Yes No
+  A  54 46
+  B  46 54
+```
+
+```
+   
+    High Middle Low Never
+  A    0      0  50    50
+  B   25     75   0     0
+```
+
+```
+     
+      High Middle Low Never
+  Yes   12     34  28    26
+  No    13     41  22    24
+```
+
+]
+
+.pull-right[
+
+
+```r
+ggplot(df)+
+geom_mosaic(aes(x=product(v3, v1),
+fill=v3))+ggtitle("V1 and V3*")
+```
+
+![](lecture10_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+
+# Mosaic Plot (1 ~ Y + X|Z)
+
+
+.pull-left[
+
+
+```
+   
+    High Middle Low Never
+  A    0      0  28    26
+  B   12     34   0     0
+```
+
+```
+   
+    High Middle Low Never
+  A    0      0  22    24
+  B   13     41   0     0
+```
+
+]
+
+.pull-right[
+
+
+```r
+ggplot(df)+
+geom_mosaic(aes(x=product(v3, v1),
+fill=v3))+ggtitle("V1 and V3*") + 
+  facet_wrap(~v2)
+```
+
+![](lecture10_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+
+]
+
+
+
+---
+# Conditioning plots (Coplots)
+
+## Trellis Graphics
+
+- Grid graphic system
+
+- The idea is based on conditioning on the
+values taken on by one or more of the variables in a data
+set.
+
+    - Categorical: same subplot for levels of the conditioning variable
+    
+    - Numeric: same subplot for different ranges (intervals) of the conditioning variable
+
+---
+# Trellis Graphics: Categorical
+
+![](lecture10_files/figure-html/unnamed-chunk-25-1.png)&lt;!-- --&gt;
+
+---
+# Trellis Graphics: Numeric
+
+`quakes`: magitude of earthquakes under the Tonga
+Trench, to the North of New Zealand.
+
+
+```r
+str(quakes)
+```
+
+```
+'data.frame':	1000 obs. of  5 variables:
+ $ lat     : num  -20.4 -20.6 -26 -18 -20.4 ...
+ $ long    : num  182 181 184 182 182 ...
+ $ depth   : int  562 650 42 626 649 195 82 194 211 622 ...
+ $ mag     : num  4.8 4.2 5.4 4.1 4 4 4.8 4.4 4.7 4.3 ...
+ $ stations: int  41 15 43 19 11 12 43 15 35 19 ...
+```
+
+
+```r
+library(lattice)
+```
+---
+
+# Trellis Graphics: Numeric
+
+
+![](lecture10_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+
+---
+
+.pull-left[
+
+## Unconditional plot
+
+![](lecture10_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+
+## Conditional plot
+
+
+![](lecture10_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;
+
+Condition on `depth`
+]
+
+---
+
+# Coplots using ggplot
+
+.pull-left[
+
+![](lecture10_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+![](lecture10_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+]
+---
+
+
+# Coplots using ggplot
+
+.pull-left[
+
+![](lecture10_files/figure-html/unnamed-chunk-33-1.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+![](lecture10_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
+]
+---
+# Parallel Coordinates Plots
+
+
+```r
+df1 &lt;- data.frame(x=c(1, 2), y=c(20, 10), z=c(10, 10))
+df1
+```
+
+```
+  x  y  z
+1 1 20 10
+2 2 10 10
+```
+
+
+![](lecture10_files/figure-html/unnamed-chunk-36-1.png)&lt;!-- --&gt;
+
+---
+
+![](lecture10_files/figure-html/unnamed-chunk-37-1.png)&lt;!-- --&gt;
+
+---
+![](lecture10_files/figure-html/unnamed-chunk-38-1.png)&lt;!-- --&gt;
+
+
+---
+![](lecture10_files/figure-html/unnamed-chunk-39-1.png)&lt;!-- --&gt;
+---
+
+![](lecture10_files/figure-html/unnamed-chunk-40-1.png)&lt;!-- --&gt;
+
+---
+![](lecture10_files/figure-html/unnamed-chunk-41-1.png)&lt;!-- --&gt;
+
+---
+## ggparcoord: scales
+
+The different types of scales are as follows:
+
+`std`: univariately, subtract mean and divide by standard deviation
+
+`robust`: univariately, subtract median and divide by median absolute deviation
+
+`uniminmax`: univariately, scale so the minimum of the variable is zero, and the maximum is one
+
+`globalminmax`: no scaling is done; the range of the graphs is defined by the global minimum and the global maximum
+
+`center`: use uniminmax to standardize vertical height, then center each variable at a value specified by the scaleSummary param
+
+`centerObs`: use uniminmax to standardize vertical height, then center each variable at the value of the observation specified by the centerObsID param
+---
+
+![](lecture10_files/figure-html/unnamed-chunk-42-1.png)&lt;!-- --&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

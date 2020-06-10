@@ -1,0 +1,199 @@
+---
+title: "STA 479 2.0 Special Topics in Statistics"
+author: "Thiyanga Talagala"
+date: "2020 - 06 - 10"
+output:
+  xaringan::moon_reader:
+    chakra: libs/remark-latest.min.js
+    lib_dir: libs
+    css: 
+      - default
+      - default-fonts
+      - duke-blue
+      - hygge-duke
+      - libs/cc-fonts.css
+      - libs/figure-captions.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+# Individual Time Series: Points
+
+.pull-left[
+```r
+library(mozzie)
+library(ggplot2)
+data(mozzie)
+colombo.dengue <- mozzie[, 1:4]
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_point()+xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, fig.cap='Figure 1', echo=FALSE}
+library(mozzie)
+library(ggplot2)
+data(mozzie)
+colombo.dengue <- mozzie[, 1:4]
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_point()+xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+This is NOT a scatterplot. Why?
+
+
+- the points are spaced equally along the x-axis.
+
+- there is a order among points. 
+
+To emphasize time dependent relationship we can connect neighboring points with lines.
+
+---
+
+# Individual Time Series: Points and Lines
+
+.pull-left[
+```r
+library(mozzie)
+library(ggplot2)
+data(mozzie)
+colombo.dengue <- mozzie[, 1:4]
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_point()+
+*  geom_line()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, fig.cap='Figure 1', echo=FALSE}
+library(mozzie)
+library(ggplot2)
+data(mozzie)
+colombo.dengue <- mozzie[, 1:4]
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_point()+
+  geom_line()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+- Lines do not represent observed data. Lines are meant as a guide to the eye.
+
+- If few observed values a far apart or unevenly spaced, it is not suitable to connect points with lines.
+
+---
+## Individual Time Series: Lines only
+
+.pull-left[
+```r
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+*  geom_line()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, fig.cap='Figure 1', echo=FALSE}
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_line()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+- Without points more emphasis is given on the overall trend and less on individual values.
+
+- In general, when there are too many points it is better to plot without points.
+
+- Recap: Week 4 lecture How to plot time series plots easily using `autoplot` function in the `forecast` package.
+
+---
+
+# Individual time series: Fill the area under the curve
+
+.pull-left[
+```r
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+*  geom_area()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, fig.cap='Figure 1', echo=FALSE}
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_area()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+- Visually separates the area above and below the curve.
+
+- More emphasis is given to the overarching trend in the series. 
+
+- This visualization is only valid if the y axis starts at zero.
+
+---
+
+
+
+# Smoothing
+
+
+---
+# Visualising multiple time series
+
+```{r, echo=FALSE, comment=NA,message=FALSE, warning=FALSE}
+library(tidyverse)
+library(magrittr)
+mozzie <- mozzie[,1:5]
+district_count <- mozzie %>%
+ pivot_longer(-c("ID", "Year", "Week"), names_to = "District", values_to = "count")
+```
+
+.pull-left[
+
+```{r,comment=NA, echo=FALSE}
+ggplot(district_count, aes(x = ID, y = count, colour = District))+geom_point()
+
+```
+
+Difficult to read.
+
+]
+
+.pull-right[
+
+```{r,comment=NA,echo=FALSE}
+ggplot(district_count, aes(x = ID, y = count, colour = District))+geom_line()
+
+```
+
+By connecting points with lines we help the reader to follow the paths of each individual time series.
+
+]
+
+---

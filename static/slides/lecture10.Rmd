@@ -1,0 +1,582 @@
+---
+title: "ASP 460 2.0 Special Topics in Statistics"
+subtitle: "Higher-dimensional Displays and Special Structures"
+author: "Thiyanga Talagala"
+date: "2020-06-10"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: 
+      - default
+      - default-fonts
+      - duke-blue
+      - hygge-duke
+      - libs/cc-fonts.css
+      - libs/figure-captions.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+
+## Higher-dimensional Displays and Special Structures
+
+- Scatterplot Matrices (Sploms) 
+
+- Parallel Coordinates 
+
+- Mosaic Plots 
+
+- Small Multiples and Trellis Displays 
+
+- Time Series
+
+---
+## Scatterplot Matrices
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+#install.packages("ggplot2")
+#install.packages("GGally")
+library(GGally)
+library(ggplot2)
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(ggplot2)
+library(cdata)
+meas_vars <- colnames(iris)[1:4]
+controlTable <- data.frame(expand.grid(meas_vars, meas_vars,                               stringsAsFactors = FALSE))
+# rename the columns
+colnames(controlTable) <- c("x", "y")
+
+# add the key column
+controlTable <- cbind(
+  data.frame(pair_key = paste(controlTable[[1]], controlTable[[2]]),
+             stringsAsFactors = FALSE),
+  controlTable)
+iris_aug = rowrecs_to_blocks(
+  iris,
+  controlTable,
+  columnsToCopy = "Species")
+splt <- strsplit(iris_aug$pair_key, split = " ", fixed = TRUE)
+iris_aug$xv <- vapply(splt, function(si) si[[1]], character(1))
+iris_aug$yv <- vapply(splt, function(si) si[[2]], character(1))
+
+iris_aug$xv <- factor(as.character(iris_aug$xv),
+                           meas_vars)
+iris_aug$yv <- factor(as.character(iris_aug$yv),
+                           meas_vars)
+
+
+ggplot(iris_aug, aes(x=x, y=y)) +
+  geom_point(aes(color=Species, shape=Species)) + 
+  facet_grid(yv~xv, labeller = label_both, scale = "free") +
+  ggtitle("Anderson's Iris Data -- 3 species") +
+  scale_color_brewer(palette = "Dark2") +
+  ylab(NULL) + 
+  xlab(NULL)
+                                       
+```
+
+---
+
+
+```{r, comment=NA, echo=FALSE, message=FALSE, warning=FALSE}
+library(GGally)
+ggpairs(iris)
+
+```
+
+---
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggpairs(iris, aes(colour = Species, alpha = 0.4))
+```
+
+---
+
+
+```{r, comment=NA}
+set.seed(2020)
+x <- as.factor(c(rep(1, 100), rep(0, 100)))
+y <- as.factor(sample(x))
+z <- as.factor(c(rep(1, 25), rep(2, 75), rep(3, 50), rep(4, 50)))
+x <- factor(x, label=c("A", "B"))
+y <- factor(y, label=c("Yes", "No"))
+z <- factor(z, label=c("High", "Middle", "Low", "Never"))
+df <- data.frame(v1=x, v2=y, v3=z)
+summary(df)
+
+```
+
+---
+
+
+```{r, comment=NA, message=FALSE}
+table(df$v1,df$v2)
+table(df$v1, df$v3)
+table(df$v2, df$v3)
+
+```
+
+---
+
+# Mosaic Plot (1 ~ X)
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+table(df$v1,df$v2)
+table(df$v1, df$v3)
+table(df$v2, df$v3)
+
+```
+
+]
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE}
+library(ggmosaic)
+ggplot(df)+
+  geom_mosaic(aes(x=product(v1)))+
+  ggtitle("V1")
+```
+
+]
+---
+
+
+# Mosaic Plot (1 ~ X)
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+summary(df)
+table(df$v1,df$v2)
+table(df$v1, df$v3)
+table(df$v2, df$v3)
+
+```
+
+]
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE}
+ggplot(df)+
+  geom_mosaic(aes(x=product(v1), 
+                  fill=v1))+
+  ggtitle("V1")
+```
+
+]
+
+---
+
+
+# Mosaic Plot (1 ~ X)
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+summary(df)
+table(df$v1,df$v2)
+table(df$v1, df$v3)
+table(df$v2, df$v3)
+
+```
+
+]
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE}
+ggplot(df)+
+  geom_mosaic(aes(x=product(v3), 
+                  fill=v3))+
+  ggtitle("V3")
+```
+
+]
+
+---
+
+# Mosaic Plot (1 ~ Y + X)
+
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+summary(df)
+table(df$v1,df$v2)
+table(df$v1, df$v3)
+table(df$v2, df$v3)
+
+```
+
+]
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE}
+ggplot(df)+
+geom_mosaic(aes(x=product(v1, v2),
+fill=v2))+ggtitle("V1 and V2*")
+```
+
+]
+
+---
+
+# Mosaic Plot (1 ~ Y + X)
+
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+summary(df)
+table(df$v1,df$v2)
+table(df$v1, df$v3)
+table(df$v2, df$v3)
+
+```
+
+]
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE}
+ggplot(df)+
+geom_mosaic(aes(x=product(v1, v2),
+fill=v1))+ggtitle("V1* and V2")
+```
+
+]
+
+---
+
+
+# Mosaic Plot (1 ~ Y + X)
+
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+summary(df)
+table(df$v1,df$v2)
+table(df$v1, df$v3)
+table(df$v2, df$v3)
+
+```
+
+]
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE}
+ggplot(df)+
+geom_mosaic(aes(x=product(v1, v3),
+fill=v1))+ggtitle("V1 and V3*")
+```
+
+]
+---
+
+
+# Mosaic Plot (1 ~ Y + X)
+
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+summary(df)
+table(df$v1,df$v2)
+table(df$v1, df$v3)
+table(df$v2, df$v3)
+
+```
+
+]
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE}
+ggplot(df)+
+geom_mosaic(aes(x=product(v3, v1),
+fill=v1))+ggtitle("V1 and V3*")
+```
+
+]
+
+---
+
+
+# Mosaic Plot (1 ~ Y + X)
+
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+summary(df)
+table(df$v1,df$v2)
+table(df$v1, df$v3)
+table(df$v2, df$v3)
+
+```
+
+]
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE}
+ggplot(df)+
+geom_mosaic(aes(x=product(v3, v1),
+fill=v3))+ggtitle("V1 and V3*")
+```
+
+]
+
+---
+
+
+# Mosaic Plot (1 ~ Y + X|Z)
+
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+library(tidyverse)
+dfv2yes <- filter(df, v2=="Yes")
+dfv2no <- filter(df, v2=="No")
+table(dfv2yes$v1, dfv2yes$v3)
+table(dfv2no$v1, dfv2no$v3)
+```
+
+]
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE}
+ggplot(df)+
+geom_mosaic(aes(x=product(v3, v1),
+fill=v3))+ggtitle("V1 and V3*") + 
+  facet_wrap(~v2)
+```
+
+]
+
+
+
+---
+# Conditioning plots (Coplots)
+
+## Trellis Graphics
+
+- Grid graphic system
+
+- The idea is based on conditioning on the
+values taken on by one or more of the variables in a data
+set.
+
+    - Categorical: same subplot for levels of the conditioning variable
+    
+    - Numeric: same subplot for different ranges (intervals) of the conditioning variable
+
+---
+# Trellis Graphics: Categorical
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width))+
+  geom_point() + facet_wrap(~Species)+coord_fixed(ratio=2)
+
+```
+
+---
+# Trellis Graphics: Numeric
+
+`quakes`: magitude of earthquakes under the Tonga
+Trench, to the North of New Zealand.
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+str(quakes)
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+library(lattice)
+```
+---
+
+# Trellis Graphics: Numeric
+
+
+```{r, echo=FALSE}
+library(lattice)
+Depth = equal.count(quakes$depth,
+number = 6,
+overlap = .1)
+
+xyplot(lat ~ long | Depth, data = quakes,
+xlab = "Longtitude",
+ylab = "Lattitude")
+
+```
+
+---
+
+.pull-left[
+
+## Unconditional plot
+
+```{r, comment=NA, echo=FALSE, warning=FALSE, message=FALSE}
+xyplot(lat ~ long, data = quakes,
+xlab = "Longtitude",
+ylab = "Lattitude")
+```
+
+]
+
+.pull-right[
+
+## Conditional plot
+
+
+```{r, comment=NA, echo=FALSE, warning=FALSE, message=FALSE}
+Depth = equal.count(quakes$depth,
+number = 6,
+overlap = .1)
+
+xyplot(lat ~ long | Depth, data = quakes,
+xlab = "Longtitude",
+ylab = "Lattitude")
+```
+
+Condition on `depth`
+]
+
+---
+
+# Coplots using ggplot
+
+.pull-left[
+
+```{r, comment=NA, echo=FALSE, warning=FALSE, message=FALSE}
+Depth = equal.count(quakes$depth,
+number = 6,
+overlap = .1)
+
+xyplot(lat ~ long | Depth, data = quakes,
+xlab = "Longtitude",
+ylab = "Lattitude")
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(quakes, aes(x=long, y=lat)) + 
+geom_point() + facet_wrap(~ cut_number(depth, 6))
+```
+]
+---
+
+
+# Coplots using ggplot
+
+.pull-left[
+
+```{r, comment=NA, echo=FALSE, warning=FALSE, message=FALSE}
+Depth = equal.count(quakes$depth,
+number = 6,
+overlap = .1)
+
+xyplot(lat ~ long | Depth, data = quakes,
+xlab = "Longtitude",
+ylab = "Lattitude")
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+ggplot(quakes, aes(x=long, y=lat)) + 
+geom_point() + facet_wrap(~ cut_number(depth, 6)) + geom_smooth()
+```
+]
+---
+# Parallel Coordinates Plots
+
+```{r, comment=NA}
+df1 <- data.frame(x=c(1, 2), y=c(20, 10), z=c(10, 10))
+df1
+
+```
+
+
+```{r, comment=NA, fig.height=3, echo=FALSE}
+ggparcoord(df1)
+
+```
+
+---
+
+```{r, comment=NA, echo=FALSE}
+ggparcoord(data = iris)
+```
+
+---
+```{r, comment=NA, echo=FALSE}
+ggparcoord(data = iris[,1:4])
+```
+
+
+---
+```{r, comment=NA, echo=FALSE}
+ggparcoord(data = iris, columns = 1:4, groupColumn = 5)
+```
+---
+
+```{r, comment=NA, echo=FALSE}
+
+ggparcoord(data = iris, columns = 1:4, groupColumn = 5, order = "anyClass")
+```
+
+---
+```{r, comment=NA, echo=FALSE}
+
+ggparcoord(data = iris, columns = 1:4, groupColumn = 5, order = "anyClass", alphaLines = 0.5)
+```
+
+---
+## ggparcoord: scales
+
+The different types of scales are as follows:
+
+`std`: univariately, subtract mean and divide by standard deviation
+
+`robust`: univariately, subtract median and divide by median absolute deviation
+
+`uniminmax`: univariately, scale so the minimum of the variable is zero, and the maximum is one
+
+`globalminmax`: no scaling is done; the range of the graphs is defined by the global minimum and the global maximum
+
+`center`: use uniminmax to standardize vertical height, then center each variable at a value specified by the scaleSummary param
+
+`centerObs`: use uniminmax to standardize vertical height, then center each variable at the value of the observation specified by the centerObsID param
+---
+
+```{r, comment=NA, echo=FALSE, message=FALSE}
+library(gridExtra)
+g1<-ggparcoord(df1, columns=1:3, scale = "std", title = "Standard Scale")
+g2<-ggparcoord(df1, columns=1:3, scale = "robust", title = "Robust Scale")
+g3<-ggparcoord(df1, columns=1:3, scale = "uniminmax", title = "Uniminmax Scale")
+g4<-ggparcoord(df1, columns=1:3, scale = "globalminmax", title = "Globalminmax Scale")
+g5<-ggparcoord(df1, columns=1:3, scale = "center", scaleSummary = "mean", title = "Center Scale")
+g6<-ggparcoord(df1, columns=1:3, scale = "centerObs", centerObsID = 1, title = "CenterObs Scale")
+
+grid.arrange(g1, g2, g3, g4, g5, g6, nrow=2)
+```

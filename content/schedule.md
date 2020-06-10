@@ -38,7 +38,7 @@ To be continued in Week 11.
 
 📊 Week 10: [Higher-dimensional Displays and Special Structures](/slides/lecture10.html)
 
-📊 Week 11: [Visualization of time series data](/slides/lecture11.html)
+📊 Week 11: [Visualization of time series data](/slides/lecture11tsviz.html)
 
 📊 Week 12: Visualization of spatial data
 

@@ -1,5 +1,6 @@
 ---
 title: "STA 479 2.0 Special Topics in Statistics"
+subtitle: "Visualizing time series data"
 author: "Thiyanga Talagala"
 date: "2020 - 06 - 10"
 output:
@@ -227,4 +228,112 @@ gapminder_af <- gapminder %>%
   filter(continent == "Africa")
 ggplot(gapminder_af, aes(x=year, y=lifeExp))+geom_smooth()+facet_wrap(~country)+
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+---
+# Time series plots
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+library(forecast)
+library(fpp2)
+mozcol <- ts(mozzie$Colombo, frequency = 52, start = c(2008, 52))
+autoplot(mozcol) +
+  ggtitle("Dengue Count - Colombo") +
+  ylab("Count") +
+  xlab("Year")
+```
+
+---
+# Seasonal plots
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+ggseasonplot(mozcol, year.labels=TRUE, year.labels.left=TRUE) +
+  ylab("Count") +
+  ggtitle("Seasonal plot: Dengue Count - Colombo")
+```
+
+---
+# Polar seasonal plot
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+ggseasonplot(mozcol, polar=TRUE) +
+  ylab("Count") +
+  ggtitle("Polar seasonal plot: Dengue Count - Colombo")
+```
+
+---
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+autoplot(a10) +
+  ggtitle("Antidiabetic drug sales") +
+  ylab("$ million") +
+  xlab("Year")
+```
+---
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+ggseasonplot(a10, year.labels=TRUE, year.labels.left=TRUE) +
+  ylab("$ million") +
+  ggtitle("Seasonal plot: antidiabetic drug sales")
+```
+
+---
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+ggseasonplot(a10, polar=TRUE) +
+  ylab("$ million") +
+  ggtitle("Polar seasonal plot: antidiabetic drug sales")
+```
+---
+
+# Seasonal subseries plots
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+ggsubseriesplot(a10) +
+  ylab("$ million") +
+  ggtitle("Seasonal subseries plot: antidiabetic drug sales")
+```
+
+
+---
+
+```{r, comment=NA}
+a10
+```
+---
+
+# Seasonal subseries plots
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+ggsubseriesplot(mozcol) +
+  ylab("Count") +
+  ggtitle("Seasonal subseries plot: Dengue count")
+```
+
+---
+Lag plots
+
+Monthly anti-diabetic drug sales in Australia from 1991 to 2008.
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+gglagplot(a10)
+```
+
+---
+
+# Lag plots: mozzie 
+
+Dengue counts - colombo
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+gglagplot(mozcol)
+```
+
+---
+
+# Lag plots: ausbeer
+
+Monthly Australian beer production: Jan 1991 – Aug 1995.
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+beer2 <- window(ausbeer, start=1992)
+gglagplot(beer2)
 ```

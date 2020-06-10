@@ -262,6 +262,7 @@ ggseasonplot(mozcol, polar=TRUE) +
 ```
 
 ---
+# Time series plot
 
 ```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
 autoplot(a10) +
@@ -270,6 +271,8 @@ autoplot(a10) +
   xlab("Year")
 ```
 ---
+# Seasonal plot
+
 ```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
 ggseasonplot(a10, year.labels=TRUE, year.labels.left=TRUE) +
   ylab("$ million") +
@@ -277,6 +280,9 @@ ggseasonplot(a10, year.labels=TRUE, year.labels.left=TRUE) +
 ```
 
 ---
+
+# Polar seasonal plot
+
 ```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
 ggseasonplot(a10, polar=TRUE) +
   ylab("$ million") +
@@ -309,7 +315,7 @@ ggsubseriesplot(mozcol) +
 ```
 
 ---
-Lag plots
+# Lag plots: a10
 
 Monthly anti-diabetic drug sales in Australia from 1991 to 2008.
 

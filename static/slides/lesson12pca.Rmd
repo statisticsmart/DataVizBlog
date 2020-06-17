@@ -105,19 +105,36 @@ background-size: contain
 # PCA
 
 ```{r,fig.height=5, comment=NA, message=FALSE, comment=NA, warning=FALSE, echo=FALSE}
-pca <- peng.pca <- prcomp (~ culmen_length + culmen_depth + flipper_length + body_mass, data=penguins, na.action=na.omit, scale. = TRUE)
+pca <-  prcomp (~ culmen_length + culmen_depth + flipper_length + body_mass, data=penguins, na.action=na.omit, scale. = TRUE)
 pca
 
-screeplot(peng.pca, type = "line", lwd=3, cex=3, 
+screeplot(pca, type = "line", lwd=3, cex=3, 
         main="Variances of PCA Components")
 ```
 
 ---
+# Standard deviations associated with PCs
+
+```{r, comment=NA, message=FALSE}
+summary(pca)
+```
+
 # PCA rotation matrix
+
 
 ```{r, comment=NA, message=FALSE}
 pca$rotation
+```
 
+---
+# Predict PCs
+
+```{r, comment=NA, message=FALSE}
+predict(pca, newdata=tail(penguins))
+```
+
+```{r, comment=NA, message=FALSE}
+tail(pca$x)
 ```
 ---
 
@@ -127,7 +144,7 @@ pca$rotation
 head(pca$x)
 ```
 
-# original data
+# Original data
 
 ```{r, comment=NA, message=FALSE, comment=NA, warning=FALSE, echo=FALSE}
 head(penguins)
@@ -170,8 +187,40 @@ library(ggfortify)
 autoplot(pca, loadings = TRUE, loadings.label = TRUE,
          data = penguins_pca, colour = 'species')
 ```
+---
+## Biplot - plot each variables coefficients  inside a unit circle
+
+.pull-left[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+# devtools::install_github("sinhrks/ggfortify")
+library(ggfortify)
+autoplot(pca, loadings = TRUE, loadings.label = TRUE,
+         data = penguins_pca, colour = 'species')+
+  theme(legend.direction = 'horizontal', legend.position = 'top') 
+
+```
+
+]
 
 
+.pull-right[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+# devtools::install_github("vqv/ggbiplot")
+library(ggbiplot)
+ggbiplot(pca, obs.scale = 1, var.scale = 1,
+         groups = penguins$species, 
+         ellipse = TRUE, circle = TRUE) +
+  scale_color_discrete(name = 'Penguin Species') +
+  theme(legend.direction = 'horizontal', legend.position = 'top') 
+```
+]
+
+PCA rotation
+
+```{r, comment=NA, echo=FALSE, message=FALSE}
+pca$rotation
+```
 ---
 
 # Plotting PCA - PC1

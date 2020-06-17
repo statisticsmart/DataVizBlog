@@ -40,10 +40,10 @@ To be continued in Week 11.
 
 📊 Week 11: [Visualization of time series data](/slides/lesson11tsviz.html)
 
-📊 Week 12: Visualization of spatial data
+📊 Week 12: [Principal component analysis](/slides/lesson12pca.html)
 
-📊 Week 13: Linked data views of visual exploration
+📊 Week 13: Visualization of spatial data
 
-📊 Week 14: Dashboard, interactive and animated displays
+📊 Week 14:  Linked data views of visual exploration/ Dashboard, interactive and animated displays
 
 📊 Week 15: Recap

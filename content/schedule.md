@@ -28,15 +28,15 @@ To be continued in Week 11.
 
 ```
 
-📊 Week 6: [Data Wrangling](/datawrangling_tutorial.pdf)
+📊 Week 6: [Data wrangling](/datawrangling_tutorial.pdf)
 
-📊 Week 7: [Coordinate Systems and Axes](/slides/lecture7.html)
+📊 Week 7: [Coordinate systems and axes](/slides/lecture7.html)
 
-📊 Week 8: [Visualizing Distributions of Data](/slides/lecture8.html)
+📊 Week 8: [Visualizing distributions of data](/slides/lecture8.html)
 
-📊 Week 9: [Create different types of static graphics with ggplot2: Categorical Data](/slides/Data_visualization_9.html)
+📊 Week 9: [Create different types of static graphics with ggplot2: categorical Data](/slides/Data_visualization_9.html)
 
-📊 Week 10: [Higher-dimensional Displays and Special Structures](/slides/lecture10.html)
+📊 Week 10: [Higher-dimensional displays and special structures](/slides/lecture10.html)
 
 📊 Week 11: [Visualization of time series data](/slides/lesson11tsviz.html)
 

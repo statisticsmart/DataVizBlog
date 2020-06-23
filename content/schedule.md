@@ -3,7 +3,7 @@ date: "2016-05-05T21:48:51-07:00"
 title: ASP 460 2.0 Special topics in Statistics 
 ---
 
-Course outline: [here](/2020ASP46020.pdf)
+Course outline: [here](/CO/2020ASP46020.pdf)
 
 Here's your roadmap for the semester! Class materials will be added on the day of the class.
 

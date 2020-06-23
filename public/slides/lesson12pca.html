@@ -154,7 +154,23 @@ body_mass       0.5496747 -0.07646366  0.5917374  0.5846861
 ![](lesson12pca_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
 
 ---
+# Standard deviations associated with PCs
+
+
+```r
+summary(pca)
+```
+
+```
+Importance of components:
+                          PC1    PC2     PC3     PC4
+Standard deviation     1.6569 0.8821 0.60716 0.32846
+Proportion of Variance 0.6863 0.1945 0.09216 0.02697
+Cumulative Proportion  0.6863 0.8809 0.97303 1.00000
+```
+
 # PCA rotation matrix
+
 
 
 ```r
@@ -167,6 +183,39 @@ culmen_length   0.4537532 -0.60019490 -0.6424951  0.1451695
 culmen_depth   -0.3990472 -0.79616951  0.4258004 -0.1599044
 flipper_length  0.5768250 -0.00578817  0.2360952 -0.7819837
 body_mass       0.5496747 -0.07646366  0.5917374  0.5846861
+```
+
+---
+# Predict PCs
+
+
+```r
+predict(pca, newdata=tail(penguins))
+```
+
+```
+            PC1         PC2        PC3         PC4
+[1,] -0.4507833 -0.06535056 -0.7461058 -0.01287014
+[2,]  0.5526429 -2.34408404 -0.8679388 -0.38749681
+[3,] -0.7388017 -0.24778208 -0.3155918 -0.73267497
+[4,] -0.3673370 -0.98959040 -0.8866618  0.19556826
+[5,]  0.4916198 -1.48261810 -0.3294640 -0.55003132
+[6,] -0.2130962 -1.25965815 -0.7648157 -0.10807071
+```
+
+
+```r
+tail(pca$x)
+```
+
+```
+           PC1         PC2        PC3         PC4
+328 -0.4507833 -0.06535056 -0.7461058 -0.01287014
+329  0.5526429 -2.34408404 -0.8679388 -0.38749681
+330 -0.7388017 -0.24778208 -0.3155918 -0.73267497
+331 -0.3673370 -0.98959040 -0.8866618  0.19556826
+332  0.4916198 -1.48261810 -0.3294640 -0.55003132
+333 -0.2130962 -1.25965815 -0.7648157 -0.10807071
 ```
 ---
 
@@ -183,7 +232,7 @@ body_mass       0.5496747 -0.07646366  0.5917374  0.5846861
 6 -1.770356  0.36567266 -0.02841769  0.5046092
 ```
 
-# original data
+# Original data
 
 
 ```
@@ -226,7 +275,7 @@ head(penguins_pca )
 
 # PC1 vs PC2
 
-![](lesson12pca_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+![](lesson12pca_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
 
 
 ---
@@ -251,45 +300,34 @@ body_mass       0.5496747 -0.07646366  0.5917374  0.5846861
 ```
 
 
-![](lesson12pca_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
-
-
----
-
-# Plotting PCA - PC1
-
-.pull-left[
-![](lesson12pca_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;![](lesson12pca_files/figure-html/unnamed-chunk-12-2.png)&lt;!-- --&gt;
-
-]
-
-.pull-right[
-![](lesson12pca_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
-
 ![](lesson12pca_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+---
+## Biplot - plot each variables coefficients  inside a unit circle
+
+.pull-left[
+![](lesson12pca_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
 
 ]
 
+
+.pull-right[
+
+![](lesson12pca_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+]
+
+PCA rotation
+
+
+```
+                      PC1         PC2        PC3        PC4
+culmen_length   0.4537532 -0.60019490 -0.6424951  0.1451695
+culmen_depth   -0.3990472 -0.79616951  0.4258004 -0.1599044
+flipper_length  0.5768250 -0.00578817  0.2360952 -0.7819837
+body_mass       0.5496747 -0.07646366  0.5917374  0.5846861
+```
 ---
 
 # Plotting PCA - PC1
-
-.pull-left[
-![](lesson12pca_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;![](lesson12pca_files/figure-html/unnamed-chunk-15-2.png)&lt;!-- --&gt;
-
-]
-
-.pull-right[
-![](lesson12pca_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
-
-![](lesson12pca_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
-
-]
-
----
-
-
-# Plotting PCA - PC2
 
 .pull-left[
 ![](lesson12pca_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;![](lesson12pca_files/figure-html/unnamed-chunk-18-2.png)&lt;!-- --&gt;
@@ -305,8 +343,7 @@ body_mass       0.5496747 -0.07646366  0.5917374  0.5846861
 
 ---
 
-
-# Plotting PCA - PC2
+# Plotting PCA - PC1
 
 .pull-left[
 ![](lesson12pca_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;![](lesson12pca_files/figure-html/unnamed-chunk-21-2.png)&lt;!-- --&gt;
@@ -322,9 +359,43 @@ body_mass       0.5496747 -0.07646366  0.5917374  0.5846861
 
 ---
 
+
+# Plotting PCA - PC2
+
+.pull-left[
+![](lesson12pca_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;![](lesson12pca_files/figure-html/unnamed-chunk-24-2.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+![](lesson12pca_files/figure-html/unnamed-chunk-25-1.png)&lt;!-- --&gt;
+
+![](lesson12pca_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+
+# Plotting PCA - PC2
+
+.pull-left[
+![](lesson12pca_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;![](lesson12pca_files/figure-html/unnamed-chunk-27-2.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+![](lesson12pca_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+
+![](lesson12pca_files/figure-html/unnamed-chunk-29-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
 # Visualising instance space
 
-![](lesson12pca_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;![](lesson12pca_files/figure-html/unnamed-chunk-24-2.png)&lt;!-- --&gt;
+![](lesson12pca_files/figure-html/unnamed-chunk-30-1.png)&lt;!-- --&gt;![](lesson12pca_files/figure-html/unnamed-chunk-30-2.png)&lt;!-- --&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="libs/remark-latest.min.js"></script>

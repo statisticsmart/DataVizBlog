@@ -6,7 +6,6 @@ output: html_document
 ```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
 library(tidyverse)
 library(magrittr)
-library(patchwork)
 library(plotly)
 library(shiny)
 data(penguins, package="palmerpenguins")
@@ -27,4 +26,5 @@ fluidPage(
   fluidRow(
     column(6, p2), column(6, p3))
 )
+
 ```

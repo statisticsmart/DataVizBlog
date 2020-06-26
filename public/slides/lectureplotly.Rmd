@@ -116,7 +116,7 @@ plot_ly(penguins, x = ~flipper_length, y = ~body_mass, col=~species)
 
 # Introduction to `plot_ly()`
 
-- plotly find a suitable geometric representation for us.
+- plotly finds a suitable geometric representation for us.
 
 - Users can also define geometries.
 

@@ -1,0 +1,30 @@
+---
+output: html_document
+---
+
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+library(tidyverse)
+library(magrittr)
+library(patchwork)
+library(plotly)
+library(shiny)
+data(penguins, package="palmerpenguins")
+penguins <- penguins %>%
+    rename(
+         culmen_length = bill_length_mm, 
+         culmen_depth = bill_depth_mm, 
+         flipper_length = flipper_length_mm, 
+         body_mass = body_mass_g
+         ) %>% filter(!(is.na(culmen_length))) %>% filter(!(is.na(sex)))
+p <- penguins %>%
+  plot_ly(y = ~body_mass, color = I("black"), alpha = 0.1) 
+p1 <- p %>% add_boxplot(y = ~body_mass, x = ~interaction(sex, species), color=~species)
+p2 <- plot_ly(penguins, x = ~flipper_length, y = ~body_mass, color=~species)
+p3 <- plot_ly(penguins, x = ~culmen_length, y = ~culmen_depth, color=~species)
+fluidPage(
+  fluidRow(p1),
+  fluidRow(
+    column(6, p2), column(6, p3))
+)
+```

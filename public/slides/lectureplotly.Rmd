@@ -295,7 +295,11 @@ plot_ly(penguins, x = ~body_mass, y = ~interaction(species, sex)) %>%
 
 # Combining multiple views
 
+- Static or dynamic
+
 - Scatterplot matrices
+
+- Higer dimensional displayes 
 
 - Arrange multiple plots in a single plane
 ---
@@ -335,3 +339,5 @@ plot_ly(
 # Flexdashboard
 
 [Click here](https://thiyanga.netlify.app/post/covid19/)
+
+[Clickhere](/slides/dashboard_penguins.html)

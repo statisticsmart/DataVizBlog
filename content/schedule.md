@@ -45,6 +45,10 @@ To be continued in Week 11.
 
 📊 Week 13:  [Linked data views of visual exploration/ Dashboard, interactive and animated displays](/slides/lectureplotly.html)
 
+[Example dashboard](https://thiyanga.netlify.app/post/covid19/)
+
+[Example dashboard](/slides/dashboard_penguins.html)
+
 📊 Week 14: Visualization of spatial data
 
 

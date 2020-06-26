@@ -42,8 +42,10 @@ To be continued in Week 11.
 
 📊 Week 12: [Principal component analysis](/slides/lesson12pca.html)
 
-📊 Week 13: Visualization of spatial data
 
-📊 Week 14:  Linked data views of visual exploration/ Dashboard, interactive and animated displays
+📊 Week 13:  [Linked data views of visual exploration/ Dashboard, interactive and animated displays](/slides/lectureplotly.html)
+
+📊 Week 14: Visualization of spatial data
+
 
 📊 Week 15: Recap

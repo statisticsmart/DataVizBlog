@@ -1,0 +1,248 @@
+---
+title: "ASP 460 2.0 Special Topics in Statistics"
+subtitle: "Interactive graphics"
+author: "Thiyanga Talagala"
+date: "2020-06-26"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: 
+      - default
+      - default-fonts
+      - duke-blue
+      - hygge-duke
+      - libs/cc-fonts.css
+      - libs/figure-captions.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+# Data 
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+library(tidyverse)
+library(magrittr)
+library(patchwork)
+data(penguins, package="palmerpenguins")
+penguins <- penguins %>%
+    rename(
+         culmen_length = bill_length_mm, 
+         culmen_depth = bill_depth_mm, 
+         flipper_length = flipper_length_mm, 
+         body_mass = body_mass_g
+         ) %>% filter(!(is.na(culmen_length))) %>% filter(!(is.na(sex)))
+head(penguins)
+summary(penguins)
+```
+
+---
+
+# Static graphic
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.width=8}
+library(tidyverse)
+g <- ggplot(penguins, aes(x=flipper_length, y=body_mass, col=species))+
+          geom_point() + theme_bw(base_size=16) 
+g
+```
+
+---
+# Interactive graphics
+
+- allows the use to interact with the graphical information presented on the display.
+
+- Crossfiltering
+
+    - Zoom by selecting an area of interest
+
+    - Hover the line to get exact information.
+
+---
+# Interactive plot
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.width=8}
+library(plotly)
+ggplotly(g)
+```
+
+---
+# Interactive plot (cont.)
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.width=8}
+p <- ggplot(penguins, aes(x=body_mass, color=sex)) + 
+  geom_freqpoly(stat = "density") + 
+  facet_wrap(~species)
+ggplotly(p)
+```
+
+
+---
+# Text and Annotations
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.width=8}
+p <- ggplot(penguins, aes(x=body_mass, y=flipper_length, color=sex)) + 
+  geom_point(size=3) + 
+  labs(x="Body mass",y="Flipper length", color="Gender")
+ggplotly(p)
+```
+---
+class: duke-orange, center, middle
+
+# plotly
+
+ powered by the JavaScript library plotly.js
+---
+
+# Introduction to `plot_ly()`:
+
+- Mapping variables: Instead of `aes` use `~`
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.height=5}
+plot_ly(penguins, x = ~species)
+```
+
+---
+
+# Introduction to `plot_ly()`
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+plot_ly(penguins, x = ~flipper_length, y = ~body_mass)
+```
+
+
+---
+# Introduction to `plot_ly()`
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+plot_ly(penguins, x = ~flipper_length, y = ~body_mass, col=~species)
+```
+
+---
+
+# Introduction to `plot_ly()`
+
+- plotly find a suitable geometric representation for us.
+
+- Users can also define geometries.
+
+- Functions to encode data
+
+    - color: map each level to a different colour
+    - colors: specify a range of colours
+    - stroke
+    - span
+    - symbol
+    - linetype
+---
+# `color` argument
+
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+plot_ly(penguins, x = ~flipper_length, y = ~body_mass, color=~species)
+```
+
+---
+
+# `colors` argument
+
+.pull-left[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.height=5}
+plot_ly(penguins, x = ~flipper_length, y = ~body_mass,
+        color=~culmen_length)
+```
+
+Default
+]
+
+.pull-right[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.height=5}
+plot_ly(penguins, x = ~flipper_length, y = ~body_mass,
+        color=~culmen_length, colors="Accent")
+```
+
+colors="Accent"
+]
+---
+
+# Define a colour: I()
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+plot_ly(penguins, x=~species, color=I("red"))
+
+```
+
+---
+
+# layout()
+
+> functional approach to a layered grammar of graphics
+
+> input: plotly object
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.height=5}
+layout(
+plot_ly(penguins, x=~species), 
+title="Composition of species"
+)
+
+```
+
+---
+# Works with %>% operator
+
+```r
+penguins %>% plot_ly(x = ~species) %>%
+layout(title="Composition of species")
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+penguins %>% plot_ly(x = ~species) %>% layout(title="Composition of species")
+```
+
+---
+
+# Modify graphs: add_*
+
+> add_histogram
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+penguins %>% plot_ly() %>% add_histogram(x=~body_mass)
+
+```
+
+---
+
+# Modify graphs
+
+> add_bars (requires pre calculated counts)
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+penguins %>% dplyr::count(species) %>%
+  plot_ly() %>% add_bars(x=~species, y=~n)
+
+```
+
+---
+# Modify graphs (cont.)
+
+```{r, comment=NA, echo=FALSE, comment=NA, message=FALSE, warning=FALSE, fig.height=5}
+library(dplyr)
+
+penguins %>%
+  plot_ly(x = ~species) %>% 
+  add_histogram() %>%
+  group_by(species) %>%
+  summarise(n = n()) %>%
+  add_text(
+    text = ~scales::comma(n), y = ~n, 
+    textposition = "top middle", 
+    cliponaxis = FALSE
+  )
+```
+
+

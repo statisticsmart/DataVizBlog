@@ -56,7 +56,7 @@ g
 
 - allows the use to interact with the graphical information presented on the display.
 
-- Crossfiltering
+- Cross filtering
 
     - Zoom by selecting an area of interest
 

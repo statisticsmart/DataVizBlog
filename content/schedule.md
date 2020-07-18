@@ -56,6 +56,7 @@ To be continued in Week 11.
 #### Individual Project Assignment - 2020
 
 
+
 [Flexdash board to visualize gapminder dataset by Thashikala Mendis ](/slides/individual_project/Gap.html)
 
 [EDA gapminder dataset  by Thashikala Mendis](/slides/individual_project/Gapminder.html)

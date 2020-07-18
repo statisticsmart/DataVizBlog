@@ -364,7 +364,7 @@ statebins(us_arrests, value_col="Assault",
 
 **Ranking of U.S. states in six quality-of-life categories, where a state with a rank of 1 is doing the best in the category and a rank of 51 is the worst.**
 
-```{r, comment=NA, message=FALSE, fig.height=10}
+```{r, comment=NA, message=FALSE, fig.height=10, fig.width=10}
 library(geofacet)
 library(ggplot2)
 

@@ -190,9 +190,13 @@ In Asia there is a huge increase in population. It is almost 4 times than other 
 
 ### Conclusions
 
-* The majority of countries have high life expectancy /
-* Europe has the highest number of countries with high life expectancy and less  number of countries with low life expectancy /
-* There is a bimodal distribution in Europe and Oceania for population. /
-* There is a moderate linear relationship between Life expectancy and gdp per capital. /
-* Life Expectancy, gdp per capital, population increase in every years. / 
+* The majority of countries have high life expectancy.
+
+* Europe has the highest number of countries with high life expectancy and less  number of countries with low life expectancy.
+
+* There is a bimodal distribution in Europe and Oceania for population. 
+* There is a moderate linear relationship between Life expectancy and gdp per capital. 
+
+* Life Expectancy, gdp per capital, population increase in every years.
+
 * There is a huge increase in the population in Asia

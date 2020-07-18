@@ -1,0 +1,431 @@
+---
+title: "Spatio-Temporal Data Visualisation"
+output: html_document
+author: Dr Thiyanga S. Talagala
+Date: "2020 July 18 (Instead 2020 July 14)"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Packages
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+# devtools::install_github("UrbanInstitute/urbnmapr")
+library(tidyverse)
+library(magrittr)
+library(urbnmapr)
+library(usmap) # to obtain population data
+library(ggthemes)
+library(scales)
+library(geofacet)
+```
+
+## Data
+
+```{r, comment=NA}
+head(states)
+head(statepop)
+```
+
+Combine data
+
+```{r, comment=NA}
+statepop1 <- statepop %>% rename(state_name = full)
+head(statepop1)
+statepop2 <- full_join(statepop1, states, by = "state_name")
+head(statepop2)
+```
+
+
+## Choropleth Map
+
+Divides geographical areas or regions that are coloured, sheaded or patterned in relation to a variable.
+
+Cons: 
+
+- Difficult to read actual values
+
+- Larger regions appear more emphasisted than smaller ones. This can be avoided by using bubble maps.
+
+
+**1. Shape files**
+
+```{r, comment=NA, message=FALSE}
+ggplot() + 
+  geom_polygon(data = statepop2, mapping = aes(x = long, y = lat, group = group),fill = "grey", color = "white") +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45)
+```
+
+
+```{r, comment=NA, message=FALSE}
+ggplot() +
+  geom_polygon(data = statepop2, aes( x = long, y = lat, group = group, fill = pop_2015), color="white") +
+  theme_void() +
+  coord_map()
+
+```
+
+
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+
+statepop2 %>%
+  ggplot(aes(long, lat, group = group, fill = pop_2015)) +
+  geom_polygon(color = NA) +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  labs(fill = "Population - 2015")
+
+
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+
+statepop2 %>%
+  ggplot(aes(long, lat, group = group, fill = pop_2015)) +
+  geom_polygon(color = NA) +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  labs(fill = "Population - 2015") + scale_fill_viridis_b()
+
+
+```
+
+`projection = "bonne"`
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+
+statepop2 %>%
+  ggplot(aes(long, lat, group = group, fill = pop_2015)) +
+  geom_polygon(color = NA) +
+  coord_map(projection = "bonne", parameters  = 45) +
+  labs(fill = "Population - 2015") + scale_fill_viridis_b() +
+  ggthemes::theme_map()
+
+
+```
+
+This map implies that most state populations are small. Showing population ranks, or percentile values, can help see the variation a bit clearer.
+
+```{r, comment=NA}
+statepop2 <- mutate(statepop2, rank_pop_2015 = rank(pop_2015))
+statepop2 %>%
+  ggplot(aes(long, lat, group = group, fill = rank_pop_2015)) +
+  geom_polygon(color = NA) +
+  coord_map(projection = "bonne", parameters  = 45) +
+  labs(fill = "Population - 2015") + scale_fill_viridis_b() +
+  ggthemes::theme_map()
+
+```
+
+
+```{r, comment=NA}
+statepop2 <- mutate(statepop2 ,
+              pcls = cut(pop_2015, quantile(pop_2015, seq(0, 1, len = 6)),
+                         include.lowest = TRUE))
+statepop2 %>%
+  ggplot(aes(long, lat, group = group, fill = pcls)) +
+  geom_polygon(color = NA) +
+  coord_map(projection = "bonne", parameters  = 45) +
+  labs(fill = "Population - 2015") + scale_fill_brewer(palette = "Spectral") +
+  ggthemes::theme_map()
+
+```
+
+In the above graphs colour ordering is difficult to map with numbers.
+
+```{r, comment=NA, message=FALSE}
+statepop2 %>%
+  ggplot(aes(long, lat, group = group, fill = pcls)) +
+  geom_polygon(color = NA) +
+  coord_map(projection = "bonne", parameters  = 45) +
+  labs(fill = "Population - 2015") + scale_fill_brewer(palette = "Reds") +
+  ggthemes::theme_map()
+
+```
+
+
+## Choropleth Maps of Median Household Income by Subregions
+
+```{r, comment=NA}
+head(countydata)
+head(counties)
+household_data <- left_join(countydata, counties, by = "county_fips") 
+
+household_data %>%
+  ggplot(aes(long, lat, group = group, fill = medhhincome)) +
+  geom_polygon(color = NA) +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  labs(fill = "Median Household Income") + scale_fill_viridis_b()
+
+```
+
+
+## Choropleth Maps of Household ownership by Subregions
+
+```{r, comment=NA, message=FALSE}
+household_data %>%
+  ggplot(aes(long, lat, group = group, fill = horate)) +
+  geom_polygon(color = NA) +
+ scale_fill_viridis_c()
+
+```
+
+Now we add a layer to the previous graph.
+
+```{r, comment=NA, message=FALSE}
+
+household_data %>%
+  ggplot(aes(long, lat, group = group, fill = horate)) +
+  geom_polygon(color = NA) +
+  geom_polygon(data = states, mapping = aes(long, lat, group = group),
+               fill = NA, color = "#ffffff") +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  theme(legend.title = element_text(),
+        legend.key.width = unit(.5, "in")) +
+  labs(fill = "Homeownership rate") + scale_fill_viridis_c()
+
+```
+
+Using a simple diverging palette
+
+```{r, comment=NA, message=FALSE}
+household_data %>%
+  ggplot(aes(long, lat, group = group, fill = horate)) +
+  geom_polygon(color = NA) +
+  geom_polygon(data = states, mapping = aes(long, lat, group = group),
+               fill = NA, color = "#ffffff") +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  theme(legend.title = element_text(),
+        legend.key.width = unit(.5, "in")) +
+  labs(fill = "Homeownership rate") + scale_fill_gradient2()
+
+```
+
+
+## Bubble maps
+
+Cons: Overlapping bubble. 
+
+```{r, comment=NA, message=FALSE}
+state_centroids <- summarize(group_by(counties, state_fips), x = mean(range(long)), y = mean(range(lat)))
+head(state_centroids)
+state_centroids <- state_centroids %>% rename(fips=state_fips)
+state_pops <- select(statepop2, pop = pop_2015, fips)
+state_pops <- inner_join(state_pops, state_centroids, "fips")
+```
+
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+household_data %>%
+  ggplot() +
+    geom_polygon(aes(long, lat, group = group), fill = NA, col = "grey") +
+    geom_point(aes(x, y, size = pop), data = state_pops) + scale_size_area() +
+    coord_map("bonne", parameters=45) + ggthemes::theme_map() + ggtitle("State population")
+
+```
+
+
+```{r, comment=NA, message=FALSE}
+county_centroids <- summarize(group_by(household_data, county_fips), x = mean(range(long)), y = mean(range(lat)))
+head(county_centroids)
+
+county_income <- select(household_data, income = medhhincome, county_fips)
+county_income <- inner_join(county_income, county_centroids, "county_fips")
+head(county_income)
+```
+
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+household_data %>%
+  ggplot() +
+    geom_polygon(aes(long, lat, group = group), fill = NA, col = "grey") +
+    geom_point(aes(x, y, colour = income), data = county_income, alpha=0.5, size=0.2) + scale_size_area() +
+    coord_map("bonne", parameters=45) + ggthemes::theme_map() 
+```
+
+## Connecting map, Link map, Ray map
+
+Useful for visualizing map routes.
+
+## Contemporary alternatives to Choropleth maps
+
+### Cartograms
+
+A cartogram is a map in which the geometry of regions is distorted in order to convey the information of an alternate variable. 
+
+> "Instead of using color to encode the values of the data, cartograms use size. Cartograms elarge or shrink a geographic entity based on the size of the related values of the variable being visualized" (Ryan Hafen).
+
+Since the shapes are arbitrary, it is hard for the human to make comparisons of size based on the shapes.
+
+<!--https://ryanhafen.com/blog/geofacet/-->
+
+#### Contiguous cartogram
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+library(cartogram)
+library(tmap)
+library(maptools)
+library(rgdal)
+#> Loading required package: sp
+#> Checking rgeos availability: TRUE
+
+data(wrld_simpl)
+
+# keep only the african continent
+afr <- wrld_simpl[wrld_simpl$REGION == 2, ]
+
+# project the map
+afr <- spTransform(afr, CRS("+init=epsg:3395"))
+
+# construct cartogram
+afr_cont <- cartogram_cont(afr, "POP2005", itermax = 5)
+#> Warning in CPL_crs_from_proj4string(x): GDAL Message 1: +init=epsg:XXXX syntax
+#> is deprecated. It might return a CRS with a non-EPSG compliant axis order.
+#> Mean size error for iteration 1: 5.79457153280442
+#> Mean size error for iteration 2: 4.94825547349441
+#> Mean size error for iteration 3: 4.32626995057149
+#> Mean size error for iteration 4: 3.84940324694301
+#> Mean size error for iteration 5: 3.45917774259599
+
+# plot it
+tm_shape(afr_cont) + tm_polygons("POP2005", style = "jenks") +
+  tm_layout(frame = FALSE, legend.position = c("left", "bottom"))
+```
+
+#### Non-contiguous, shape-preserved cartogram
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+# construct cartogram
+afr_ncont <- cartogram_ncont(afr, "POP2005")
+
+# plot it
+tm_shape(afr) + tm_borders() +
+  tm_shape(afr_ncont) + tm_polygons("POP2005", style = "jenks") +
+  tm_layout(frame = FALSE, legend.position = c("left", "bottom"))
+
+```
+
+
+
+#### Dorling cartogram (non-contiguous)
+
+Non-overlapping Circles Cartogram
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+
+# construct cartogram
+afr_dorling <- cartogram_dorling(afr, "POP2005")
+
+# plot it
+tm_shape(afr) + tm_borders() +
+  tm_shape(afr_dorling) + tm_polygons("POP2005", style = "jenks") +
+  tm_layout(frame = FALSE, legend.position = c("left", "bottom"))
+```
+
+#### Tile map (non-contiguous)
+
+
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+library(statebins)
+library(viridis)
+
+data(USArrests)
+
+# make up some data for the example
+
+rownames_to_column(USArrests, "state") %>%
+  bind_rows(
+    data_frame(
+      state = c("Virgin Islands", "Puerto Rico", "New York City"),
+      Murder = rep(mean(max(USArrests$Murder),3)),
+      Assault = rep(mean(max(USArrests$Assault),3)),
+      Rape = rep(mean(max(USArrests$Rape),3)),
+      UrbanPop = c(93, 95, 100)
+    )
+  ) -> us_arrests
+
+statebins(us_arrests, value_col="Assault",
+          ggplot2_scale_function = viridis::scale_fill_viridis) +
+  labs(title="USArrests + made up data") +
+  theme_statebins("right")
+
+```
+
+
+
+
+
+
+
+## Geofacet
+
+**Ranking of U.S. states in six quality-of-life categories, where a state with a rank of 1 is doing the best in the category and a rank of 51 is the worst.**
+
+```{r, comment=NA, message=FALSE, fig.height=10}
+library(geofacet)
+library(ggplot2)
+
+ggplot(state_ranks, aes(variable, rank, fill = variable)) +
+  geom_col() +
+  coord_flip() +
+  theme_bw() +
+  facet_geo(~ state, grid = "us_state_grid2")
+
+```
+
+## Small-multiple maps
+
+Spatioal data over time
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+library(plotly)
+library(dplyr)
+df <- read.csv('https://raw.githubusercontent.com/plotly/datasets/master/1962_2006_walmart_store_openings.csv')
+
+# common map properties
+g <- list(
+  scope = 'usa',
+  showland = T,
+  landcolor = toRGB("gray90"),
+  showcountries = F,
+  subunitcolor = toRGB("white")
+)
+
+one_map <- function(dat) {
+  plot_geo(dat) %>%
+    add_markers(x = ~LON, y = ~LAT, color = I("blue"), alpha = 0.5) %>%
+    add_text(x = -78, y = 47, text = ~unique(YEAR), color = I("black")) %>%
+    layout(geo = g)}
+
+df <- df %>% group_by(YEAR)
+df <- df %>% do(mafig = one_map(.))
+fig <- df %>% subplot(nrows = 9)
+fig <- fig %>% layout(
+  showlegend = FALSE,
+  title = 'New Walmart Stores per year 1962-2006<br> Source: <a href="http://www.econ.umn.edu/~holmes/data/WalMart/index.html">University of Minnesota</a>',
+  width = 1000,
+  height = 900,
+  hovermode = FALSE
+)
+
+fig
+
+```
+
+
+
+
+## Reading 
+
+[Here](https://ryanhafen.com/blog/geofacet/)
+
+[Here](https://bytefish.de/blog/choropleth_maps_in_r/)
+
+## Acknowledgement
+
+https://github.com/sjewo/cartogram
+
+https://plotly.com/r/map-subplots-and-small-multiples/

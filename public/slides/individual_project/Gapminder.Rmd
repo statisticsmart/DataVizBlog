@@ -1,0 +1,198 @@
+---
+title: "Gapminder Data Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+
+library(gapminder)
+library(ggplot2)
+library(GGally)
+library(patchwork)
+library(janitor)
+library(tidyverse)
+library(gmodels)
+
+```
+
+
+# Introduction
+
+Gapminder data contain data on life expectancy, GDP per capita, and population by country.It has 1704 rows and 6 variables.
+
+|*Variable*     | *Description*|
+|      ---      |    ---    |
+|country        | factor with 142 levels |
+|continent      | factor with 5 levels |
+|year           | ranges from 1952 to 2007 in increments of 5 years |
+|lifeExp        | life expectancy at birth, in years |
+|pop            | population |
+|gdpPercap      | GDP per capita (US$, inflation-adjusted) |
+
+
+## Type of variables
+ 
+Quantitative : gdpPercap, pop, lifeExp \
+Qualitative  : continent, Country, year
+
+# Data analysis
+
+# Composition of the sample
+
+##### table 01
+
+```{r, comment=NA}
+
+tabyl(gapminder$continent, sort = TRUE)
+```
+ 
+We can see that most of the data were collected in Africa conntinenet with 36.6% percentage.Number of data collected in africa is greater than twice as much as the second highest continent which is America.
+
+##### table 02
+```{r , comment=NA, paged.print=FALSE}
+
+gapminderNEw <- gapminder %>% 
+  mutate(Life_Expectancy = ifelse(lifeExp > 50, "High", "Low"))
+
+tabyl(gapminderNEw$Life_Expectancy , sort = TRUE)
+
+```
+
+Most of the countries have high life expectancy which is more than 50 years.
+
+##### table 03
+```{r, comment=NA}
+CrossTable(gapminderNEw$Life_Expectancy, gapminder$continent)
+```
+
+The number of higher life expectancy countries is less than the number of low life expectancy countries only in Africa continent. Europe has the highest number of countries with high life expectancy and as well as less number of countries with low life expectancy with percentage 29.5%, 0.4% respectively.
+
+
+##### figure 01
+```{r}
+ggplot(gapminder, aes(x = continent, y = lifeExp)) + 
+  geom_boxplot(outlier.size = 3, colour="black", width=0.1) + 
+  geom_violin(alpha = 0.2, fill = "blue") +
+  ylab("Life Expectancy") +
+  ggtitle("Distrbution of Life expectany for each continenet")
+```
+
+In here we can see that africa has the lowest life expectancy and Ocenia has the highest life expectancy.There are no outliers in Africa and Ocenia.Africa and Europe has approximately summetric distribution.
+
+
+##### figure 02
+```{r}
+p1 <- ggplot(gapminder, aes(x = continent, y = gdpPercap)) + 
+  geom_boxplot(outlier.size = 3, colour="black", width=0.1) + 
+  geom_violin(alpha = 0.2, fill = "blue") +
+  ylab("gdp per capital") +
+  ggtitle("Distrbution of GDP per capital for each continenet")
+
+
+p2<- ggplot(gapminder, aes(x = continent, y = log(gdpPercap))) + 
+  geom_boxplot(outlier.size = 3, colour="black", width=0.1) + 
+  geom_violin(alpha = 0.2, fill = "blue") +
+  ylab("log(gdp per capital)") +
+  ggtitle("Distrbution of GDP per capital for each continenet")
+
+p1|p2
+```
+
+In the first graph we cannot clearly see the any distributions. Therefore, let's look at the graph with log transformation. America, Asia, Europe, Oceania almost has symmetric distribution. But Africa has a positively skewed distribution. After the log transformation, Asia and Oceania don't have any outliers. 
+
+
+##### figure 03
+```{r}
+p3 <- ggplot(gapminder, aes(x = continent, y = gdpPercap)) + 
+  geom_boxplot(outlier.size = 3, colour="black", width=0.1) + 
+  geom_violin(alpha = 0.2, fill = "blue") +
+  ylab("Population") +
+  ggtitle("Distrbution of population for each continenet")
+
+
+p4 <- ggplot(gapminder, aes(x = continent, y = log(pop))) + 
+  geom_boxplot(outlier.size = 3, colour="black", width=0.1) + 
+  geom_violin(alpha = 0.2, fill = "blue") +
+  ylab("log(Population)") +
+  ggtitle("Distrbution of population for each continenet")
+
+p3|p4
+```
+
+In this case also we cannot see any distributions, so we can use the log transformation for population. There is a bimodal distribution for both Europe and Oceania. There might be an external factor that affects them.
+
+#####figure 04
+```{r}
+ggpairs(gapminder, mapping = aes(color=continent, alpha =0.2),
+        columns =c ("gdpPercap", "pop", "lifeExp"))+
+  ggtitle("Scatter plot matrix")
+
+```
+
+There is a strong positive linear relationship between GDP per capital and life expectancy in Oceania. There is an overall weak negative linear relationship between Population and GDP per capital, but in America and Oceania has a moderate positive linear relationship. Population and life Expectancy have weak, strong linear relationships, but Oceania has a moderate linear relationship.
+
+##### figure 05
+```{r}
+ggplot(gapminder, aes(x=year, y=lifeExp, group=country)) +
+    geom_line()
+```
+
+Since there are so many overlapping lines we cannot clearly see the any pattern.Therefore we can use average values.
+    
+#####figurer 06
+```{r message=FALSE, warning=FALSE}
+gapminder %>%
+    group_by(continent, year) %>%
+    summarise(meanlifeExp=median(lifeExp)) %>%
+    ggplot(aes(x=year, y=meanlifeExp, col = continent)) +
+     geom_line() + 
+     geom_point() +
+     ggtitle("Time series plot for mean Life Expectancy")
+
+```
+
+We can see that Mean life expectancy increases over the years.There is no specific seasonal pattern in here.
+
+
+##### figure 06
+```{r message=FALSE, warning=FALSE}
+gapminder %>%
+    group_by(continent, year) %>%
+    summarise(meangdpPercap = mean(gdpPercap)) %>%
+    ggplot(aes(x=year, y=meangdpPercap, col = continent)) +
+     geom_line() + 
+     geom_point() +
+     ggtitle("Time series plot for mean GDP per capital")
+
+```
+In here we can see that Oceania and Europe have almost same pattern. Both of them faced a sudden drop after 1990.There is a sudden increase of GDP in Asia after 1970.Africa has the lowest GDP for all those year. There is no considerable increase in Africa.
+
+###### figure 07
+```{r message=FALSE, warning=FALSE}
+gapminder %>%
+    group_by(continent, year) %>%
+    summarise(meanPop= mean(pop)) %>%
+    ggplot(aes(x=year, y=meanPop, col = continent)) +
+     geom_line() + 
+     geom_point() +
+     ggtitle("Time series plot for mean GDP population")
+
+
+```
+
+In Asia there is a huge increase in population. It is almost 4 times than other continents after 2000.In Europe, there is a small decrease between 1990 and 2000.
+
+
+### Conclusions
+
+* The majority of countries have high life expectancy /
+* Europe has the highest number of countries with high life expectancy and less  number of countries with low life expectancy /
+* There is a bimodal distribution in Europe and Oceania for population. /
+* There is a moderate linear relationship between Life expectancy and gdp per capital. /
+* Life Expectancy, gdp per capital, population increase in every years. / 
+* There is a huge increase in the population in Asia

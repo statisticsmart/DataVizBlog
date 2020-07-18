@@ -1,0 +1,181 @@
+---
+title: "Gapminder"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+
+```{r message=FALSE, warning=FALSE, comment=NA}
+library(gapminder)
+library(tidyverse)
+library(magrittr)
+library(plotly)
+library(ggplot2)
+```
+
+#Home
+
+###Number of data
+
+```{r}
+Number_of_data <- nrow(gapminder)
+valueBox(Number_of_data, icon = "fa-pencil")
+
+categories <- unique(gapminder$continent) 
+numberOfCategories <- length(categories)
+valueBox(numberOfCategories, icon = "fa-pencil")
+```
+
+###Number of Continenets
+
+```{r}
+categories <- unique(gapminder$continent) 
+numberOfCategories <- length(categories)
+valueBox(numberOfCategories, icon = "fa-pencil", color = "red")
+```
+
+
+
+
+#Page 1
+
+###Continent
+
+
+```{r}
+gapminder %>% 
+  plot_ly(x = ~continent) %>% 
+  layout(title="Composition of Continent")
+
+```
+
+ 
+#page 2
+
+column{.tabset .tabset-fade}
+-----------------------------------------------------------------------
+###Distributions of Life Expectancy by Continent
+
+```{r}
+p1 <- plot_ly(gapminder, x = gapminder$continent, y = gapminder$lifeExp)
+
+p2 <- p1 %>% add_boxplot(color=~continent)
+p2
+```
+
+###Distributions of gdpPercap by Continent
+
+```{r}
+p1 <- plot_ly(gapminder, x = gapminder$continent, y = gapminder$gdpPercap)
+
+p2 <- p1 %>% add_boxplot(color=~continent)
+p2
+```
+
+
+###Distributions of population by Continent
+
+```{r}
+p1 <- plot_ly(gapminder, x = gapminder$continent, y = gapminder$pop)
+
+p2 <- p1 %>% add_boxplot(color=~continent)
+p2
+```
+
+
+column{.tabset .tabset-fade}
+------------------------------------------------
+
+###Distributions of population by Life Expectancy and continent
+
+```{r}
+
+gapminderNEw <- gapminder %>% 
+  mutate(Life_Expectancy = ifelse(lifeExp > 50, "High", "Low"))
+
+p <- gapminderNEw %>%
+    plot_ly(y = ~pop, color = I("black"), alpha = 0.1) 
+p1 <- p %>% add_boxplot(y = ~pop, 
+                          x = ~interaction(gapminderNEw$Life_Expectancy, continent),
+                          color=~continent)
+p1
+
+```
+
+
+
+###Distributions of gdpPercap by Life Expectancy and continent
+
+```{r}
+
+gapminderNEw <- gapminder %>% 
+  mutate(Life_Expectancy = ifelse(lifeExp > 50, "High", "Low"))
+
+p <- gapminderNEw %>%
+    plot_ly(y = ~gdpPercap, color = I("black"), alpha = 0.1) 
+p1 <- p %>% add_boxplot(y = ~gdpPercap, 
+                          x = ~interaction(gapminderNEw$Life_Expectancy, continent),
+                          color=~continent)
+p1
+
+```
+
+#Page 3
+
+column{data-width=650}
+-------------------------------------------------------------------------
+
+
+####Relationship between gdpPercap and life Expectancy
+
+```{r}
+
+p <- ggplot(gapminder, aes(gdpPercap, lifeExp, color = continent, frame = year)) +
+  geom_point(aes(size = pop, ids = country)) + 
+   geom_smooth(method = "lm", se=FALSE) +
+  scale_x_log10() +
+  theme_bw()
+
+ggplotly(p)
+```
+
+column{.tabset .tabset-fade}
+------------------------------------------------
+
+
+####Relationship between gdpPercap and population 
+
+```{r}
+
+p <- ggplot(gapminder, aes(gdpPercap, pop, color = continent, frame = year)) +
+  geom_point(aes(size = pop, ids = country)) + 
+   geom_smooth(method = "lm", se=FALSE) +
+  scale_x_log10() +
+  theme_bw()
+
+ggplotly(p)
+```
+
+column{.tabset .tabset-fade}
+------------------------------------------------
+
+####Relationship between gdpPercap and life Expectancy
+
+
+```{r}
+
+p <- ggplot(gapminder, aes(pop, lifeExp, color = continent, frame = year)) +
+  geom_point(aes(size = pop, ids = country)) + 
+   geom_smooth(method = "lm", se=FALSE) +
+  scale_x_log10() +
+  theme_bw()
+
+ggplotly(p)
+```
+

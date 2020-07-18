@@ -49,7 +49,8 @@ To be continued in Week 11.
 
 [Example dashboard](/slides/dashboard_penguins.html)
 
-📊 Week 14: [Visualization of spatial data](/slides/spatiotemporal.html)
+📊 Week 14: Recap - Completed 
+
+📊 Week 15: [Visualization of spatial data](/slides/spatiotemporal.html)
 
 
-📊 Week 15: Recap - Completed 

@@ -53,10 +53,9 @@ To be continued in Week 11.
 
 📊 Week 15: [Visualization of spatial data](/slides/spatiotemporal.html)
 
-#### Individual Project Assignment - 2020
+#### Individual Project Assignment Outputs - 2020 
 
 
-
-[Flexdash board to visualize gapminder dataset by Thashikala Mendis ](/slides/individual_project/Gap.html)
+[Flexdashboard to visualize gapminder dataset by Thashikala Mendis ](/slides/individual_project/Gap.html)
 
 [EDA gapminder dataset  by Thashikala Mendis](/slides/individual_project/Gapminder.html)

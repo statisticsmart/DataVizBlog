@@ -1,0 +1,52 @@
+---
+output: pdf_document
+header-includes:
+  - \usepackage{pdfpages}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## ASP 460 2.0 Data Visualisation
+
+## 2020 - Semester 1: Final Project
+
+### Due date: 5 October 2020
+
+## Problem description
+
+Food industry is one of the fastest moving industrial sectors. The glamorous and glittering retail shops and supermarkets are expanding very fast all over the country. The majority of food is pre-packed and presented to the consumer in a labelled container. The data for the project is based on a study attempts to evaluate the consumers' attitude towards food labels and awareness of  information printed on food labels.
+
+The dataset is available at: https://thiyanga.netlify.app/project/datasets/
+
+Use the following code to read the dataset into R
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+library(readr)
+url <- "https://thiyanga.netlify.app/project/datasets/foodlabel.csv"
+foodlabel <- read_csv(url)
+head(foodlabel, 2)
+```
+
+The questionnaire used to collect data are given in the pdf document `food2queslabelled.pdf`. The column names are mapped with corresponding question in the questionnaire in red hand-written text (only the columns relevant to your final projects).
+
+Perform an exploratory data analysis using R programming to help the researcher to answer the following objectives.
+
+1. To assess the association between demographic, socio-economic characteristics and health related factors on consumers attitude towards food labels.
+
+2. To assess the association between demographic, socio-economic characteristics and health related factors on awareness of information printed in food labels.
+
+Create a (reproducible) report using Rmarkdown. Interpret all of the graphs in your report.
+
+Create a flex-dashboard including the most important plots.
+
+Email your .rmd files and final outputs to ttalagala@sjp.ac.lk
+
+Should you need any further information, please do not hesitate to contact me.
+
+
+
+
+
+

@@ -64,4 +64,4 @@ To be continued in Week 11.
 
 [Report - Rmd](/endproject/submission/AS2016446.Rmd) [Report - html](/endproject/submission/AS2016446.html)
 
-[Dashboard - Rmd](/endproject/submission/foodDashBoard.Rmd)
+[Dashboard - Rmd](/endproject/submission/foodDashBoard.Rmd) [Dashboard - html](/endproject/submission/foodDashBoard.html)

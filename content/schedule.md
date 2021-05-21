@@ -63,3 +63,5 @@ To be continued in Week 11.
 #### Consumers' use of food label information
 
 [Report - Rmd](/endproject/submission/AS2016446.Rmd) [Report - html](/endproject/submission/AS2016446.html)
+
+[Dashboard - Rmd](/endproject/submission/foodDashBoard.Rmd)

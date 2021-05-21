@@ -1,0 +1,367 @@
+---
+title: "Food Label"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    runtime : shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(shiny)
+library(DT)
+
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(readr)
+url <- "https://thiyanga.netlify.app/project/datasets/foodlabel.csv"
+foodlabel <- read_csv(url)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide'}
+
+foodlabel <- foodlabel %>% mutate(Housesize = replace(Housesize, which(Housesize > 8), NA))
+```
+
+
+```{r, echo= FALSE, message=FALSE, warning=FALSE, comment=NA,  results='hide'}
+
+Gender            <- factor(foodlabel$Gender, 
+                                      labels = c( '0'= "female", '1' = "male") )   
+Education         <- factor(foodlabel$Education,
+                            labels = c('1'="Below O/L",
+                                       '2'="Passed GCE O/L",
+                                       '3'="Passed GCE A/L",
+                                       '4'="Diploma",
+                                       '5'="Degree") )
+
+Employment        <- factor(foodlabel$Employment, 
+                            labels = c('1'="Employed full time",
+                                       '2'="Employed part-time",                                                                                        '3'="Unemployed",
+                                       '4'="Student",
+                                       '5'="Housewife",
+                                       '6'="Retired") )
+
+Income            <- factor(foodlabel$Income, 
+                            labels = c('1'="Less than Rs: 20000",
+                                       '2'="Rs: 20000 - Rs: 34999",
+                                       '3'="Rs: 35000 - Rs: 49999",
+                                       '4'="Rs: 50000 - Rs: 64999",
+                                       '5'="Over Rs: 64499"))
+Housesize         <- factor(foodlabel$Housesize, 
+                            labels = c('1'="0-24 months",
+                                       '2'="2-5 years",
+                                       '3'="6-10 years",
+                                       '4'="11-16 years",
+                                       '5'="17-18 years",
+                                       '6'="18-30 years", 
+                                       '7'="30-55 years", 
+                                       '8'="over 55 years"))
+
+marital           <- factor(foodlabel$marital, 
+                            labels = c('0'="single", '1'="married"))
+
+fshopper          <- factor(foodlabel$fshopper, 
+                            labels = c('0'="no", '1'="yes"))
+
+mplanner          <- factor(foodlabel$mplanner, 
+                            labels = c('0'="no", '1'="yes"))
+
+place             <- factor(foodlabel$place, 
+                            labels = c('1'="retail shops",
+                                       '2'=" super markets",
+                                       '3'="both equally"))
+
+FA                <- factor(foodlabel$FA, 
+                            labels = c('0'="no", '1'="yes"))
+
+Diabetes          <- factor(foodlabel$Diabetes, 
+                            labels = c('0'="no", '1'="yes"))
+
+`Metabolic cyndrents` <- factor(foodlabel$`Metabolic cyndrents`, 
+                                labels = c('0'="no", '1'="yes"))
+
+Other             <- factor(foodlabel$Other, 
+                            labels = c('0'="no", '1'="yes"))
+
+specific          <- factor(foodlabel$specific, 
+                            labels = c('0'="no", '1'="yes"))
+
+job1              <- factor(foodlabel$job1, 
+                            labels = c('0'="no", '1'="yes"))
+
+job2              <- factor(foodlabel$job2, 
+                            labels = c('0'="no", '1'="yes"))
+
+Exercise          <- factor(foodlabel$Exercise, 
+                            labels = c('1'="daily",
+                                       '2'="at least 2 days per week",
+                                       '3'="rarely",
+                                       '4'="never"))
+
+Health            <- factor(foodlabel$Health, 
+                            labels = c('1'="excellent",
+                                       '2'="good",
+                                       '3'="fair",
+                                       '4'="poor",
+                                       '5'="can't say"))
+
+easy              <- factor(foodlabel$easy, 
+                            labels = c('1'="very important",
+                                       '2'="important",
+                                       '3'="moderately imporatnt",
+                                       '4'="of little important",
+                                       '5'="unimportant"))
+
+familiarity       <- factor(foodlabel$familiarity, 
+                            labels = c('1'="very important",
+                                       '2'="important",
+                                       '3'="moderately imporatnt",
+                                       '4'="of little important",
+                                       '5'="unimportant"))
+
+friends           <- factor(foodlabel$friends, 
+                            labels = c('4'="of little important",
+                                       '5'="unimportant"))
+
+Useful            <- factor(foodlabel$Useful, 
+                            labels = c('1'="always",
+                                       '2'="mostly",
+                                       '3'="sometimes",
+                                       '4'="rarely",
+                                       '5'="never",
+                                       '6'="can't say"))
+
+Easiness          <- factor(foodlabel$Easiness, 
+                            labels = c('1'="always",
+                                       '2'="mostly",
+                                       '3'="sometimes",
+                                       '4'="rarely",
+                                       '5'="never",
+                                       '6'="can't say"))
+
+Sufficient        <- factor(foodlabel$Sufficient, 
+                            labels = c('1'="always",
+                                       '2'="mostly",
+                                       '3'="sometimes",
+                                       '4'="rarely",
+                                       '5'="never",
+                                       '6'="can't say"))
+
+Trusfulness       <- factor(foodlabel$Trusfulness, 
+                            labels = c('1'="always",
+                                       '2'="mostly",
+                                       '3'="sometimes",
+                                       '4'="rarely",
+                                       '5'="never",
+                                       '6'="can't say"))
+
+Clear             <- factor(foodlabel$Clear, 
+                            labels = c('1'="always",
+                                       '2'="mostly",
+                                       '3'="sometimes",
+                                       '4'="rarely",
+                                       '5'="never"))
+
+`attractive pack` <- factor(foodlabel$`attractive pack`, 
+                            labels = c('1'="a lot",'2'="a little",'3'="not at all"))
+
+`hc/nutriclaims`  <- factor(foodlabel$`hc/nutriclaims`, 
+                            labels = c('1'="a lot",'2'="a little",'3'="not at all"))
+
+graphical         <- factor(foodlabel$graphical, 
+                            labels = c('1'="a lot",'2'="a little",'3'="not at all"))
+
+`Free/prize`      <- factor(foodlabel$`Free/prize`, 
+                            labels = c('1'="a lot",'2'="a little",'3'="not at all"))
+
+netquan           <- factor(foodlabel$netquan, 
+                            labels = c('0'="Weight of the \namount of food only",
+                                       '1'="Weight of the \npackaging and amount of food",
+                                       '2'="Do not know"))
+
+`low in fat`      <- factor(foodlabel$`low in fat`, 
+                            labels = c('0'="Not more than \n3 g per 100g", 
+                                       '1'="The food contains \nzero amount of fat", 
+                                       '2'="Not more than \n10 g per 100g", '3'="do not know"))
+
+`low in cho`      <- factor(foodlabel$`low in cho`, 
+                            labels = c('0'="Not more than \n0.02 g per 100 g",
+                                       '1'="Not more than \n10g per 100 g",
+                                       '2'="The food contains \nzero amount of cholesterol",
+                                       '3'="Do not know"))
+
+sodium            <- factor(foodlabel$sodium, 
+                            labels = c('1'="Low in sodium",
+                                       '2'="Very low in sodium",
+                                       '3'="Sodium free",
+                                       '4'="Do not know"))
+
+`e labels`        <- factor(foodlabel$`e labels`, 
+                                      labels = c('0'="yes",'1'="no"))
+
+
+Age               <- foodlabel$Age
+
+Children          <- foodlabel$children
+
+food_label <- tibble(Gender, Age, Children, Education, Employment, Income, Housesize , marital ,
+                     fshopper, mplanner, place , FA ,Diabetes ,`Metabolic cyndrents`,Other , specific,
+                     job1 , job2 ,Exercise ,Health , easy , familiarity ,  friends ,Useful, Easiness ,
+                     Sufficient ,   Trusfulness , Clear, `attractive pack` ,`hc/nutriclaims` ,
+                     graphical,`Free/prize` , netquan ,`low in fat`, `low in cho`,sodium, `e labels` )     
+
+
+```
+
+
+
+#Overview
+
+column
+------------------------------------------------------------------------
+
+### Food Labe
+
+Food industry is one of the fastest moving industrial sectors. The glamorous and glittering retail shops and supermarkets are expanding very fast all over the country. The majority of food is pre-packed and presented to the consumer in a labelled container. \
+\
+
+![](foodlabel.jpg)
+
+\
+Source : https://thiyanga.netlify.app/project/datasets/foodlabel.csv
+\
+\
+\
+Created by W. Thashikala .D.Mendis \
+(Done as a part of [STA 479 2.0 Special Topics in Statistics](https://tstdataviz.netlify.app/schedule/))
+
+
+column
+-----------------------------------------------------
+
+###Composition of Gender
+```{r}
+food_label %>% 
+  plot_ly(x = ~Gender , color = food_label$Gender) %>% 
+  layout(title="Composition of Gender")
+
+
+```
+
+
+
+###Composition of Marital status
+```{r}
+food_label %>% 
+  plot_ly(x = ~marital , color = food_label$marital) %>% 
+  layout(title="Composition of Marital status")
+
+
+```
+
+
+#Distributions
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide'}
+
+foodlabel <- foodlabel %>% mutate(Housesize = replace(Housesize, which(Housesize > 8), NA))
+```
+
+
+```{r}
+startData <- food_label
+updateData <- reactive(
+            startData %>% group_by(!!!rlang::sym(input$GB))
+            %>% summarise_if(is.numeric, sum, na.rm=T, na.action=na.omit)
+  
+)
+```
+
+column{.sidebar}
+-------------------------------------------------------------------
+
+
+```{r}
+
+
+selectInput(inputId = "GB", label = "x axis", choices = names(select_if(startData,is.factor)))
+
+selectInput(inputId = "Metric", label = "y axis", 
+            choices = names(select_if(startData,is.numeric)))
+
+
+selectInput(inputId = "GB", label = "Group by", choices = names(select_if(startData,is.factor)))
+```
+
+column
+-----------------------------------------------------------------
+###Box plot
+```{r}
+f <- renderPlotly({
+ p <- update() %>% 
+    ggplot(aes(x = !!rlang::sym(input$GB), y = !!rlang::sym(input$Metric),
+           color =  !!rlang::sym(input$GB))) +
+    geom_boxplot() + 
+   labs(x = input$x, y = input$y)
+  
+  p %>% ggplotly()
+})
+
+plotlyOutput('f')
+```
+
+
+#Relationships
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide'}
+
+foodlabel <- foodlabel %>% mutate(Housesize = replace(Housesize, which(Housesize > 8), NA))
+```
+
+
+```{r}
+updateData <- reactive(
+            food_label %>% group_by(!!!rlang::sym(input$GB))
+            %>% summarise_if(is.numeric, sum, na.rm=T)
+  
+)
+```
+
+column{.sidebar}
+-------------------------------------------------------------------
+```{r}
+
+
+selectInput(inputId = "GB", label = "x axis", choices = names(select_if(startData,is.factor)))
+
+selectInput(inputId = "Metric", label = "y axis", 
+            choices = names(select_if(startData,is.numeric)))
+
+
+selectInput(inputId = "GB", label = "Group by", choices = names(select_if(startData,is.factor)))
+```
+
+column
+-----------------------------------------------------------------
+
+###Scatter plot
+```{r}
+f1 <-renderPlot({
+p1 <- updateData() %>% 
+    ggplot(aes(x = !!rlang::sym(input$Metric), y = !!rlang::sym(input$Metric),
+           color =  !!rlang::sym(input$GB))) +
+    geom_point() +
+  labs(x = input$x, y = input$y)
+  
+  p1 %>% ggplotly()
+})
+plotlyOutput('f1')
+
+```
+

@@ -59,3 +59,7 @@ To be continued in Week 11.
 [Flexdashboard to visualize gapminder dataset by Thashikala Mendis ](/slides/individual_project/Gap.html)
 
 [EDA gapminder dataset  by Thashikala Mendis](/slides/individual_project/Gapminder.html)
+
+#### Consumers' use of food label information
+
+[Report - Rmd](/endproject/submission/AS2016446.Rmd) [Report - html](/endproject/submission/AS2016446.html)

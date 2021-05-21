@@ -1,0 +1,1461 @@
+---
+title: "__*DATA ANALYSIS ON FOOD LABELS*__"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r include=FALSE}
+knitr::opts_chunk$set(comment = NA)
+```
+
+
+#Introduction
+
+Food industry is one of the fastest moving industrial sectors. The glamorous and glittering retail shops and supermarkets are expanding very fast all over the country. The majority of food is pre-packed and presented to the consumer in a labelled container.
+The data for the project is based on a study attempts to evaluate the consumers attitude towards food labels and awareness of information printed on food labels.This study was carried out to identify the association between demographic, socio-economic characteristics and health related factors on consumers attitude towards food labels and association between demographic, socio-economic characteristics and health related factors on awareness of information printed in food labels.
+
+
+| *Varibale*            | *Description*                                                                   | *Type of variable* |
+| ---------------       |-----------------------------------------                                        | -------------|
+| Gender                |Gender                                                                           | Qualitative|
+| Age                   |Age                                                                              | Quantitative|
+| Education             |Educational level                                                                | Qualitative|
+| Employment            |Employment status                                                                | Qualitative|
+| Income                |Household Income                                                                 | Qualitative|
+| House size            |Age groups                                                                       | Qualitative|
+| Children              |Number of children                                                               | Quantitative|
+| Marital               |Marital status                                                                   | Qualitative|
+| fshopper              |Major food shopper of the household                                              | Qualitative|
+| mplanner              |Major meal planner of the household                                              | Qualitative|
+| FA                    |Having food allergies                                                            | Qualitative|
+| Diabetes              |Having Diabetes                                                                  | Qualitative|
+| Metabolic syndrome    |Having Obesity, High blood pressure/Cholesterol, Heart disease                   | Qualitative|
+| Other                 |Having Migrain, Osteoporoses, Other                                              | Qualitative|
+| Specific              |Having a specific diet(pregnancy, breast feeding,training for sports,vegetarian) | Qualitative|
+| Job1                  |Doctors, nurses, health care workers                                             | Qualitative|
+| Job2                  |Legislators related to food items Manufactures/ advertisers related to food items| Qualitative|
+| Exercise              |Frequency of do exercise                                                         | Qualitative|
+| Health                |Self perception of overall health                                                | Qualitative|
+| Place                 |Place of where buy package food                                                  | Qualitative|
+| Easy                  |Easiness of the package food                                                     | Qualitative|
+| Familiarity           |Familiarity with the product                                                     | Qualitative|
+| Friends               |Recommendation by family and friends                                             | Qualitative|
+| Useful                |Usefulness of food label                                                         | Qualitative|
+| Easiness              |Easiness of understand the information on food labels                            | Qualitative|
+| Sufficient            |Sufficiency of information provided in food label                                | Qualitative|
+| Truthfulness          |Truthfulness of information provided in food label                               | Qualitative|
+| Clear                 |clarity of information printed in food label                                     | Qualitative|
+| Attractive pack       |Influence of attractive package                                                  | Qualitative|
+| Hc/nufriclaim         |Influence of health claims/ Nutrition claims                                     | Qualitative|
+| Graphical             |Influence of graphical and pictorial information                                 | Qualitative|
+| Free Price            |Influence of Free/ Prizes/ Contests                                              | Qualitative|
+| Net quan              |Awareness of net quantity                                                       | Qualitative|
+| Low in fat            |Awareness of low in fat                                                          | Qualitative|
+| Low in cho            |Awareness of low in cholesterol                                                   | Qualitative|
+| Sodium                |Awareness of nutrition claim indicates the lowest amount of sodium               | Qualitative|
+| elabels               |Awareness of Ecode labels                                                        | Qualitative
+
+####Packages
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(janitor)
+library(ggplot2)
+library(gmodels)
+library(GGally)
+library(patchwork)
+library(MASS)
+library(huxtable)
+
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(readr)
+url <- "https://thiyanga.netlify.app/project/datasets/foodlabel.csv"
+foodlabel <- read_csv(url)
+```
+
+First, we neeed to look at the types of collected data.
+
+```{r, message=FALSE, warning=FALSE, eval=FALSE}
+summary(foodlabel)
+glimpse(food_label)
+```
+
+In here, we can see that the factors were recognized as integers. We need to convert them into factors. As well as in house size, eleventh there is 8 categories two data reported as 10 and 9. Therefore we have to replace those as missing values.
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide'}
+
+foodlabel <- foodlabel %>% mutate(Housesize = replace(Housesize, which(Housesize > 8), NA))
+```
+
+
+```{r, echo= FALSE, message=FALSE, warning=FALSE, comment=NA,  results='hide'}
+
+Gender            <- factor(foodlabel$Gender, 
+                                      labels = c( '0'= "female", '1' = "male") )   
+Education         <- factor(foodlabel$Education,
+                            labels = c('1'="Below O/L",
+                                       '2'="Passed GCE O/L",
+                                       '3'="Passed GCE A/L",
+                                       '4'="Diploma",
+                                       '5'="Degree") )
+
+Employment        <- factor(foodlabel$Employment, 
+                            labels = c('1'="Employed full time",
+                                       '2'="Employed part-time",                                                                                        '3'="Unemployed",
+                                       '4'="Student",
+                                       '5'="Housewife",
+                                       '6'="Retired") )
+
+Income            <- factor(foodlabel$Income, 
+                            labels = c('1'="Less than Rs: 20000",
+                                       '2'="Rs: 20000 - Rs: 34999",
+                                       '3'="Rs: 35000 - Rs: 49999",
+                                       '4'="Rs: 50000 - Rs: 64999",
+                                       '5'="Over Rs: 64499"))
+Housesize         <- factor(foodlabel$Housesize, 
+                            labels = c('1'="0-24 months",
+                                       '2'="2-5 years",
+                                       '3'="6-10 years",
+                                       '4'="11-16 years",
+                                       '5'="17-18 years",
+                                       '6'="18-30 years", 
+                                       '7'="30-55 years", 
+                                       '8'="over 55 years"))
+
+marital           <- factor(foodlabel$marital, 
+                            labels = c('0'="single", '1'="married"))
+
+fshopper          <- factor(foodlabel$fshopper, 
+                            labels = c('0'="no", '1'="yes"))
+
+mplanner          <- factor(foodlabel$mplanner, 
+                            labels = c('0'="no", '1'="yes"))
+
+place             <- factor(foodlabel$place, 
+                            labels = c('1'="retail shops",
+                                       '2'=" super markets",
+                                       '3'="both equally"))
+
+FA                <- factor(foodlabel$FA, 
+                            labels = c('0'="no", '1'="yes"))
+
+Diabetes          <- factor(foodlabel$Diabetes, 
+                            labels = c('0'="no", '1'="yes"))
+
+`Metabolic cyndrents` <- factor(foodlabel$`Metabolic cyndrents`, 
+                                labels = c('0'="no", '1'="yes"))
+
+Other             <- factor(foodlabel$Other, 
+                            labels = c('0'="no", '1'="yes"))
+
+specific          <- factor(foodlabel$specific, 
+                            labels = c('0'="no", '1'="yes"))
+
+job1              <- factor(foodlabel$job1, 
+                            labels = c('0'="no", '1'="yes"))
+
+job2              <- factor(foodlabel$job2, 
+                            labels = c('0'="no", '1'="yes"))
+
+Exercise          <- factor(foodlabel$Exercise, 
+                            labels = c('1'="daily",
+                                       '2'="at least 2 days per week",
+                                       '3'="rarely",
+                                       '4'="never"))
+
+Health            <- factor(foodlabel$Health, 
+                            labels = c('1'="excellent",
+                                       '2'="good",
+                                       '3'="fair",
+                                       '4'="poor",
+                                       '5'="can't say"))
+
+easy              <- factor(foodlabel$easy, 
+                            labels = c('1'="very important",
+                                       '2'="important",
+                                       '3'="moderately imporatnt",
+                                       '4'="of little important",
+                                       '5'="unimportant"))
+
+familiarity       <- factor(foodlabel$familiarity, 
+                            labels = c('1'="very important",
+                                       '2'="important",
+                                       '3'="moderately imporatnt",
+                                       '4'="of little important",
+                                       '5'="unimportant"))
+
+friends           <- factor(foodlabel$friends, 
+                            labels = c('4'="of little important",
+                                       '5'="unimportant"))
+
+Useful            <- factor(foodlabel$Useful, 
+                            labels = c('1'="always",
+                                       '2'="mostly",
+                                       '3'="sometimes",
+                                       '4'="rarely",
+                                       '5'="never",
+                                       '6'="can't say"))
+
+Easiness          <- factor(foodlabel$Easiness, 
+                            labels = c('1'="always",
+                                       '2'="mostly",
+                                       '3'="sometimes",
+                                       '4'="rarely",
+                                       '5'="never",
+                                       '6'="can't say"))
+
+Sufficient        <- factor(foodlabel$Sufficient, 
+                            labels = c('1'="always",
+                                       '2'="mostly",
+                                       '3'="sometimes",
+                                       '4'="rarely",
+                                       '5'="never",
+                                       '6'="can't say"))
+
+Trusfulness       <- factor(foodlabel$Trusfulness, 
+                            labels = c('1'="always",
+                                       '2'="mostly",
+                                       '3'="sometimes",
+                                       '4'="rarely",
+                                       '5'="never",
+                                       '6'="can't say"))
+
+Clear             <- factor(foodlabel$Clear, 
+                            labels = c('1'="always",
+                                       '2'="mostly",
+                                       '3'="sometimes",
+                                       '4'="rarely",
+                                       '5'="never"))
+
+`attractive pack` <- factor(foodlabel$`attractive pack`, 
+                            labels = c('1'="a lot",'2'="a little",'3'="not at all"))
+
+`hc/nutriclaims`  <- factor(foodlabel$`hc/nutriclaims`, 
+                            labels = c('1'="a lot",'2'="a little",'3'="not at all"))
+
+graphical         <- factor(foodlabel$graphical, 
+                            labels = c('1'="a lot",'2'="a little",'3'="not at all"))
+
+`Free/prize`      <- factor(foodlabel$`Free/prize`, 
+                            labels = c('1'="a lot",'2'="a little",'3'="not at all"))
+
+netquan           <- factor(foodlabel$netquan, 
+                            labels = c('0'="Weight of the \namount of food only",
+                                       '1'="Weight of the \npackaging and amount of food",
+                                       '2'="Do not know"))
+
+`low in fat`      <- factor(foodlabel$`low in fat`, 
+                            labels = c('0'="Not more than \n3 g per 100g", 
+                                       '1'="The food contains \nzero amount of fat", 
+                                       '2'="Not more than \n10 g per 100g", '3'="do not know"))
+
+`low in cho`      <- factor(foodlabel$`low in cho`, 
+                            labels = c('0'="Not more than \n0.02 g per 100 g",
+                                       '1'="Not more than \n10g per 100 g",
+                                       '2'="The food contains \nzero amount of cholesterol",
+                                       '3'="Do not know"))
+
+sodium            <- factor(foodlabel$sodium, 
+                            labels = c('1'="Low in sodium",
+                                       '2'="Very low in sodium",
+                                       '3'="Sodium free",
+                                       '4'="Do not know"))
+
+`e labels`        <- factor(foodlabel$`e labels`, 
+                                      labels = c('0'="yes",'1'="no"))
+
+
+Age               <- foodlabel$Age
+
+Children          <- foodlabel$children
+
+food_label <- tibble(Gender, Age, Children, Education, Employment, Income, Housesize , marital ,
+                     fshopper, mplanner, place , FA ,Diabetes ,`Metabolic cyndrents`,Other , specific,
+                     job1 , job2 ,Exercise ,Health , easy , familiarity ,  friends ,Useful, Easiness ,
+                     Sufficient ,   Trusfulness , Clear, `attractive pack` ,`hc/nutriclaims` ,
+                     graphical,`Free/prize` , netquan ,`low in fat`, `low in cho`,sodium, `e labels` )     
+
+
+```
+
+
+##Composition of the sample
+
+table 01:
+```{r}
+tabyl(food_label,Gender)
+tabyl(food_label, marital) 
+
+
+```
+According to the table 01 we can see that more than 64% of females are in the sample. It shows that females in the sample approximately twice as much as the number of males in the sample. As well as it shows that nearly 74% people are married and it is thrice much as the singles.
+
+table 02:
+
+```{r}
+tabyl(food_label, Education)
+```
+By table 02, it can be seen that most of the respondents have studied up to Degree with percentage of 37%. There is no any person with post graduate degree. Degree qualified people are more than thrice much as the GCE A/L passed people.
+
+table 03:
+
+```{r}
+tabyl(food_label, Employment)
+```
+
+According to the table 03 we can see that approximately 40% of respondents are full time employees. Only 8% of retired persons are available in the sample.
+table 04:
+
+```{r}
+tabyl(food_label, Income)
+
+```
+
+Table 04 shows that around 34% people receive Rs: 35000 - Rs: 49999 and Rs: 50000 - Rs: 64999 income.
+
+table 05:
+
+```{r}
+tabyl(food_label, Housesize)%>% filter(!(is.na(Housesize))) 
+```
+By table 05, it seems that around 30% household have children with 6-10 years.
+
+table 06:
+
+```{r}
+tabyl(food_label, fshopper)
+tabyl(food_label, mplanner)
+```
+
+The following table 06 reveals that the majority of the respondents are major food shopper of the household. As well as it shows that the majority of the sample are the major meal planner in the household.
+
+table 07:
+
+```{r}
+CrossTable(FA, Gender)
+```
+
+In here we can see that only 11% of the sample suffering from the food allergies and most of them are ma
+
+table 08:
+
+```{r}
+CrossTable(Diabetes, Gender)
+```
+Table 08 shows that the majority of people are suffering from diabetes. Among them, 67% are females.
+
+table 09:
+
+```{r}
+CrossTable(`Metabolic cyndrents`, Gender)
+```
+
+According to the table 09 we can see that around 56% people have Metabolic cyndrentssuch as Obesity. High blood pressure/Cholesterol, Heart disease.
+
+table 10:
+
+```{r}
+CrossTable(specific, Gender)
+```
+
+By table 10 it seems that less number of people have specific diet due to pregnancy, breast feeding, training for sports, vegetarian.
+
+table 11:
+
+```{r}
+tabyl(food_label, job1)
+tabyl(food_label, job2)
+
+```
+
+In here we can see that around 56% people are doctors, nurses, health care workers while 46% are Legislators related to food items, Manufactures/ advertisers related to food items.
+
+
+table 12:
+```{r}
+CrossTable(Exercise, Gender)
+```
+
+According to the table 12, most of the people are doing exercises rarely. It seems that Females tend to do exercises than males.
+
+table 13:
+
+```{r}
+CrossTable(Health, Gender)
+```
+
+Table 13 shows that most of them have poor health condition. Approximately 64% females have poor health. Only 1.5% have the excellent health condition.
+
+table 14:
+```{r}
+CrossTable(place, Gender)
+```
+
+It seems that around 47% of people buy packaged foods from the supermarkets.
+
+
+####Distributions and Relationships of the sample
+
+figure 01:
+
+```{r}
+ggplot(food_label, aes(x = Gender, y = Age, fill = Gender)) +  
+  geom_boxplot(size = .75) +   facet_grid(marital~., margins = FALSE) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  ggtitle("Distribution of Age by Gender and Marital status")
+
+```
+
+According to figure 01 we can see that married females positively skewed distributed with age, while males have negatively skewed distribution. Both single males and females have a symmetric distribution with age.
+
+figure 02:
+
+```{r}
+ggplot(food_label, aes(x = Education, y = Age, fill = Gender)) +  
+  geom_boxplot(size = .75) +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  ggtitle("Distribution of Age by Gender and Education level")
+
+
+```
+
+Figure 02 shows that females negatively skewed distributed only for Passed GCE A/L with Age.
+  
+figure 03:
+
+```{r}
+ggplot(food_label, aes(x = Employment, y = Age, fill = Gender)) +  
+  geom_boxplot(size = .75) +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  ggtitle("Distribution of Age by Gender and Employment")
+```
+
+It seems that both male and female students show negatively skewed distribution with age. Retired and unemployed males show negatively skewed distribution. Full time male employers have nearly symmetric distribution.
+figure 04:
+
+```{r}
+ggplot(food_label, aes(x = Income, y = Age, fill = Gender)) +  
+  geom_boxplot(size = .75) +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  ggtitle("Distribution of Age by Gender and Income")
+```
+
+According to the figure 05 we can see that males have only positively skewed distribution with age in over Rs: 64499 income. 
+
+figure 05:
+
+```{r}
+
+ggplot(food_label, aes(x = fshopper, y = Age, fill = Gender)) +  
+  geom_boxplot(size = .75) +   facet_grid(mplanner~., margins = FALSE) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  ggtitle("Distribution of Age by Gender, meal palnner and food shopper")
+
+```
+
+By figure 05 we can see that both males and females who major food shopper and meal planner, have positively  skewed distribution with age. Females who are not moth food shopper and meal planner have negatively skewed distribution.
+
+figure 06:
+
+```{r}
+p1 <- ggplot(food_label, aes(x=FA, y=Age, fill = Gender)) +
+  geom_boxplot(outlier.size = 1, colour="black", width=0.1 ) + 
+  geom_violin(alpha = 0.2, width = 1) +facet_grid(Gender~., margins = FALSE) + 
+  theme(legend.position = "none")+
+  xlab("Food allergies") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by Food allergies")
+
+p2 <- ggplot(food_label, aes(x=Diabetes, y=Age, fill = Gender)) +
+  geom_boxplot(outlier.size = 1, colour="black", width=0.1 ) + 
+  geom_violin(alpha = 0.2, width = 1) +facet_grid(Gender~., margins = FALSE) +
+  theme(legend.position = "none")+
+  xlab("Diabetes") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by Diabetes")
+
+p3 <- ggplot(food_label, aes(x=`Metabolic cyndrents`, y=Age, fill = Gender)) +
+  geom_boxplot(outlier.size = 1, colour="black", width=0.1 ) + 
+  geom_violin(alpha = 0.2, width = 1) +facet_grid(Gender~., margins = FALSE) +
+  theme(legend.position = "none")+
+  xlab("Metabolic cyndrents") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by \nMetabolic cyndrents")
+
+p4 <-  ggplot(food_label, aes(x=specific, y=Age, fill = Gender)) +
+  geom_boxplot(outlier.size = 1, colour="black", width=0.1 ) + 
+  geom_violin(alpha = 0.2, width = 1) +facet_grid(Gender~., margins = FALSE) +
+  xlab("specific diets") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by \n specific diets")
+
+(p1|p2) / (p3|p4)
+
+```
+
+Figure 06 shows that there are bimodal distribution for food allergies, Diabetes, Metabolic syndrome and specific diet. There may be some external factor that affects food allergies. Males who are having food allergies have positively skewed distribution.
+
+
+figure 07:
+
+```{r}
+p1 <- ggplot(food_label, aes(x=job1, y=Age, fill = Gender)) +
+  geom_boxplot(outlier.size = 1, colour="black", width=0.1 ) + 
+  geom_violin(alpha = 0.2, width = 1) +facet_grid(Gender~., margins = FALSE) +
+   theme(legend.position = "none", axis.text.x = element_text(angle = 60, hjust = 1))+ 
+  ylab("Age") +
+  ggtitle("Distribution of Age by \ndoctors, nurses, \nhealth care workers jobs")
+
+p2 <-  ggplot(food_label, aes(x=job2, y=Age, fill = Gender)) +
+  geom_boxplot(outlier.size = 1, colour="black", width=0.1 ) + 
+  geom_violin(alpha = 0.2, width = 1) +facet_grid(Gender~., margins = FALSE) +
+   theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  ylab("Age") +
+  ggtitle("Distribution of Age by \nLegislators related to food items,\nManufactures/advertisers \nrelated to food items")
+
+p1|p2
+```
+
+According to the figure 07 there are bimodal distributions in every category. There might be some external factors that affect those job types. As well as other than males who are working and not working as legislators, Manufactures/advertisers related to food items have positively skewed distribution with age.
+
+figure 08:
+
+```{r}
+ggplot(food_label, aes(x=Exercise, y=Age, fill = Gender)) +
+  geom_boxplot(outlier.size = 1, colour="black", width=0.1 ) + 
+  geom_violin(alpha = 0.2, width = 1) +facet_grid(Gender~., margins = FALSE) +
+  xlab(" Exercise") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by exercise")
+
+```
+
+In here we can see that older men tend to do exercises daily. But younger males show positively skewed distribution for not exercising. A small number of females are doing exercises daily and it shows positively skewed distribution.
+
+figure 09:
+
+```{r}
+ggplot(food_label, aes(x=place, y=Age, fill = Gender)) +
+  geom_boxplot(outlier.size = 1, colour="black", width=0.1 ) + 
+  geom_violin(alpha = 0.2, width = 1) +facet_grid(Gender~., margins = FALSE) +
+  geom_violin(alpha = 0.2, fill = "pink", width = 1) +
+  xlab(" place") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by place")
+
+
+```
+
+In here we can see that there are some bimodal distributions. Females positively skewed distribution for both retails shops and supermarkets.
+
+
+figure 10:
+
+```{r}
+ggpairs(food_label, mapping = aes(color=Gender, alpha =0.2),
+        columns =c ("Age", "Children"))+
+  ggtitle("Scatter plot matrix by gender")
+```
+
+Figure 10 shows that there is a weak positive linear relationship between age and children. Females have a negative, weak linear relationship between age and children.  
+
+
+figure 11:
+
+```{r}
+ggpairs(food_label, mapping = aes(color=marital, alpha =0.6),
+        columns =c ("Age", "Children"))+
+  ggtitle("Scatter plot matrix by marital status")
+```
+
+Figure 11 shows that there is a weak positive linear relationship between age and children for both single and married people.
+
+figure 12:
+
+```{r}
+ggpairs(food_label, mapping = aes(color=Education, alpha =0.6),
+        columns =c ("Age", "Children"))+
+  ggtitle("Scatter plot matrix by education")
+```
+
+In here we can see that there is a moderate positive linear relationship between age and children of people who GCE A/L passed. 
+
+figure 12:
+
+```{r}
+ggpairs(food_label, mapping = aes(color=Exercise, alpha =0.6),
+        columns =c ("Age", "Children"))+
+  ggtitle("Scatter plot matrix by exercise")
+```
+
+In here we can see that there is a moderate positive linear relationship between age and children for people who exercise daily. 
+
+
+###Association between demographic, socio-economic characteristics and health related factors on attitude towards food labels.
+
+
+figure 13:
+
+```{r}
+p1 <- ggplot(food_label, aes(x=`attractive pack`, y=Age, group=`attractive pack`)) +
+  geom_boxplot(outlier.size = 1, colour="black", width=0.1 ) + 
+  geom_violin(alpha = 0.2, fill = "pink", width = 1) +
+  xlab("attractive pack") +
+  ylab("Age") + 
+  ggtitle("Distribution of Age by \nattractive pack")
+
+
+p2 <- ggplot(food_label, aes(x= `hc/nutriclaims`, y=Age, group=`hc/nutriclaims`)) +
+  geom_boxplot(outlier.size = 1, colour="black", width=0.1 ) + 
+  geom_violin(alpha = 0.2, fill = "pink", width = 1) +
+  xlab("hc/nutriclaims") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by \nhc/nutriclaims")
+
+p3 <- ggplot(food_label, aes(x= graphical, y=Age, group=graphical)) +
+  geom_boxplot(outlier.size = 1, colour="black", width=0.1 ) + 
+  geom_violin(alpha = 0.2, fill = "pink", width = 1) +
+  xlab("graphical label") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by \ngraphical label")
+
+p4 <- ggplot(food_label, aes(x= `Free/prize`, y=Age, group=`Free/prize`)) +
+  geom_boxplot(outlier.size = 1, colour="black", width=0.1 ) + 
+  geom_violin(alpha = 0.2, fill = "pink", width = 1) +
+  xlab("Free/prize") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by \n`Free/prize`")
+
+
+(p1|p2)/(p3|p4)
+```
+
+In here we can see that there are bimodal distribution for attractive package, hc/nuticlaims, graphical labels, free prize with age. High influence towards attractive package has positively skewed distribution. 
+
+figure 14:
+
+```{r}
+
+p1 <- ggplot(food_label, aes(x=`attractive pack`, y=Education,fill=Age)) + 
+  geom_raster()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  ggtitle("attractive pack and \neducation by age`")
+
+
+
+p2 <- ggplot(food_label, aes(x=`hc/nutriclaims`, y=Education,fill=Age)) + 
+  geom_raster()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  ggtitle("hc/nutriclaims and \neducation by age``")
+
+
+
+p3 <- ggplot(food_label, aes(x=graphical, y=Education,fill=Age)) + 
+  geom_raster()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  ggtitle("graphical label and \neducation by age``")
+
+
+
+p4 <- ggplot(food_label, aes(x=`Free/prize`, y=Education,fill=Age)) + 
+  geom_raster()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  ggtitle("Free/prize and \neducation by age``")
+
+
+(p1|p2)/(p3|p4)
+
+```
+
+According to figure 15, older people who are having a diploma or GCE A/L passed have no influence towards the attractive package. As well as Older people who are degree qualified have a high influence towards health claims and nutri claims, graphical labelsand free prize.   
+ 
+figure 15:
+
+```{r}
+
+p1 <- ggplot(food_label, aes(x=`attractive pack`, y=Employment,fill=Age)) + 
+  geom_raster()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  ggtitle("attractive pack and \nemployment by age`")
+
+
+
+p2 <- ggplot(food_label, aes(x=`hc/nutriclaims`, y=Employment,fill=Age)) + 
+  geom_raster()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  ggtitle("hc/nutriclaims and \nemployment by age``")
+
+
+
+p3 <- ggplot(food_label, aes(x=graphical, y=Employment,fill=Age)) + 
+  geom_raster()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  ggtitle("graphical label and \nemployment by age``")
+
+
+
+p4 <- ggplot(food_label, aes(x=`Free/prize`, y=Employment,fill=Age)) + 
+  geom_raster()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  ggtitle("Free/prize and \nemployment by age``")
+
+
+(p1|p2)/(p3|p4)
+
+```
+
+In here we can see that students have high influence towards the attractive package, health claims and Nutri claims, graphical labels and free prizes. Part time employed people between 50 and 60 have high influence towards the attractive package, health claims and Nutri claims, graphical labels and free prizes.
+
+figure 16:
+
+```{r}
+
+p1 <- ggplot(food_label, aes(x=`attractive pack`, y=Income,fill=Age)) + 
+  geom_raster()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  ggtitle("attractive pack and \nincome  by age`")
+
+
+
+p2 <- ggplot(food_label, aes(x=`hc/nutriclaims`, y=Income,fill=Age)) + 
+  geom_raster()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  ggtitle("hc/nutriclaims and \nincome by age``")
+
+
+
+p3 <- ggplot(food_label, aes(x=graphical, y=Income,fill=Age)) + 
+  geom_raster()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  ggtitle("graphical label and \nincome by age``")
+
+
+
+p4 <- ggplot(food_label, aes(x=`Free/prize`, y=Income,fill=Age)) + 
+  geom_raster()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  ggtitle("Free/prize and \nincome by age``")
+
+
+(p1|p2)/(p3|p4)
+
+```
+
+People between 20 and 30 who earn less than Rs:20000 don't care about the graphical label and free prizes. Older people who earn income between Rs: 35000 and Rs:49000 have no interest towards attractive package.
+
+
+figure 17:
+
+```{r}
+ggpairs(food_label, mapping = aes(color=`attractive pack`, alpha =0.2),
+        columns =c ("Age", "Children"))+
+  ggtitle("Scatter plot matrix by attractive pack")
+
+```
+There is no relationship between age and children. There neagtive weak linear relationship towards little influence for attractive package. There is no any strong linear relationships.
+
+
+figure 18:
+
+```{r}
+ggpairs(food_label, mapping = aes(color=`hc/nutriclaims`, alpha =0.2),
+        columns =c ("Age", "Children"))+
+  ggtitle("Scatter plot matrix by hc/nutriclaims")
+
+```
+
+There is weak linear postive relationship in every category.
+
+figure 19:
+
+```{r}
+ ggpairs(food_label, mapping = aes(color=graphical, alpha =0.2),
+        columns =c ("Age", "Children"))+
+  ggtitle("Scatter plot matrix by graphical label")
+ 
+```
+There is no any strong linera relationships.
+
+figure 20:
+ 
+```{r}
+ ggpairs(food_label, mapping = aes(color=`Free/prize`, alpha =0.2),
+        columns =c ("Age", "Children"))+
+  ggtitle("Scatter plot matrix by Free/prize")
+
+```
+There is no any strong linear relationships. 
+ 
+ 
+ 
+Before perform the statistical tests we have to omit missing values.
+
+
+```{r}
+food_label <- na.omit(food_label)
+```
+
+
+To identify association betweeen categorical variables we can use chi square test.
+Ho : There is no association between X and Y
+H1 : There is an association between X and Y
+
+Level of significance ($\alpha$)= 0.05
+
+Test statistic : e = (row.sum???col.sum) / grand.total
+
+Decision rule : If p value <=  $\alpha$ , we reject H0 at 5% level of significance.
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Gender, food_label$`attractive pack`)
+chisq.test(food_label$Gender, food_label$`hc/nutriclaims`)
+chisq.test(food_label$Gender, food_label$graphical)
+chisq.test(food_label$Gender, food_label$`Free/prize`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Education, food_label$`attractive pack`)
+chisq.test(food_label$Education, food_label$`hc/nutriclaims`)
+chisq.test(food_label$Education, food_label$graphical)
+chisq.test(food_label$Education, food_label$`Free/prize`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Employment, food_label$`attractive pack`)
+chisq.test(food_label$Employment, food_label$`hc/nutriclaims`)
+chisq.test(food_label$Employment, food_label$graphical)
+chisq.test(food_label$Employment, food_label$`Free/prize`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Income, food_label$`attractive pack`)
+chisq.test(food_label$Income, food_label$`hc/nutriclaims`)
+chisq.test(food_label$Income, food_label$graphical)
+chisq.test(food_label$Income, food_label$`Free/prize`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+Housesize <- food_label %>% filter(!(is.na(Housesize)))
+chisq.test(food_label$Housesize, food_label$`attractive pack`)
+chisq.test(food_label$Housesize, food_label$`hc/nutriclaims`)
+chisq.test(food_label$Housesize, food_label$graphical)
+chisq.test(food_label$Housesize, food_label$`Free/prize`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$marital, food_label$`attractive pack`)
+chisq.test(food_label$marital, food_label$`hc/nutriclaims`)
+chisq.test(food_label$marital, food_label$graphical)
+chisq.test(food_label$marital, food_label$`Free/prize`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$fshopper, food_label$`attractive pack`)
+chisq.test(food_label$fshopper, food_label$`hc/nutriclaims`)
+chisq.test(food_label$fshopper, food_label$graphical)
+chisq.test(food_label$fshopper, food_label$`Free/prize`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$mplanner, food_label$`attractive pack`)
+chisq.test(food_label$mplanner, food_label$`hc/nutriclaims`)
+chisq.test(food_label$mplanner, food_label$graphical)
+chisq.test(food_label$mplanner, food_label$`Free/prize`)
+```
+
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$FA, food_label$`attractive pack`)
+chisq.test(food_label$FA, food_label$`hc/nutriclaims`)
+chisq.test(food_label$FA, food_label$graphical)
+chisq.test(food_label$FA, food_label$`Free/prize`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Diabetes, food_label$`attractive pack`)
+chisq.test(food_label$Diabetes, food_label$`hc/nutriclaims`)
+chisq.test(food_label$Diabetes, food_label$graphical)
+chisq.test(food_label$Diabetes, food_label$`Free/prize`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$`Metabolic cyndrents`, food_label$`attractive pack`)
+chisq.test(food_label$`Metabolic cyndrents`, food_label$`hc/nutriclaims`)
+chisq.test(food_label$`Metabolic cyndrents`, food_label$graphical)
+chisq.test(food_label$`Metabolic cyndrents`, food_label$`Free/prize`)
+
+
+```
+
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Other, food_label$`attractive pack`)
+chisq.test(food_label$Other, food_label$`hc/nutriclaims`)
+chisq.test(food_label$Other, food_label$graphical)
+chisq.test(food_label$Other, food_label$`Free/prize`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$specific, food_label$`attractive pack`)
+chisq.test(food_label$specific, food_label$`hc/nutriclaims`)
+chisq.test(food_label$specific, food_label$graphical)
+chisq.test(food_label$specific, food_label$`Free/prize`)
+```
+
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$job1, food_label$`attractive pack`)
+chisq.test(food_label$job1, food_label$`hc/nutriclaims`)
+chisq.test(food_label$job1, food_label$graphical)
+chisq.test(food_label$job1, food_label$`Free/prize`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$job2, food_label$`attractive pack`)
+chisq.test(food_label$job2, food_label$`hc/nutriclaims`)
+chisq.test(food_label$job2, food_label$graphical)
+chisq.test(food_label$job2, food_label$`Free/prize`)
+
+
+```
+
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Exercise, food_label$`attractive pack`)
+chisq.test(food_label$Exercise, food_label$`hc/nutriclaims`)
+chisq.test(food_label$Exercise, food_label$graphical)
+chisq.test(food_label$Exercise, food_label$`Free/prize`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Health, food_label$`attractive pack`)
+chisq.test(food_label$Health, food_label$`hc/nutriclaims`)
+chisq.test(food_label$Health, food_label$graphical)
+chisq.test(food_label$Health, food_label$`Free/prize`)
+```
+
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$place, food_label$`attractive pack`)
+chisq.test(food_label$place, food_label$`hc/nutriclaims`)
+chisq.test(food_label$place, food_label$graphical)
+chisq.test(food_label$place, food_label$`Free/prize`)
+```
+
+
+```{r}
+chiTable <- hux(
+        Variable = c("Gender", "Education", "Employment", "Income", "Housesize" , 
+                     "marital" ,"fshopper","mplanner" , "FA" ,"Diabetes" ,
+                     "Metabolic_cyndrents", "Other", "specific","job1", "job2",
+                     "Exercise" ,"Health", "place" ),  
+        `attractive pack` = c(0.7871,0.8349,0.8234,0.8005,0.7203,0.4954,0.9025,0.688,0.02956,0.878,
+                              0.1485,0.3106,0.5562,0.09352,0.9347,0.9524,0.1129,0.5621),
+        `hc/nutriclaims`  =c(0.9223,0.9987,0.8875,0.8188,0.8461,0.5314,0.7948,0.3653,0.01645,0.6785,
+                             0.4165,0.3762,0.811,0.7795,0.9699,0.5989,0.1845,0.4815),
+         graphical = c(0.07883,0.005332,0.1171,0.1084,0.4267,0.6012,0.6359,0.7032,0.7903,0.4309,
+                       0.8832,0.1234,0.2806,0.02592,0.4928,0.1685,0.1354,0.6253),
+         `Free/prize` = c(0.0000684,0.05121,0.001036,0.3894,0.567,0.6864,0.3145,0.8791,0.7258,
+                          0.3818,0.8952,0.4009,0.4923,0.05369,0.2724,0.3076,0.1766,0.626),
+        add_colnames = TRUE
+                )
+```
+
+table 16:
+
+```{r}
+      caption(chiTable) <- "Chi square statistics - p values"
+     bold(chiTable)[1,]           <- TRUE
+   bottom_border(chiTable)[1,]  <- TRUE
+   
+   chiTable
+```
+
+According to table 16 
+
+ **Food allergies and attractive package-**
+
+ Since pvalue = 0.02956 < 0.05 we have enough evidence to reject H0 at 5% level of significance. Food allergies and attractive package are dependent.
+          
+ **Food allergies and health claims/nutri claims- ** 
+
+Since pvalue = 0.01645 < 0.05 we have enough evidence to reject H0 at 5% level of significance.Food allergies and health claims/nutri claims are dependent.
+          
+  **Education level and graphical-**
+ 
+ Since pvalue = 0.005332 < 0.05 we have enough evidence to reject H0 at 5% level of significance.Education level and graphical labels are dependent.
+          
+  **Gender and Free/Prize-**
+
+Since pvalue = 0.0000684 < 0.05 we have enough evidence to reject H0 at 5% level of significance.Gender and Free/Prize are dependent.
+        
+  **Employmemt level and Free/Prize-**
+
+ Since pvalue = 0.001036 < 0.05 we have enough evidence to reject H0 at 5% level of significance.Employment level and Free/Prize are dependent.
+          
+ **Job1 and graphical label-**
+
+Since pvalue = 0.02592 < 0.05 we have enough evidence to reject H0 at 5% level of significance.Employment level and Free/Prize are dependent.
+
+
+
+###Association between demographic, socio-economic characteristics and health related factors on awareness of information printed in food labels.
+
+
+figure 21:
+
+```{r}
+ggplot(food_label, aes(x=netquan, y=Age, fill = Gender)) +  
+  geom_boxplot(size = .75) +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  xlab("Net quantity") +
+  ylab("Age") + 
+  ggtitle("Distribution of Age by \nnet quanity and gender")
+
+```
+
+According to the figure 21 we can see that most of the young males know the false detail about net quantity. Males have negatively skewed distribution with knowledge about net quantity.
+
+figure 22:
+
+```{r}
+ggplot(food_label, aes(x= `low in fat`, y=Age, fill = Gender)) +  
+  geom_boxplot(size = .75) +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  xlab("low in fat") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by \n`low in fat` and gender")
+
+```
+
+Figure 22 shows that young males do not know about the low in fat label. Females show positively skewed distribution and males shows negatively skewed distribution for all answers.
+
+figure 23:
+
+```{r}
+ ggplot(food_label, aes(x= `low in cho`, y=Age, fill = Gender)) +  
+  geom_boxplot(size = .75) +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  xlab("low in cholestrol") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by \nlow in cholestrol and gender")
+
+```
+
+In here females show positively skewed distribution with all answers. Both females and males show positively skewed distribution for correct answer which is not more than 0. 02g per 100g.
+
+figure 24:
+
+```{r}
+ggplot(food_label, aes(x= sodium, y=Age, fill = Gender)) +  
+  geom_boxplot(size = .75) +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  xlab("sodium") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by \nsodium and gender")
+```
+
+Figure 24 shows that younger females and middle age males aware about the sodium label. They show positively skewed distribution with correct answer which is low in sodium
+
+figure 25:
+
+```{r}
+
+ggplot(food_label, aes(x= `e labels` , y=Age, fill = Gender)) +  
+  geom_boxplot(size = .75) +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  xlab("E code label") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by \nE code label and gender")
+
+```
+
+According to the figure 25 we can see that middle age females show positively skewed distribution and middle age males show negatively skewed distribution for E code labels.
+
+
+figure 26:
+
+```{r}
+ggplot(food_label, aes(x=netquan, y=Age, fill = Education)) +  
+  geom_boxplot(size = .75) +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  xlab("Net quantity") +
+  ylab("Age") + 
+  ggtitle("Distribution of Age by \nnetquan and education")
+
+```
+
+Figure 26 shows that younger degree qualified people know about the net quantity label and it shows a nearly symmetric distribution. Middle aged people who didn't do O/L have positively skewed distribution with the wrong answer which is second category.
+
+figure 27:
+
+```{r}
+ggplot(food_label, aes(x= `low in fat`, y=Age, fill = Education)) +  
+  geom_boxplot(size = .75) +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  xlab("low in fat") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by \n`low in fat` and education")
+
+```
+
+According to the figure 27 most of the people know about the low in fat label. The fewest number of below O/L, passed o/L, passed A/L people do not know about the low in fat table compared to Diploma and Degree. Diploma qualified people show approximately symmetric distribution with age.
+
+figure 28:
+
+```{r}
+ ggplot(food_label, aes(x= `low in cho`, y=Age, fill = Education)) +  
+  geom_boxplot(size = .75) +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  xlab("low in cholestrol") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by \nlow in cholestrol and education")
+
+```
+
+It seems that older people who didn't do O/L aware about the low in fat label. Most of the people don't know about the low in cholesterol label. People who passed GCE O/L and didn't do O/L has nearly same symmetric distribution
+
+figure 29:
+
+```{r}
+ggplot(food_label, aes(x= sodium, y=Age, fill = Education)) +  
+  geom_boxplot(size = .75) +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  xlab("sodium") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by \nsodium and education")
+```
+
+According to the figure 29, below O/L, passed o/L people do not know about the sodium label. Diploma and Degree qualified people show positively skewed distribution with correct answer. 
+
+figure 30:
+
+```{r}
+
+ggplot(food_label, aes(x= `e labels` , y=Age, fill = Education)) +  
+  geom_boxplot(size = .75) +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))+
+  xlab("E code label") +
+  ylab("Age") +
+  ggtitle("Distribution of Age by \nE code label and education")
+
+```
+
+It seems that all the education levels show positively skewed distribution with awareness of the E code label.
+
+figure 31:
+ 
+```{r} 
+ ggpairs(food_label, mapping = aes(color=netquan, alpha =0.2),
+         columns =c ("Age", "Children"))+
+   ggtitle("Scatter plot matrix by netquan")
+ 
+```
+ 
+
+There is no any strong linear relationships.  
+ 
+figure 32:
+
+```{r}
+ ggpairs(food_label, mapping = aes(color=`low in fat`, alpha =0.2),
+         columns =c ("Age", "Children"))+
+   ggtitle("Scatter plot matrix by low in fat")
+ 
+```
+
+There is no any strong linear relationships. 
+
+figure 33:
+
+```{r} 
+ ggpairs(food_label, mapping = aes(color=`low in cho`, alpha =0.2),
+         columns =c ("Age", "Children"))+
+   ggtitle("Scatter plot matrix by low in cholestro;")
+ 
+```
+ 
+ figure 34:
+ 
+```{r} 
+ ggpairs(food_label, mapping = aes(color=sodium, alpha =0.2),
+         columns =c ("Age", "Children"))+
+   ggtitle("Scatter plot matrix by sodium")
+ 
+```
+ 
+There is no any strong linear relationships. 
+
+figure 35:
+ 
+```{r} 
+ ggpairs(food_label, mapping = aes(color=`e labels`, alpha =0.2),
+         columns =c ("Age", "Children"))+
+   ggtitle("Scatter plot matrix by e code labels")
+
+```
+
+There is no any strong linear relationships. 
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Gender, food_label$netquan)
+chisq.test(food_label$Gender, food_label$`low in fat`)
+chisq.test(food_label$Gender, food_label$`low in cho`)
+chisq.test(food_label$Gender, food_label$sodium)
+chisq.test(food_label$Gender, food_label$`e labels`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Education, food_label$netquan)
+chisq.test(food_label$Education, food_label$`low in fat`)
+chisq.test(food_label$Education, food_label$`low in cho`)
+chisq.test(food_label$Education, food_label$`Free/prize`)
+chisq.test(food_label$Education, food_label$`e labels`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Employment, food_label$netquan)
+chisq.test(food_label$Employment, food_label$`low in fat`)
+chisq.test(food_label$Employment, food_label$`low in cho`)
+chisq.test(food_label$Employment, food_label$`Free/prize`)
+chisq.test(food_label$Employment, food_label$`e labels`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Income, food_label$netquan)
+chisq.test(food_label$Income, food_label$`low in fat`)
+chisq.test(food_label$Income, food_label$`low in cho`)
+chisq.test(food_label$Income, food_label$`Free/prize`)
+chisq.test(food_label$Income, food_label$`e labels`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+Housesize <- food_label %>% filter(!(is.na(Housesize)))
+chisq.test(food_label$Housesize, food_label$netquan)
+chisq.test(food_label$Housesize, food_label$`low in fat`)
+chisq.test(food_label$Housesize, food_label$`low in cho`)
+chisq.test(food_label$Housesize, food_label$sodium)
+chisq.test(food_label$Housesize, food_label$`e labels`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$marital, food_label$netquan)
+chisq.test(food_label$marital, food_label$`low in fat`)
+chisq.test(food_label$marital, food_label$`low in cho`)
+chisq.test(food_label$marital, food_label$sodium)
+chisq.test(food_label$marital, food_label$`e labels`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$fshopper, food_label$netquan)
+chisq.test(food_label$fshopper, food_label$`low in fat`)
+chisq.test(food_label$fshopper, food_label$`low in cho`)
+chisq.test(food_label$fshopper, food_label$sodium)
+chisq.test(food_label$fshopper, food_label$`e labels`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+
+chisq.test(food_label$mplanner, food_label$netquan)
+chisq.test(food_label$mplanner, food_label$`low in fat`)
+chisq.test(food_label$mplanner, food_label$`low in cho`)
+chisq.test(food_label$mplanner, food_label$sodium)
+chisq.test(food_label$mplanner, food_label$`e labels`)
+```
+
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$FA, food_label$netquan)
+chisq.test(food_label$FA, food_label$`low in fat`)
+chisq.test(food_label$FA, food_label$`low in cho`)
+chisq.test(food_label$FA, food_label$sodium)
+chisq.test(food_label$FA, food_label$`e labels`)
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Diabetes, food_label$netquan)
+chisq.test(food_label$Diabetes, food_label$`low in fat`)
+chisq.test(food_label$Diabetes, food_label$`low in cho`)
+chisq.test(food_label$Diabetes, food_label$sodium)
+chisq.test(food_label$Diabetes, food_label$`e labels`)
+
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$`Metabolic cyndrents`, food_label$netquan)
+chisq.test(food_label$`Metabolic cyndrents`, food_label$`low in fat`)
+chisq.test(food_label$`Metabolic cyndrents`, food_label$`low in cho`)
+chisq.test(food_label$`Metabolic cyndrents`, food_label$sodium)
+chisq.test(food_label$`Metabolic cyndrents`, food_label$`e labels`)
+
+```
+
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Other, food_label$netquan)
+chisq.test(food_label$Other, food_label$`low in fat`)
+chisq.test(food_label$Other, food_label$`low in cho`)
+chisq.test(food_label$Other, food_label$sodium)
+chisq.test(food_label$Other, food_label$`e labels`)
+
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$specific, food_label$netquan)
+chisq.test(food_label$specific, food_label$`low in fat`)
+chisq.test(food_label$specific, food_label$`low in cho`)
+chisq.test(food_label$specific, food_label$sodium)
+chisq.test(food_label$specific, food_label$`e labels`)
+
+```
+
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$job1, food_label$netquan)
+chisq.test(food_label$job1, food_label$`low in fat`)
+chisq.test(food_label$job1, food_label$`low in cho`)
+chisq.test(food_label$job1, food_label$sodium)
+chisq.test(food_label$job1, food_label$`e labels`)
+
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$job2, food_label$netquan)
+chisq.test(food_label$job2, food_label$`low in fat`)
+chisq.test(food_label$job2, food_label$`low in cho`)
+chisq.test(food_label$job2, food_label$sodium)
+chisq.test(food_label$job2, food_label$`e labels`)
+
+```
+
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Exercise, food_label$netquan)
+chisq.test(food_label$Exercise, food_label$`low in fat`)
+chisq.test(food_label$Exercise, food_label$`low in cho`)
+chisq.test(food_label$Exercise, food_label$`Free/prize`)
+chisq.test(food_label$Exercise, food_label$`e labels`)
+
+```
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$Health, food_label$netquan)
+chisq.test(food_label$Health, food_label$`low in fat`)
+chisq.test(food_label$Health, food_label$`low in cho`)
+chisq.test(food_label$Health, food_label$`Free/prize`)
+chisq.test(food_label$Health, food_label$`e labels`)
+
+```
+
+
+```{r, message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+chisq.test(food_label$place, food_label$netquan)
+chisq.test(food_label$place, food_label$`low in fat`)
+chisq.test(food_label$place, food_label$`low in cho`)
+chisq.test(food_label$place, food_label$`Free/prize`)
+chisq.test(food_label$place, food_label$`e labels`)
+
+```
+
+
+```{r}
+chiTable2 <- hux(
+        Variable = c("Gender", "Education", "Employment", "Income", "Housesize" , 
+                     "marital" ,"fshopper","mplanner" , "FA" ,"Diabetes" ,
+                     "Metabolic_cyndrents", "Other", "specific","job1", "job2",
+                     "Exercise" ,"Health", "place" ),  
+         netquan      = c(0.0000022,0.02227,0.2817,0.2911,0.8782,0.8696,0.2416,0.00002215,
+                          0.1918,0.09066,0.03316,0.2741,0.2146,0.359,0.9124,0.3473,0.2398,0.2362),
+        `low in fat`  = c(0.6385,0.09762,0.01041,0.41,0.171,0.2026,0.8417,0.8827,0.1397,0.8424,
+                          0.9086,07869,0.6499,0.4867,0.5765,0.4409,0.7246,0.7535),
+        `low in cho`  = c(0.2424,0.8388,0.5437,0.6919,0.1802,05666,0.1249,0.9328,05077,0.1007,0.4358,
+                          0.296,0.5847,0.7082,0.7609,0.9345,0.1352,0.557),
+         sodium       = c(0.01948,0.05121,0.001036,0.3894,0.4591,0.5783,0.6344,0.105,0.08301,0.6761,
+                          0.4012,0.3476,0.1286,0.7007,0.7472,0.3076,0.1766,0.626),
+        `e labels`    = c(0.0318,0.000000003251,0.1029,0.03139,0.8,0.05442,0.3435,0.7828,1,0.4325,0.1639,
+                          0.8746,0.7086,0.007165,0.8449,0.0003601,0.901,0.04643),
+        
+        add_colnames = TRUE
+                )
+```
+
+table 17:
+
+```{r}
+      caption(chiTable2) <- "Chi square statistics - p values"
+     bold(chiTable2)[1,]           <- TRUE
+   bottom_border(chiTable2)[1,]  <- TRUE
+   
+   chiTable2
+```
+
+According to table 17,  
+
+ **Net quantity and Gender-**
+
+ Since pvalue = 2.2e-06 < 0.05 we have enough evidence to reject H0 at 5% level of significance.  Net quantity and Gender are dependent.
+ 
+ **Net quantity and Education-**
+ 
+ Since pvalue = 0.0223  < 0.05 we have enough evidence to reject H0 at 5% level of significance. Net quantity and Education are dependent.
+ 
+ **Net quantity and Metabolic cyndrents-**
+ 
+ Since pvalue = 0.0332  < 0.05 we have enough evidence to reject H0 at 5% level of significance.  Net quantity and Metabolic cyndrents are dependent.
+ 
+ **Low in fat and Employment level-**
+ 
+ Since pvalue = 0.0104  < 0.05 we have enough evidence to reject H0 at 5% level of significance. Low in fat and Employment level are dependent.
+ 
+ **Sodium and Gender-**
+ 
+ Since pvalue = 0.01948 < 0.05 we have enough evidence to reject H0 at 5% level of significance. Sodium and Gender are dependent.
+ 
+ **sodium and Employment level-**
+ 
+ Since pvalue = 0.001036 < 0.05 we have enough evidence to reject H0 at 5% level of significance. sodium and Employment level are dependent.
+ 
+ **sodium and food allergies-**
+ 
+ Since pvalue = 0.08031 < 0.05 we have enough evidence to reject H0 at 5% level of significance.  sodium and food allergies are dependent.
+ 
+ **E label and Gender-**
+ 
+ Since pvalue = 0.0318 < 0.05 we have enough evidence to reject H0 at 5% level of significance. E label and Gender are dependent.
+ 
+ **E label and Education-**
+ 
+ Since pvalue = 3.25e-09  < 0.05 we have enough evidence to reject H0 at 5% level of significance. E label and Education are dependent.
+ 
+ **E label and Income-**
+ 
+ Since pvalue = 0.03139 < 0.05 we have enough evidence to reject H0 at 5% level of significance. E label and Income are dependent.
+ 
+ **E label and Job 1-**
+ 
+ Since pvalue = 0.007165 < 0.05 we have enough evidence to reject H0 at 5% level of significance. E label and Job 1 are dependent.
+ 
+ **E label and Exercise-**
+ 
+ Since pvalue = 0.0003601 < 0.05 we have enough evidence to reject H0 at 5% level of significance. E label and Exercise are dependent.
+ 
+ **E label and place-**
+ 
+ Since pvalue = 0.04643 < 0.05 we have enough evidence to reject H0 at 5% level of significance. E label and place are dependent.
+ 
+
+####Conclusion
+
+By using Chi sqaure test we can see that educational level and doctors, nurses health care workers show association on awareness of graphical labels. Food allergies shows association between attractive package and health claima/nutri claims. 
+Net quantity has an associations with gender, education levels and metabolic cyndrents. As well as low in fat label and employment levels are dependent with each other. Sodium level has an association with gender, food allergies and employment level.Gender, education , income,octors, nurses health care workers ,Exercise , place show association with E code labels. 
+
+
+####References
+
+* https://hellor.netlify.com/
+* https://tstdataviz.netlify.app/
+* https://data-flair.training/blogs/chi-square-test-in-r/#:~:text=Chi%2DSquare%20test%20in%20R%20is%20a%20statistical%20method%20which,selected%20from%20the%20same%20population.
+* http://www.sthda.com/english/wiki/chi-square-test-of-independence-in-r
+
+
+
+
+
+
+
+

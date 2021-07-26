@@ -3,11 +3,11 @@ date: "2016-05-05T21:48:51-07:00"
 title: ASP 460 2.0 Special topics in Statistics 
 ---
 
-Course outline: [here](/CO/2020ASP46020.pdf)
+Course outline: [here](/CO/ASP_460_20_DataVisualisation.pdf)
 
 Here's your roadmap for the semester! Class materials will be added on the day of the class.
 
- 📊 Week 1: [Introduction to data visualization](/slides/lesson1viz.html) 
+ 📊 Week 1: [Introduction to data visualization: Visualisation design process](/slides/lesson1viz.html) 
 
 📊 Week 2: [Scientific design choices in data visualization](/slides/lesson2viz.html)
 
@@ -65,3 +65,7 @@ To be continued in Week 11.
 [Report - Rmd](/endproject/submission/AS2016446.Rmd) [Report - html](/endproject/submission/AS2016446.html)
 
 [Dashboard - Rmd](/endproject/submission/foodDashBoard.Rmd) [Dashboard - html](/endproject/submission/foodDashBoard.html)
+
+## Archive
+
+[Course outline - 2020](/CO/2020ASP46020.pdf)

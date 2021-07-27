@@ -44,7 +44,7 @@ background-size: contain
 ---
 # What is data visualization?
 
-The visual representation and presentation of data to facilitate understanding."
+The visual representation and presentation of data to facilitate understanding.
 
 Andy Kirk
 
@@ -52,7 +52,7 @@ Andy Kirk
 
 # What is data visualization?
 
-The visual **representation** and **presentation** of **data** to **facilitate understanding**."
+The visual **representation** and **presentation** of **data** to **facilitate understanding**.
 
 Andy Kirk
 
@@ -345,11 +345,21 @@ What does it **mean to me**?
   
     - What is the output format? (printout, mobile app, etc)
     
-    - Audience (How much assisstant do they need? How familiar are they with the charts?)
+    - Audience (How much assisstant do they need?,  How familiar are they with the charts?)
     
     - Time scale
     
     - Tools
+    
+
+    
+  
+
+---
+
+## Stage1: Formulating your brief (cont)
+
+
     
 - Purpose: 
 
@@ -362,7 +372,7 @@ What does it **mean to me**?
 ---
 
 background-image: url('e1.png')
-
+background-size: contain
 
 # Exhibitory
 
@@ -432,23 +442,16 @@ background-size: contain
 
 - Captions, legends
 
-- Positioning 
- 
-   - Same page or in the facing page, inconvenient to have to turn pages back and forth
-   
+- Positioning/ layout: Same page or in the facing page, inconvenient to have to turn pages back and forth
    
 - Size, Frames and Aspect Ratio
 
- 
-- Colour
-
-   - Blends well and distinguish between different categories
+- Colour: Blends well and distinguish between different categories
 
 - Consistency
 
 - Proximity: place graphics on the same page or on the facing page
 
-- Layout
 
 ---
 
@@ -463,6 +466,7 @@ background-size: contain
 
 background-image: url('charts-scale.jpg')
 background-size: contain
+
 
 
 
@@ -485,6 +489,34 @@ background-size: contain
 
 background-image: url('election.png')
 background-size: contain
+
+---
+class: center,  inverse
+
+# Exercise
+
+
+
+---
+
+**US Adults Opinions on Climate Change Relevant Regulations**
+
+1. Require producing 20% of electricity from clean energy.
+
+
+2. Regulate $CO_2$ as a pollutant.
+
+3. Fund more research into renewable energy.
+
+|   |  1 | 2  | 3  | 4  | 5  |
+|--:|--:|--:|--:|--:|--:|
+| Q1  |15   | 20  | 2  | 38  |  25 |
+| Q2  | 10  | 14  | 2  |  44 |   30|
+|  Q3 | 6  |  9 | 2  |  41 |  42|
+
+Response: Strongly support (1), Somewhat support (2), Refused (3), Somewhat oppose (4), Strongly opposed (5)
+
+
 
 ---
 

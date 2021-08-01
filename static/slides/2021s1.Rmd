@@ -1,15 +1,16 @@
 ---
-date: "2016-05-05T21:48:51-07:00"
-title: ASP 460 2.0 Special topics in Statistics 
+output: html_document
 ---
 
-## 2021: Semester 1
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
-Course outline: [here](/CO/ASP_460_20_DataVisualisation.pdf)
+## 2020 -  Semester 1
 
 Here's your roadmap for the semester! Class materials will be added on the day of the class.
 
- 📊 Week 1: [Introduction to data visualization: Visualisation design process](/slides/lesson1viz.html) 
+📊 Week 1: [Introduction to data visualization: Visualisation design process](/slides/lesson1viz.html) 
 
 📊 Week 2: [Scientific design choices in data visualization](/slides/lesson2viz.html)
 
@@ -19,6 +20,16 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 📊 Week 4: [Introduction to the ggplot2 package](/slides/lecture4dataviz.html)
 
 📊 Week 5: [Visualisation of time series data - Introduction](/slides/lecture5ts.html)
+
+To be continued in Week 11.
+
+#### COVID-19 outbreak
+
+```difff
+
+! Please go to Google Classroom for up-to-date information and announcements.
+
+```
 
 📊 Week 6: [Data wrangling](/datawrangling_tutorial.pdf)
 
@@ -44,6 +55,3 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 📊 Week 14: Recap - Completed 
 
 📊 Week 15: [Visualization of spatial data](/slides/spatiotemporal.html)
-
-
-

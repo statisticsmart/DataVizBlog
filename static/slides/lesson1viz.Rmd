@@ -498,7 +498,7 @@ class: center,  inverse
 
 # Exercise
 
-
+Sketch suitable plots to visualize the frequency distribution.
 
 ---
 

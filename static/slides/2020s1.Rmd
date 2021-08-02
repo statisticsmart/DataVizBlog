@@ -1,12 +1,16 @@
 ---
-title: ASP 460 2.0 Data Visualisation
+output: html_document
 ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 ## 2020 -  Semester 1
 
 Here's your roadmap for the semester! Class materials will be added on the day of the class.
 
-📊 Week 1: [Introduction to data visualization: Visualisation design process](/slides/lesson1viz.html) 
+📊 Week 1: [Introduction to data visualization: Visualisation design process](/slides/l12020.html) 
 
 📊 Week 2: [Scientific design choices in data visualization](/slides/lesson2viz.html)
 

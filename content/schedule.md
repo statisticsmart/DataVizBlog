@@ -15,6 +15,8 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 
 📊 Week 3: [Introduction to the grammar of graphics](/slides/lesson3viz2021.html)
 
+[In-class R-script](/slides/code/scatterplot.R)
+
 
 📊 Week 4: [Introduction to the ggplot2 package](/slides/lecture4dataviz.html)
 

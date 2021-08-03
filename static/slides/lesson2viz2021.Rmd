@@ -38,13 +38,7 @@ style_mono_accent(
 )
 ```
 
-## Encoding vs Decoding
 
- <img src="encoding.png" width="500">
- 
- 
-
----
 ## Encoding data using visual cues
 
 Encoding: Mapping the data into a visual element (visual cues) on a chart/map/etc.

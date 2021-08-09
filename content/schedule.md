@@ -23,6 +23,7 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 Flipped classroom
 
 Go to the Google Classroom for more information.
+
 ```
 
 📊 Week 4: Scientific design choices in data visualization

@@ -19,7 +19,9 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 📊 Week 3: [Introduction to the ggplot2 package - Flipped classroom](/slides/mpg_visualization.html)
 
 ```r
-Flipped classroom: Go to the Google Classroom for more information.
+**Flipped classroom**
+
+Go to the Google Classroom for more information.
 ```
 
 📊 Week 4: Scientific design choices in data visualization

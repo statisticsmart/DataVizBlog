@@ -11,41 +11,43 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 
  📊 Week 1: [Introduction to data visualization: Visualisation design process](/slides/lesson1viz.html) 
 
-📊 Week 2: [Scientific design choices in data visualization](/slides/lesson2viz2021.html)
 
-📊 Week 3: [Introduction to the grammar of graphics](/slides/lesson3viz2021.html)
+📊 Week 2: [Introduction to the grammar of graphics](/slides/lesson3viz2021.html)
 
 [In-class R-script](/slides/code/scatterplot.R)
 
+📊 Week 3: [Introduction to the ggplot2 package - Flipped classroom](/slides/mpg_visualization.html)
 
-📊 Week 4: [Introduction to the ggplot2 package](/slides/lecture4dataviz.html)
+```r
+Flipped classroom: Go to the Google Classroom for more information.
+```
 
-📊 Week 5: [Visualisation of time series data - Introduction](/slides/lecture5ts.html)
+📊 Week 4: Scientific design choices in data visualization
 
-📊 Week 6: [Data wrangling](/datawrangling_tutorial.pdf)
+📊 Week 5: Visualisation of time series data - Introduction
 
-📊 Week 7: [Coordinate systems and axes](/slides/lecture7.html)
+📊 Week 6: Data wrangling
 
-📊 Week 8: [Visualizing distributions of data](/slides/lecture8.html)
+📊 Week 7: Coordinate systems and axes
 
-📊 Week 9: [Create different types of static graphics with ggplot2: categorical Data](/slides/Data_visualization_9.html)
+📊 Week 8: Visualizing distributions of data
 
-📊 Week 10: [Higher-dimensional displays and special structures](/slides/lecture10.html)
+📊 Week 9: Create different types of static graphics with ggplot2: categorical Data
 
-📊 Week 11: [Visualization of time series data](/slides/lesson11tsviz.html)
+📊 Week 10: Higher-dimensional displays and special structures
 
-📊 Week 12: [Principal component analysis](/slides/lesson12pca.html)
+📊 Week 11: Visualization of time series data
+
+📊 Week 12: Principal component analysis
 
 
-📊 Week 13:  [Linked data views of visual exploration/ Dashboard, interactive and animated displays](/slides/lectureplotly.html)
+📊 Week 13:  Linked data views of visual exploration/ Dashboard, interactive and animated displays
 
-[Example dashboard](https://thiyanga.netlify.app/post/covid19/)
+📊 Week 14: Visualization of spatial data
 
-[Example dashboard](/slides/dashboard_penguins.html)
+📊 Week 15: Recap - Completed 
 
-📊 Week 14: Recap - Completed 
 
-📊 Week 15: [Visualization of spatial data](/slides/spatiotemporal.html)
 
 
 

@@ -16,19 +16,19 @@ output:
 
 # Learning objectives
 
-i. Create data graphics using the ggplot2 package.
+i. Create data graphics using the ggplot2 package
 
-ii. Identify suitable aesthetics and geoms to create plots using `qplot` and `ggplot`.
+ii. Identify suitable aesthetics and geoms to create plots using `qplot` and `ggplot`
 
-iii. Identify what faceting is and apply faceting in ggplot.
+iii. Identify what faceting is and apply faceting in ggplot
 
-iv. Customize data graphics using ggplot.
+iv. Customize data graphics using ggplot
 
 
 
 # Learning materials
 
-Check the video lectures in the Google Classroom.
+Check the video lectures in Google Classroom.
 
 
 
@@ -38,12 +38,16 @@ Check the video lectures in the Google Classroom.
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-This question is based on `mpg` dataset in `ggplot2` package. Load the `ggplot2` package and `mpg` dataset using the following command.
+This question is based on `mpg` dataset in the `ggplot2` package. Load the `ggplot2` package and `mpg` dataset using the following command.
 
 ```{r, comment=NA}
 library(ggplot2)
 data(mpg)
 ```
+
+
+<span style="color:green">Fuel economy data from 1999 to 2008 for 38 popular models of cars</span>.
+
 
 This dataset contains a subset of the fuel economy data that the EPA makes available on https://fueleconomy.gov/. It contains only models which had a new release every year between 1999 and 2008 - this was used as a proxy for the popularity of the car. To find out more information about the dataset you can run the command
 
@@ -57,7 +61,7 @@ You can observe the data structure using the following command
 str(mpg)
 ```
 
-To get summary statistics use the command
+To get a summary use the command
 
 ```{r, comment=NA}
 summary(mpg)
@@ -65,7 +69,7 @@ summary(mpg)
 
 # Exercise
 
-## Write R codes to reporduce the following plots using both `qplot` function and `ggplot` function in the `ggplot2` package. The first one is done for you.
+## Write R codes to reproduce the following plots using both the `qplot` function and the `ggplot` function in the `ggplot2` package. The first one is done for you.
 
 Help:
 

@@ -255,21 +255,22 @@ div.tocify {
 <div id="learning-objectives" class="section level1">
 <h1>Learning objectives</h1>
 <ol style="list-style-type: lower-roman">
-<li><p>Create data graphics using the ggplot2 package.</p></li>
-<li><p>Identify suitable aesthetics and geoms to create plots using <code>qplot</code> and <code>ggplot</code>.</p></li>
-<li><p>Identify what faceting is and apply faceting in ggplot.</p></li>
-<li><p>Customize data graphics using ggplot.</p></li>
+<li><p>Create data graphics using the ggplot2 package</p></li>
+<li><p>Identify suitable aesthetics and geoms to create plots using <code>qplot</code> and <code>ggplot</code></p></li>
+<li><p>Identify what faceting is and apply faceting in ggplot</p></li>
+<li><p>Customize data graphics using ggplot</p></li>
 </ol>
 </div>
 <div id="learning-materials" class="section level1">
 <h1>Learning materials</h1>
-<p>Check the video lectures in the Google Classroom.</p>
+<p>Check the video lectures in Google Classroom.</p>
 </div>
 <div id="data-set" class="section level1">
 <h1>Data set</h1>
-<p>This question is based on <code>mpg</code> dataset in <code>ggplot2</code> package. Load the <code>ggplot2</code> package and <code>mpg</code> dataset using the following command.</p>
+<p>This question is based on <code>mpg</code> dataset in the <code>ggplot2</code> package. Load the <code>ggplot2</code> package and <code>mpg</code> dataset using the following command.</p>
 <pre class="r"><code>library(ggplot2)
 data(mpg)</code></pre>
+<p><span style="color:green">Fuel economy data from 1999 to 2008 for 38 popular models of cars</span>.</p>
 <p>This dataset contains a subset of the fuel economy data that the EPA makes available on <a href="https://fueleconomy.gov/" class="uri">https://fueleconomy.gov/</a>. It contains only models which had a new release every year between 1999 and 2008 - this was used as a proxy for the popularity of the car. To find out more information about the dataset you can run the command</p>
 <pre class="r"><code>help(mpg) # or ?mpg</code></pre>
 <p>You can observe the data structure using the following command</p>
@@ -286,7 +287,7 @@ data(mpg)</code></pre>
  $ hwy         : int [1:234] 29 29 31 30 26 26 27 26 25 28 ...
  $ fl          : chr [1:234] &quot;p&quot; &quot;p&quot; &quot;p&quot; &quot;p&quot; ...
  $ class       : chr [1:234] &quot;compact&quot; &quot;compact&quot; &quot;compact&quot; &quot;compact&quot; ...</code></pre>
-<p>To get summary statistics use the command</p>
+<p>To get a summary use the command</p>
 <pre class="r"><code>summary(mpg)</code></pre>
 <pre><code> manufacturer          model               displ            year     
  Length:234         Length:234         Min.   :1.600   Min.   :1999  
@@ -312,8 +313,8 @@ data(mpg)</code></pre>
 </div>
 <div id="exercise" class="section level1">
 <h1>Exercise</h1>
-<div id="write-r-codes-to-reporduce-the-following-plots-using-both-qplot-function-and-ggplot-function-in-the-ggplot2-package.-the-first-one-is-done-for-you." class="section level2">
-<h2>Write R codes to reporduce the following plots using both <code>qplot</code> function and <code>ggplot</code> function in the <code>ggplot2</code> package. The first one is done for you.</h2>
+<div id="write-r-codes-to-reproduce-the-following-plots-using-both-the-qplot-function-and-the-ggplot-function-in-the-ggplot2-package.-the-first-one-is-done-for-you." class="section level2">
+<h2>Write R codes to reproduce the following plots using both the <code>qplot</code> function and the <code>ggplot</code> function in the <code>ggplot2</code> package. The first one is done for you.</h2>
 <p>Help:</p>
 <ol style="list-style-type: decimal">
 <li><p>Identify the <code>x</code> variable, <code>y</code> variable, <code>color</code> variable.</p></li>

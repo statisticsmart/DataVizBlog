@@ -14,7 +14,7 @@ output:
   <strong>"A flipped classroom is an instructional strategy and a type of blended learning, which aims to increase student engagement and learning by having students complete readings at their home and work on live problem-solving during class time ." Source: </strong>https://en.wikipedia.org/wiki/Flipped_classroom
 </div>
 
-# Learning objective
+# Learning objectives
 
 i. Create data graphics using the ggplot2 package.
 

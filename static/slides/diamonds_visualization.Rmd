@@ -10,13 +10,12 @@ output:
 
 Learning objective:
 
-- Produce barcharts, scatter plots, boxplots, and time series plots using the ggplot2 package.
+- Produce barcharts, scatter plots, and boxplots plots using the ggplot2 package.
 
 - Apply faceting in ggplot.
 
-- Modify the aesthetics of an existing ggplot plot (including axis labels and color).
 
-- Customized plots from data in a data frame.
+- Customized plots using `scale_*`
 
 # Resources
 

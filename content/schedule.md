@@ -26,7 +26,7 @@ Go to the Google Classroom for more information.
 
 ```
 
-📊 Week 4: Scientific design choices in data visualization
+📊 Week 4: [Scientific design choices in data visualization](/slides/lesson4viz2021.html)
 
 📊 Week 5: Visualisation of time series data - Introduction
 

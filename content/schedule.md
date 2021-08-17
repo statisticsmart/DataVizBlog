@@ -28,6 +28,9 @@ Go to the Google Classroom for more information.
 
 📊 Week 4: [Scientific design choices in data visualization](/slides/lesson4viz2021.html)
 
+💻 [Practical class tutorial](/slides/diamonds_visualization.html)
+
+
 📊 Week 5: Visualisation of time series data - Introduction
 
 📊 Week 6: Data wrangling

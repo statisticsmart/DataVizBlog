@@ -51,9 +51,14 @@ p1 + geom_bar(fill="forestgreen")+
 _____________
 
 ```{r, comment=NA}
+#old version
 #..count..: special variable to represent frequency
-p1 <- ggplot(data=diamonds, aes(x=cut, y=..count..))
-p2 <- ggplot(data=diamonds, aes(x=cut, y=..count../sum(..count..)))
+#p1 <- ggplot(data=diamonds, aes(x=cut, y=..count..))
+#p2 <- ggplot(data=diamonds, aes(x=cut, #y=..count../sum(..count..)))
+
+# New version
+p1 <- ggplot(data=diamonds, aes(x=cut, y=after_stat(count/sum(count)))) + geom_bar()
+p2 <- ggplot(data=diamonds, aes(x=cut, y=after_stat(count/sum(count)))) + geom_bar()
 ```
 
 

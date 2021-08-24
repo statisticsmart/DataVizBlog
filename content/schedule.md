@@ -31,28 +31,27 @@ Go to the Google Classroom for more information.
 💻 [Practical class tutorial](/slides/diamonds_visualization.html)
 
 
-📊 Week 5: Visualisation of time series data - Introduction
-
-📊 Week 6: Data wrangling
-
-📊 Week 7: Coordinate systems and axes
-
-📊 Week 8: Visualizing distributions of data
-
-📊 Week 9: Create different types of static graphics with ggplot2: categorical Data
-
-📊 Week 10: Higher-dimensional displays and special structures
-
-📊 Week 11: Visualization of time series data
-
-📊 Week 12: Principal component analysis
+📊 Week 5-1: [Coordinate systems and axes](/slides/lesson5viz2021.html)
 
 
-📊 Week 13:  Linked data views of visual exploration/ Dashboard, interactive and animated displays
+📊 Week 5-2: [Create different types of static graphics with ggplot2: categorical Data](/slides/Data_visualization_2021.html)
 
-📊 Week 14: Visualization of spatial data
 
-📊 Week 15: Recap - Completed 
+📊 Week 6: Visualizing distributions of data
+
+📊 Week 7: Higher-dimensional displays and special structures
+
+📊 Week 8: Visualization of time series data
+
+📊 Week 9: Visualization of spatial data
+
+📊 Week 10: Principal component analysis
+
+
+📊 Week 11-12:  Linked data views of visual exploration/ Dashboard, interactive and animated displays
+
+
+📊 Week 13: Recap - Completed 
 
 
 

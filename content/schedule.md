@@ -36,8 +36,9 @@ Go to the Google Classroom for more information.
 
 📊 Week 5-2: [Create different types of static graphics with ggplot2: categorical Data](/slides/Data_visualization_2021.html)
 
+📊 Week 6-1: [Colour scales and coordinate systems with ggplot](/slides/lesson6viz2021.html)
 
-📊 Week 6: Visualizing distributions of data
+📊 Week 6-2: Visualizing distributions of data
 
 📊 Week 7: Higher-dimensional displays and special structures
 

@@ -1,8 +1,8 @@
 ---
-title: "ASP 460 2.0 Data Visualization"
+title: "ASP 460 2.0 Data Visualisation"
 subtitle: "Visualizing Distributions"
 author: "Thiyanga Talagala"
-date: "2021-09-08"
+date: "2021-09-07"
 output:
   xaringan::moon_reader:
     lib_dir: libs

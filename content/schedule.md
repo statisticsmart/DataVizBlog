@@ -40,7 +40,7 @@ Go to the Google Classroom for more information.
 
 📊 Week 7: [Visualizing distributions of data](/slides/dis.html)
 
-📊 Week 7: Higher-dimensional displays and special structures
+📊 Week 7: [Higher-dimensional displays and special structures](/slides/hd.html)
 
 📊 Week 8: Visualization of time series data
 

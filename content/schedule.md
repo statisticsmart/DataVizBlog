@@ -40,16 +40,15 @@ Go to the Google Classroom for more information.
 
 📊 Week 7: [Visualizing distributions of data](/slides/dis.html)
 
-📊 Week 7: [Higher-dimensional displays and special structures](/slides/hd.html)
+📊 Week 8:  [Linked data views of visual exploration/ Dashboard, interactive and animated displays](/slides/interactiveplots.html)
 
-📊 Week 8: Visualization of time series data
+📊 Week 9: [Higher-dimensional displays and special structures](/slides/hd.html)
 
-📊 Week 9: Visualization of spatial data
+📊 Week 10: Visualization of time series data
 
-📊 Week 10: Principal component analysis
+📊 Week 11: Visualization of spatial data
 
-
-📊 Week 11-12:  Linked data views of visual exploration/ Dashboard, interactive and animated displays
+📊 Week 12: Principal component analysis
 
 
 📊 Week 13: Recap - Completed 

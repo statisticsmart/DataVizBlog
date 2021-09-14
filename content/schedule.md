@@ -44,6 +44,10 @@ Go to the Google Classroom for more information.
 
 📊 Week 9: [Higher-dimensional displays and special structures](/slides/hd.html)
 
+[Sample flexdashboard-HTML](/slides/flexdashboard/Flexdashboard1.html)
+
+[Sample flexdashboard-Rmd](/slides/flexdashboard/Flexdashboard1.Rmd)
+
 📊 Week 10: Visualization of time series data
 
 📊 Week 11: Visualization of spatial data

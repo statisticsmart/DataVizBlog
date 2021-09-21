@@ -48,12 +48,11 @@ Go to the Google Classroom for more information.
 
 [Sample flexdashboard-Rmd](/slides/flexdashboard/Flexdashboard1.Rmd)
 
-📊 Week 10: Visualization of time series data
+📊 Week 10: [Visualization of time series data](/slides/tsviz2021.html)
 
-📊 Week 11: Visualization of spatial data
+📊 Week 11: Principal component analysis
 
-📊 Week 12: Principal component analysis
-
+📊 Week 12: Visualization of spatial data
 
 📊 Week 13: Recap - Completed 
 

@@ -51,8 +51,7 @@ Go to the Google Classroom for more information.
 📊 Week 10: [Visualization of time series data](/slides/tsviz2021.html) [Feature-based Visualization](https://thiyangt.github.io/RLadiesMLTS/index.html#1)
 
 
-
-📊 Week 11: [Principal component analysis]
+📊 Week 11: [Principal component analysis](/slides/pc2021.html)
 
 📊 Week 12: [Visualization of spatial data](https://rladiescolombo.netlify.app/talk/3_map/)
 

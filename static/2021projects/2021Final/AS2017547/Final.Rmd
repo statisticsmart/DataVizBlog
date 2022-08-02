@@ -1,0 +1,112 @@
+---
+title: "Final Project"
+author: "Nirmani Siriwardhana - AS2017547"
+date: "10/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,command = NA, message = FALSE, warning = FALSE)
+```
+
+
+### Plot 01 
+
+```{r, message=FALSE, warning=FALSE, comment=NA}
+
+
+library(tidyverse)
+library(covdata)
+library(plotly)
+
+ar <- cdc_deaths_by_sex[-c(3),]
+
+
+ac <- select(ar,!percent_expected_deaths)
+
+
+b <-pivot_longer(ac,5:9,names_to = "Death_Type", values_to = "Amount")
+
+
+g1 <-ggplot(b, aes(x=Death_Type, y=Amount,color= sex))+
+  geom_point() + scale_color_manual(values = c( "#ff0810","#051180")) +
+  theme_minimal() + theme(axis.ticks.x = element_blank(),axis.text.x = element_blank()) +
+  
+  labs(x = "Death Types",
+       y = " Amount of Death Type")
+ggplotly(g1)
+
+
+```
+
+
+
+
+
+###plot 2
+
+
+```{r, comment=NA}
+
+
+new_data <- na.omit(covus_ethnicity)
+
+
+g4 <- ggplot(new_data, aes(x= cases,y= hosp, color=state)) + scale_color_manual(values = c( "#ff0810","#21803a", "#2f0970")) +
+
+  geom_point( size = 0.5, alpha= 0.8) + facet_wrap(~group) + labs( title = "Covid-19 Cases and Hospitalized cases of USA by ethnicity & state", x = "Number of Covid-19 cases",
+                                           y = " Number of Hospitalized Covid-19 cases")
+
+ggplotly(g4)
+
+
+```
+
+
+
+
+### plot 3
+
+```{r, comment=NA}
+
+
+
+
+new_co_race <- na.omit(covus_race)
+
+
+g5 <- ggplot(new_co_race, aes(x= date,y= deaths, color=group)) +
+  geom_line() + facet_wrap(~state,scales="free") + labs( title = "Covid 19 Deaths - USA by race and state", x = "Date",y = " Number of Covid-19 Deaths")
+
+ggplotly(g5)
+
+
+```
+
+
+
+
+
+
+
+### plot 4
+
+
+```{r, comment=NA}
+
+
+
+new_d <- nytcovstate %>% group_by(state) %>% filter(state %in% c("california", "Texas", "Florida", "New York"))%>%
+         mutate(cum_cases = cumsum(cases), cum_deaths = cumsum(deaths)) %>%pivot_longer(6:7, names_to = "Type", values_to = "Amount")
+
+
+g6 <- ggplot(new_d, aes(x=date, y= Amount, color=Type)) + geom_line() + 
+  facet_wrap(~state, ncol = 5) + scale_y_log10(labels = scales::label_number_si())+
+  labs( title = "Cumulative Covid 19 Deaths & Cases - USA by State", x = "Date",
+        y = " Log(10) Covid-19 Cases") + scale_color_manual(values = c(  "#2f0970","#e6601e")) +
+ theme(axis.text.x = element_text(angle = -30, vjust = 1, hjust = 0))
+  
+
+ggplotly(g6)
+  
+```

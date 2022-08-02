@@ -1,0 +1,95 @@
+---
+title: "Covid-19 deaths of USA"
+author: "K.D.K.G.Kaluarachchi"
+date: "10/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### The following report contains information on the deaths due to covid-19 in the United States
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(covdata) 
+library(tidyverse)
+library(skimr)
+library(magrittr)
+library(scales)
+library(patchwork)
+library(graphics)
+library(treemapify)
+```
+
+
+**Figure 01:**
+```{r, echo=FALSE, warning=FALSE, message=FALSE,fig.align='center'}
+USA_covid_cases<-covnat_daily%>%
+  filter(cname=="United States")%>%
+  select(c(iso3, date, cases, deaths))%>%
+  rename(confirmed_cases=cases, death_cases=deaths)%>%
+  pivot_longer(3:4, "case", "counts")
+
+base1 <-USA_covid_cases%>%
+  ggplot(aes(x=date, y=value, color=case)) + geom_line() + theme(aspect.ratio = 0.5) + 
+  labs(y="daily counts",title = "Confirmed and death Covid-19 cases by time", subtitle = "(a)")
+base2 <-USA_covid_cases%>%
+  ggplot(aes(x=date, y=value, color=case)) + geom_line() + scale_y_log10(labels = scales::comma) + theme(aspect.ratio = 0.5) +  
+ labs(y="log10(daily counts)",subtitle = "(b)")
+base1 + base2 + plot_layout(ncol=1) 
+
+```
+
++ Plot (a) shows an upward trend in Covid-19 confirmed cases and the death count remains at the  approximately same value. However, according to the log transform of the case count(Plot (b)), the rate at which confirmed cases are reported increases and the rate at which death cases are reported increases in the same way.
+
+
+**Figure 02:**
+```{r, echo=FALSE, warning=FALSE, message=FALSE,fig.align='center'}
+nchs_sas%>%
+  select(c(data_as_of, state, sex, age_group, covid_19_deaths))%>%
+  filter(state=="United States", sex!="All Sexes")%>%
+  filter(age_group%in%c("0-17 years", "18-29 years", "30-39 years", "40-49 years", "50-64 years", "65-74 years", "75-84 years", "85 years and over"))%>%
+  ggplot(aes(x=covid_19_deaths, y=age_group, fill=sex)) + geom_col(position = "dodge") +
+  scale_x_continuous(labels = scales::comma) + labs(x="death counts", y="Age group", title = "Covid 19 deaths counts by Age")
+```
+
+
++ According to Figure 02 almost each age group, males were reported highest number of deaths than females unless 85 years and over age group. The majority of the dead were women over the age of 85. Also, The majority of the deaths were over 40 years of age.
+
+**Figure 03:**
+```{r, echo=FALSE, warning=FALSE, message=FALSE,fig.align='center'}
+nytcovstate%>%
+  group_by(state)%>%
+  summarise(Sum_cases= sum(cases))%>%
+  arrange(desc(Sum_cases))%>%
+  rename(Total_deaths=Sum_cases)%>%
+  ggplot(aes(fill=state, area = Total_deaths, label = paste0(state,"\n", Total_deaths) )) + 
+  geom_treemap() + geom_treemap_text(colour ="white", place = "centre") +  theme(legend.position = "none") +
+  labs(title = "Total covid 19 death cases by state")
+
+
+```
+
++ This treemap shows the Covid-19 death counts of states in USA. California shows highest death counts and Northern Mariana Islands shows lowest death counts. The number of death counts of California is 1,070,933,980 and Northern Mariana Islands is 56,233. Florida and Texas also show the higer death counts over than 600,000.
+
+
+**Figure 04:**
+```{r, echo=FALSE, warning=FALSE, message=FALSE,fig.align='center'}
+C2<-uspop%>%
+  select(c(state, sex, hisp_label, pop))%>%
+  filter(sex=="Both Sexes", hisp_label=="Total" )
+
+C1<-nytcovstate%>%
+  group_by(state)%>%
+  summarise(Sum_cases= sum(cases))%>%
+  mutate(Sum_cases_million= Sum_cases/1000000)
+  
+
+left_join(C1, C2, by="state")%>%
+  ggplot(aes(x=pop, y=Sum_cases_million)) + geom_point() +geom_label(aes(label=state)) + scale_x_continuous(labels = scales::comma) + 
+  labs(x="Population(millions)", y="Total Deaths(millions)", title="Population vs Total death counts according to the states of USA")
+```
+
++ The Scatterplot shows there is a very linear realtionship between populaion and total number of death cases in sates. As the population of the state increases, so does the number of reported deaths. Therefore, if the state wise comparison of this covid distribution is done, it would be better to take the number of covid death cases as a proportion of the population.
+

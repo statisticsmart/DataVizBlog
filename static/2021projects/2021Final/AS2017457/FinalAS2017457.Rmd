@@ -1,0 +1,200 @@
+---
+title: "Final Project"
+author: "Maheshi Piumika AS2017457"
+date: "10/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE, message=FALSE,warning=FALSE,out.width="100%"}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, message=FALSE, warning=FALSE,results='hide'}
+library(remotes)
+remotes::install_github("kjhealy/covdata@main")
+```
+
+```{r, message=FALSE, warning=FALSE,results='hide'}
+drat::addRepo("kjhealy")
+```
+
+```{r, message=FALSE, warning=FALSE,results='hide'}
+library(covdata)
+library(tidyverse)
+library(visdat)
+library(plotly)
+library(tvthemes)
+library(GGally)
+library(lubridate)
+library(plotly)
+library(patchwork)
+library(gganimate)
+library(tvthemes)
+library(cowplot)
+
+```
+
+## Covid-19 Death Cases Highest Countries
+
+
+```{r  message=FALSE, warning=FALSE,results='hide'}
+c<- stmf %>% group_by(cname,death_count)
+s1<- c %>% group_by(cname)%>%
+  summarise(total_deaths = sum(death_count))%>%
+  arrange(desc(total_deaths))
+s2<- head(s1)
+
+```
+
+```{r, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(maptools)
+library(tibble)
+library(tidyverse)
+library(ggrepel)
+library(png)
+library(grid)
+library(sp)
+data(wrld_simpl)
+
+m <- ggplot() +
+  geom_polygon(
+    data = wrld_simpl,
+    aes(x = long, y = lat, group = group), fill = "gray", colour = "white"
+  ) +
+  coord_cartesian(xlim = c(-180, 180), ylim = c(-90, 90)) +
+  scale_x_continuous(breaks = seq(-180, 180, 120)) +
+  scale_y_continuous(breaks = seq(-90, 90, 100))
+
+
+  myCountries = wrld_simpl@data$NAME %in% c("Russia", "United States", "Germany", "France", "Spain", "Poland")
+    plot(wrld_simpl, col = c(gray(.80), "red")[myCountries+1])
+  
+  
+```
+
+*Interpretation*
+
+When consider about the death cases due to all the factors including Covid-19 the highest death counts are recorded from Russia, USA,Germany,France, Spain and Poland. 
+
+
+## Covid -19 Reported Cases in US  by groups
+
+```{r, message=FALSE, warning=FALSE,results='hide'}
+library(leaflet)
+library(leaflet.extras)
+library(ggmap)
+library(htmltools)
+library(maps)
+library(mapproj)
+library(mapdata)
+library(treemap)
+library(d3Tree)
+library(dplyr)
+w <- map_data('state')
+
+p4<-ggplot(w,aes(x= long, y=lat,fill=region))+
+  geom_polygon(color= "black")+
+  coord_map('polyconic')+
+  guides(fill=FALSE)
+
+```
+
+
+```{r , message=FALSE, warning=FALSE,results='hide',eval=FALSE}
+w2<- nytcovstate %>% group_by(state)%>%
+  summarise(total_cases = sum(cases))
+
+w3 <- merge(w,w2)
+p5<-ggplot(w3,aes(x= long, y=lat,group= group))+
+  geom_polygon(color= "black")+
+  coord_map('polyconic')+
+  theme_hildaDay()+
+  geom_sf()+
+  scale_fill_brewer(palette = "OrRd")+
+  labs(title = "COVID-19 Total Recorded Cases in the States of US")
+
+```
+
+
+
+
+```{r , message=FALSE, warning=FALSE}
+p3<- ggplot(covus_race, aes(x=date, y=cases, color =group))+
+  geom_area()+
+  scale_y_log10()+
+  theme_minimal()+
+  facet_wrap(~group)+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  labs(title = "COVID-19 Recorded Cases by US groups",
+       x = "Days since first case", y = "Count of Cases (log 10 scale)")
+ggplotly(p3)
+
+```
+
+*Interpretation*
+
+According to the races most of the infected peoples are from White and less from NH/PI. Black and Asian peoples are also affected as White peoples.
+
+
+## Weekly Covid-19 Deaths among the Countries 
+
+
+```{r,warning=FALSE,message=FALSE,results='hide'}
+t1<-treemap(covnat_weekly,
+            index="cname",
+            vSize="deaths",
+            type="index",
+            title="Weekly COVID-19 death count according to country"
+            )
+
+t1
+```
+
+*Interpretation*
+
+According to this graph we can identified highest weekly deaths counts due to Covid-19 are recorded from America and the next for the Europe continent. When considering the countries USA recorded the highest cases for weekly deaths due to Covid.Brazil and India recorded the highest weekly number of death cases after USA.
+
+
+
+## US Covid Death Cases by Age and Sex
+
+```{r fig.width=10,fig,highlight=10, message=FALSE, warning=FALSE}
+q1<-cdc_deaths_by_sex$covid_deaths/sum(cdc_deaths_by_sex$covid_deaths)
+q2<-cumsum(q1)
+q3<- c(0, head(q2, n=-1))
+t2 <- ggplot(cdc_deaths_by_sex, aes(ymax=q2, ymin=q3, xmax=4, xmin=3, fill=sex)) +
+     geom_rect() +
+     coord_polar(theta="y") + 
+     xlim(c(2, 4))+
+  labs(title = "The COVID-19 Death Cases by sex ")
+
+
+
+
+r0<- cdc_deaths_by_age[!(cdc_deaths_by_age$age_group=="All ages"),]
+r1<-r0$covid_deaths/sum(r0$covid_deaths)
+r2<-cumsum(r1)
+r3<- c(0, head(r2, n=-1))
+t3 <- ggplot(r0, aes(ymax=r2, ymin=r3, xmax=11, xmin=3, fill=age_group)) +
+     geom_rect() +
+     coord_polar(theta="y") + 
+     xlim(c(2, 11))+
+     labs(title = "The COVID-19 Death Cases by age ")
+
+
+
+
+plot_grid(t2,t3,nrow=1)
+```
+
+*Interpretation*
+
+According to the US Covid -19 death cases majority of the population got affected are male and above 85 years old.According to this figure,people above 55 years more likely to get affected by Covid-19.
+
+
+
+
+
+
+

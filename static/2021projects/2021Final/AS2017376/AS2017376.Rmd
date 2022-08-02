@@ -1,0 +1,208 @@
+---
+title: "ASP 460 2.0 Data Visualization - Final Project"
+author: "AS2017376"
+date: "10/7/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE,warning=FALSE, comment=NA, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Covid-19 Status in The United States of America
+
+```{r, echo=FALSE,warning=FALSE, comment=NA, message=FALSE}
+library(covdata)
+library(magrittr)
+library(ggplot2)
+library(tidyverse)
+library(plyr)
+library(dplyr)
+library(htmltools)
+library(maps)
+library(mapproj)
+library(mapdata)
+library(readxl)
+library(plotly)
+
+
+
+```
+
+
+## Introduction
+\
+
+<p align="justify">
+This analysis is done using "covdata" package in RStudio and the data used in the analysis is contained in the data sets; "covus", "covus_ethnicity", "uspop" and "nchs_wdc" . Through this analysis we are determined to get an understanding about how the Covid-19 pandemic has impacted each state, each ethnicity group and each race living in The United States of America.
+</p>
+
+\
+
+## How positive cases, deaths and recoveries occured within States
+
+\
+
+```{r, echo=FALSE,warning=FALSE, comment=NA, message=FALSE, fig.width= 10, fig.height= 8, fig.cap= " Figure 1: Heatmap of Cumulative Positive Cases, Cumulative Deaths and Cumulative Recoveries by State from 2020/01/13 to 2021/07/03", fig.align='center'}
+States_abb <- read_excel("States abb.xlsx", range = "A1:B56")
+covus <- covus %>% filter(!grepl("MP",state))
+covus <- merge(States_abb, covus, by.x = "abb", by.y = "state")
+
+positive <- covus %>% filter(grepl("Positive Tests",measure_label))
+deaths <- covus %>% filter(grepl("Deaths",measure_label))
+deaths <- deaths %>% filter(!grepl("Deaths Confirmed",measure_label))
+deaths <- deaths %>% filter(!grepl("Deaths Probable",measure_label))
+recovered <- covus %>% filter(grepl("Recovered", measure_label))
+
+
+US_cov <- rbind.data.frame(positive,deaths,recovered)
+US_cov <- US_cov %>% mutate(count= log(count))
+US_cov$data_quality_grade <- NULL
+US_cov$data_quality_grade <- NULL
+US_cov <- na.omit(US_cov)
+M <- ggplot(US_cov, aes(x = date, y = State, fill = count, frame = measure)) + geom_tile(color = "black") + scale_fill_gradient2( low = "blue",mid = "white", high = "red")
+ggplotly(M)
+
+
+
+
+```
+ \
+ 
+ 
+<p align="justify">
+During the analysis to avoid the scale difference the counts have been recalculated as the natural logarithm values. In the above interactive heat map, the heat map corresponding to death counts indicates that the very first death in The USA have occurred on 24th February 2020 in Washington DC the capital of US. Throughout the time period considered in the study New York, New Jersey, California and Texas has reported high number of Cumulative deaths.
+According to the heat map of cumulative positive cases the very first positive case was recorded in Washington DC on 19th January 2020. However the other states has recorded cases with a lag of about one month according to this data set. We can observe that California, Georgia, Florida, New York and Texas have comparatively high counts of cumulative positive cases throughout the study period.
+The heat map of recoveries indicates that the total recoveries have increased in the latter part of the study period.
+</p>
+
+\
+\
+
+## How the Health Care system of The USA is handelling Covid-19
+\
+
+```{r, echo=FALSE,warning=FALSE, comment=NA, message=FALSE, fig.width= 12, fig.height=15, fig.cap="Figure 2: The Density map of Hospitalized people, People in the ICU and people on Ventilator Machines"}
+
+
+## hospitalization
+
+Hospital <- covus %>% filter(grepl("hospitalized_currently",measure))
+ICU <- covus %>% filter(grepl("in_icu_currently",measure))
+Ventilator <- covus %>% filter(grepl("on_ventilator_currently",measure))
+Treatment <- rbind(Hospital,ICU, Ventilator)
+C <- ggplot(Treatment, aes(x = date, y = count)) + geom_density(aes(fill = measure), stat = "identity", alpha = 0.5) + scale_y_log10() + scale_fill_discrete(palette(c("#42f59e","#ed61ae","#7781f2"))) + facet_wrap(vars(State), ncol = 6)+ scale_x_date(labels = NULL )
+ggplotly(C)
+
+
+```
+\
+
+<p align="justify">
+The above Figure depicts how the patients hospitalized are getting treated in each state. With a quick glance we can see that states, Alabama, Colorado, Connecticut, Florida, Georgia, Nebraska, New Hampshire, New Mexico and Wyoming has not recorded critical patients according to data. This might be probably because of lack of records on treatment data in those states. It can be identified that in most states the proportion of people relying on ICU and Ventilators are quite high.
+</p>
+
+\
+\
+
+## How Ethnicities are Impacted by Covid-19
+
+```{r,warning=FALSE, comment=NA, message=FALSE, echo=FALSE, fig.cap= "Figure 3 : Boxplots of Cases by Ethnicity and Deaths by Ethnicity in USA"}
+
+covus_ethnicity <- merge(States_abb, covus_ethnicity, by.x = "abb", by.y = "state")
+ethnicity_cases <- covus_ethnicity %>% select(date, State,group, cases)
+ethnicity_cases <- pivot_wider(ethnicity_cases, names_from = "State", values_from = "cases")
+ethnicity_cases <- ethnicity_cases %>% arrange(desc(date))
+ethnicity_cases_tot <- ethnicity_cases[1:3,]
+ethnicity_cases_tot <- pivot_longer(ethnicity_cases_tot,3:57, names_to = "state", values_to = "cases")
+
+E <- ggplot(ethnicity_cases_tot, aes(x = group, y = cases)) + geom_boxplot(fill = c("#42f59e","#ed61ae","#7781f2")) + labs(y = "Cases") + stat_summary(fun.y = mean, geom = "point", color = "blue")
+E <- ggplotly(E)
+
+ethnicity_deaths <- covus_ethnicity %>% select(date, State,group, deaths)
+ethnicity_deaths <- pivot_wider(ethnicity_deaths, names_from = "State", values_from = "deaths")
+ethnicity_deaths <- ethnicity_deaths %>% arrange(desc(date))
+ethnicity_deaths_tot <- ethnicity_deaths[1:3,]
+ethnicity_deaths_tot <- pivot_longer(ethnicity_deaths_tot,3:57, names_to = "state", values_to = "deaths")
+
+F <- ggplot(ethnicity_deaths_tot, aes(x = group, y = deaths)) + geom_boxplot(fill = c("#42f59e","#ed61ae","#7781f2")) + labs(y ="") + stat_summary(fun.y = mean, geom = "point", color = "red")
+F <-ggplotly(F)
+
+E1 <- subplot(E,F)
+E1
+
+```
+
+```{r, fig.cap="Result 1 : Hispanic and Non-Hispanic populatio counts", echo=FALSE,comment=NA, warning=FALSE,message=FALSE}
+
+Pop_us <- uspop %>% select(state,sex_id,hisp_label,pop)
+not.hisp <- Pop_us %>% filter(grepl("Not Hispanic",hisp_label, grepl("totsex",sex_id)))
+hisp <- Pop_us %>% filter(!grepl("Not Hispanic",hisp_label), !grepl("Total", hisp_label), grepl("totsex",sex_id))
+colnames(hisp) <- c("state","sex_id","hisp_label","hisp_pop")
+Hispanic_pop <- sum(hisp$hisp_pop)
+Not.Hispanic_pop <- sum(not.hisp$pop)
+pop.Hisp <- data.frame(Hispanic_pop,Not.Hispanic_pop)
+pop.Hisp
+
+```
+
+
+
+\
+
+<p align="justify">
+According to "uspop" data set the Hispanic and Non Hispanic population counts are shown in Result 1. Therefore Non Hispanic population is very high compared to Hispanic population in the US. According to Figure 3 both cases and deaths are recorded highly among Non Hispanic population. The huge difference in population counts might be the cause of this. The average number of 273936 covid-19 cases and an average number of 7989 covid deaths are reported among Non Hispanic people. 
+</p>
+
+
+\
+
+## Causes of Deaths in US and significance of Covid-19 Deaths Numbers
+
+```{r, echo=FALSE,warning=FALSE, comment=NA, message=FALSE, fig.width= 10, fig.height= 7, fig.cap= "Figure 4 : Bar Graph of Deaths by Causes of Death in USA 2020-2021"}
+
+Death_by_cause_US_2020 <- nchs_wdc %>% filter(nchs_wdc$year == 2020)
+US_2020 <- Death_by_cause_US_2020 %>% filter(Death_by_cause_US_2020$jurisdiction == "United States")
+US_2020$week_ending_date <- NULL
+US_2020$cause_detailed <- NULL
+US_2020 <- pivot_wider(US_2020, names_from = "week", values_from = "n")
+
+# the total number of weeks in 2020 is 53
+
+US_2020$Total_Deaths <- rowSums(US_2020[,4:56])
+US_2020[,4:56] <-NULL
+
+
+
+Death_by_cause_US_2021 <- nchs_wdc %>% filter(nchs_wdc$year == 2021)
+US_2021 <- Death_by_cause_US_2021 %>% filter(Death_by_cause_US_2021$jurisdiction == "United States")
+US_2021$week_ending_date <- NULL
+US_2021$cause_detailed <- NULL
+US_2021 <- pivot_wider(US_2021, names_from = "week", values_from = "n")
+
+## to get number of weeks so far
+
+min.wk <- min(Death_by_cause_US_2021$week)
+max.wk <- max(Death_by_cause_US_2021$week)
+a <- c(min.wk:max.wk)
+US_2021$Total_Deaths <- rowSums(US_2021[,a+3])
+US_2021[,4:36] <-NULL
+
+
+
+
+US_cause_death <- rbind(US_2020,US_2021)
+US_cause_death <- US_cause_death %>% filter(!grepl("COVID-19 Underlying", cause), !grepl("All Cause",cause))
+U <- ggplot(US_cause_death, aes(x= cause, y = Total_Deaths)) + geom_bar(aes(fill = cause), stat = "identity") + facet_wrap(vars(year))+theme(axis.title.x=element_blank(),axis.text.x=element_blank(),axis.ticks.x=element_blank()) + labs(x = "Cause of Death", title = "Bar Graph of Cause of Death 2020-2021") 
+ggplotly(U, tooltip = c("Total_Deaths","x"))
+
+
+
+```
+
+
+\
+
+<p align="justify">
+Figure 4 shows the major causes of death among citizens of The United States of America. In 2020 total number of deaths due to all causes in the USA is 3,440,703 and in 2021 it is 2,018,454.It can be seen that the covid-19 has become the 4th highest contributing factor for the total deaths among American Citizens with 392,359 deaths in 2020 and 238,979 deaths in 2021 so far.
+</p>

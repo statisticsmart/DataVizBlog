@@ -1,0 +1,115 @@
+---
+title: "Final Examination Project - ASP 460 2.0 Data Visualization"
+author: "W.H.Shashini Kaushalya - AS2017419"
+
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, comment = NA}
+library(covdata) #remotes::install_github("kjhealy/covdata@main")
+library(tidyverse)
+library(viridis)
+library(RColorBrewer) 
+library(ggplot2)
+library(plotly)
+
+```
+<p align = "justify">The COVID-19 pandemic has had a huge impact on human life in world wide. It has caused lots of damages in varying sectors throughout the world, from healthcare, to economy, to education and politics. According to the given data sets, this visualization clearly shows the impact of COVID-19 pandemic to the United States. Actually, the United States has been severely affected by this COVID-19 pandemic situation. Following figures shows how this pandemic situation affected into United States, how their deaths vary with other diseases, etc.</p>
+
+### **Figure 1: Box plot of the US Population by Sex and Region** 
+```{r, echo = FALSE, warning = FALSE, message = FALSE, comment = NA, fig.width =10}
+
+g1 <- ggplot(uspop, aes(x = sex_id, y = log(pop), color = sex_id, fill = sex_id)) +
+  geom_boxplot() + 
+  scale_fill_manual(values = c(male = "#45b6fe", female = "#FD8CC1FF", totsex = "#F5DEB3")) +
+  scale_color_manual(values = c(male = "#45b6fe", female = "#FD8CC1FF", totsex = "#F5DEB3")) +
+  facet_wrap(.~region_name) +
+  geom_jitter(width = 0.1, alpha = 0.3) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme_bw() +
+  ggtitle("Boxplot of the US Population by Sex and Region") +
+  labs(x = "Sex Id", y = "Total Population( by log scale)")
+  
+ggplotly(g1)
+
+```
+
+<p align = "justify">According to the figure, we can compare the range and distribution of gender and population of each region in US. Here, the population considers as their log values. This figure shows that all regions in US have relatively same median value with sex groups between 12-14. And also, there are relatively same population of each type of sex in all regions of US. In addition to that there are some outliers in all regions as the above figure 1.</p>
+
+
+### **Figure 2: Distribution of Expected deaths and Actual deaths from any cause in US** 
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE, comment = NA, fig.width =10}
+
+nytexcess_new <- nytexcess %>% filter(country == "United States")
+nytexcess_new1 <-  select(nytexcess_new, -c(placename, excess_deaths)) %>% drop_na() 
+
+g2 <- ggplot(nytexcess_new1, aes(x = end_date))+
+  geom_line(aes(y = expected_deaths, color = "expected_deaths"))+
+  geom_line(aes(y = deaths,  color = "deaths"))+ 
+  geom_point(aes(y = expected_deaths, color = "expected_deaths"))+
+  geom_point(aes(y = deaths,  color = "deaths")) +
+  ggtitle("Distribution of Expected deaths and Actual deaths from any cause in US") +
+  labs(x = "The last date in the period", y = "Total number of expected deaths and Actual deaths") 
+  
+ggplotly(g2)
+
+```
+
+<p align = "justify">As shown in figure 2, it can be identified about the distribution between expected deaths and actual deaths from any cause in US. According to the figure 2, they have expected a normally decreasing pattern till end of the August 2021 and then they have expected an increasing pattern of deaths recorded from any cause in US. But, Actually, the pattern of recorded deaths is increasing and deceasing from January 2020 to January 2021. The highest number of actual deaths can be identified about 79058 on 12th April 2020. And also, th lowest number of actual deaths can be shown about 57915 on 21th May 2020.</p>
+
+
+
+### **Figure 3: Distribution between Total Hospitalizations and Total confirmed Cases in USA by their races** 
+
+```{r, echo = FALSE, warning = FALSE, comment = NA, message = FALSE, fig.width =10}
+
+covus_race_new <- covus_race %>% select(date, group, hosp ,cases) %>%
+  drop_na() %>% group_by(group)
+
+
+g3 <- ggplot(covus_race_new, aes(x = log(hosp), y = log(cases))) +
+  geom_point(size = 0.75) + facet_wrap(.~group, ncol = 3) + 
+  geom_smooth(alpha = 0.1) +
+  ggtitle("Distribution between Total Hospitalizations and Total Cases in USA by their races") +
+  labs(x = "Count of Total Hospitalizations(by log scale)", 
+       y = "Count of Ttoal Cases(by log scale)", cex.lab = 4) + 
+  theme_bw()
+  
+ggplotly(g3)
+
+```
+
+<p align = "justify">Figure 3 shows distribution between total hospitalizations and total confirmed cases in USA by their races. There are more than 5 races in US, such as American Indians/ Alaska Natives(AN/AN), Asian, Black, Latino, Multiracial, Native Hawaiian and Pacific Islander(NH/PI), White, etc. There is an positive linear relationship between count of total hospitalizations and cont of total confirmed cases of each races in US. Here, it can be considered as the log value of count of total hospitalizations and cont of total confirmed cases. </p>
+
+### **Figure 4: Cumulative COVID-19 death cases in US states** 
+
+```{r, echo = FALSE, warning = FALSE, comment = NA, message = FALSE, fig.width =10, fig.height = 10}
+
+nytcovstate_new <- nytcovstate %>% group_by(state) %>% mutate(days = date-min(date))
+g4 <- ggplot(nytcovstate_new, aes(x=days, y=log(deaths), group = state, fill = "red")) +
+  geom_area() +
+  facet_wrap(.~state, ncol = 5) +
+  ggtitle("Cumulative COVID-19 death cases in US states") +
+  labs(x = "Days from 21/01/2021 to 01/09/2021", y = "Death cases(by log values", cex.lab = 2)
+
+g4
+
+```
+
+<p align = "justify"> According to the figure 4, it clearly shows cumulative COVID-19 death cases of states in US. There are 55 states in US. The cumulative COVID-19 deaths in most of states have increased from 21th January 2021 to 1th September 2021. The cumulative deaths in Northern Mariana Islands shows a constant variation according to the time period.And, Virgin Island shows a slightly increasing pattern of death cases with respect to other states in US.</p>
+
+
+
+
+
+
+
+
+
+
+

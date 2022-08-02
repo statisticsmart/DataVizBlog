@@ -1,0 +1,310 @@
+---
+title: "Final Examination: Report"
+author: "Udeshi Salgado - AS2018517"
+date: "10/7/2021"
+output: html_document
+---
+#### STA 472 2.0 - Special Topics in Statistics
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment=NA, message=FALSE, warning=FALSE)
+# AS2018517
+# M.U.P. Salgado
+# STA 472 2.0 - Special Topics in Statistics
+# Final Examination: Report
+```
+
+```{r, echo=FALSE, out.width = "150%"}
+knitr::include_graphics ("AS2018517_IMG_01.jpg")
+```
+
+```{r}
+# Packages
+# remotes::install_github("kjhealy/covdata@main")
+library(covdata)
+library(tidyverse)
+library(scales)
+library(plotly)
+library(ggplot2)
+library(dplyr)
+
+```
+
+
+## Visualization 01:
+### Topic: Cumulative Weekly Death Counts of United States, by Top 5 Causes in 2020-2021
+
+```{r, fig.cap="Figure 01", fig.align = 'center', out.width = "100%"}
+# Considering the period between 2020 - 2021
+nchs_wdc1 <- nchs_wdc %>% filter(year>=2020)
+# Choosing year, week, death counts and causes from dataframe
+nchs_wdc2 <- nchs_wdc1 %>% select(year, week, n, cause)
+# Replacing COVID-19 Underlying as COVID-19
+nchs_wdc2$cause <- replace(nchs_wdc2$cause, nchs_wdc2$cause=="COVID-19 Underlying","COVID-19")
+# Choosing top 5 causes in 2020-2021
+nchs_wdc2 <- filter(nchs_wdc2, cause %in% c("Chronic Lower Respiratory Diseases","COVID-19", "Diabetes","Cancer","Cerebrovascular Diseases"))
+# Replacing NAs with zero
+nchs_wdc2$n <- replace(nchs_wdc2$n, is.na(nchs_wdc2$n)==TRUE, 0)
+# Ordering data frame based on year and  week
+nchs_wdc2 <- nchs_wdc2[order(nchs_wdc2$year,nchs_wdc2$week),]
+# Aggregating death counts with respect to year, week and cause type
+nchs_wdc3 <- aggregate(nchs_wdc2$n, by=list(nchs_wdc2$year, nchs_wdc2$week, nchs_wdc2$cause), sum)
+# Changing the column names
+colnames(nchs_wdc3) <- c("Year", "Week", "Disease", "Death_Count")
+# Order Dataframe based on Year and Week
+nchs_wdc3 <- nchs_wdc3[order(nchs_wdc3$Year,nchs_wdc3$Week),]
+# Turning dataframe into pivot wider format
+nchs_wdc4 <- nchs_wdc3 %>% 
+  pivot_wider(names_from = Disease, values_from = Death_Count)
+# Adding Week Count Column
+nchs_wdc4$week_count <- 1:86
+# Taking cumulative death counts of each causes separately
+# Cancer
+nchs_wdc4$Cancer <- cumsum(nchs_wdc4$Cancer)
+# Chronic
+nchs_wdc4$`Chronic Lower Respiratory Diseases` <- cumsum(nchs_wdc4$`Chronic Lower Respiratory Diseases`)
+# COVID-19
+nchs_wdc4$`COVID-19` <- cumsum(nchs_wdc4$`COVID-19`)
+# Diabetes
+nchs_wdc4$Diabetes <- cumsum(nchs_wdc4$Diabetes)
+# Cerebrovascular Diseases
+nchs_wdc4$`Cerebrovascular Diseases` <- cumsum(nchs_wdc4$`Cerebrovascular Diseases`)
+# Turning dataframe into pivot longer format
+nchs_wdc5 <- nchs_wdc4 %>% 
+  pivot_longer(3:7, names_to = "Cause", values_to = "Cumulative_Death_Count")
+# Visualizing plot
+viz_01 <- plot_ly(nchs_wdc5,
+               x = ~sort(week_count),
+               y = ~Cumulative_Death_Count, 
+               type = 'scatter', 
+               mode = 'lines', 
+               color = ~Cause,
+               colors= "Dark2")  %>%
+               layout(title = "Cumulative Weekly Death Counts of United States, by Top 5 Causes in 2020-2021",
+                      legend = list(orientation = 'h', x = 0.1, y = -0.3, title=list(text='<b> Cause Type </b>')),
+                      yaxis = list(title = "Cumulative Death Count"),
+                      xaxis = list(title = "Week"),
+                      margin = list(b = 100))
+
+viz_01
+
+```
+
+#### Interpretation
+
+<div align="justify" >
+Chronic Lower Respiratory Diseases, COVID-19, Diabetes, Cancer, and Cerebrovascular Diseases are the five leading causes of death in the United States. It is noticeable by Figure 01 that COVID-19 is the second leading cause of death during the period 2020-2021, with 1.1 Million total number cumulative deaths at the end of August 2021. COVID-19 has already passed the weekly cumulative death counts caused by Chronic Lower Respiratory Diseases, Cerebrovascular Diseases, and Diabetes for 2020-2021.
+
+Even though Cancer takes precedence, showing around 2 Million total number cumulative deaths at the end of August 2021. 
+It can be noticed that the rate of increasing COVID-19 weekly cumulative deaths is relatively high compared to other causes except Cancer. Weekly cumulative death counts caused by Cancer are more than two times more significant than that of COVID-19 weekly cumulative death counts.
+Therefore, it is reasonable to argue that no matter how dangerous COVID-19 is, it is not yet as dangerous as Cancer in the United States.
+</div>
+
+
+## Visualization 02:
+### Topic: Daily Total Number of Tests Ecountered Vs Daily Confirmed Cases by Test Type in United States
+
+```{r, fig.cap="Figure 02", fig.align = 'center', out.width = "100%"}
+# Removing data_quality_grade, since it's a NA column
+# Removing flips column as it share the same data as state column
+# removing measure column as it share the same data as measure label column
+# Choosing date, measure and count columns
+covus1 <- covus %>% select(date, measure_label, count)
+# Replacing NA death counts with zero
+covus1$count <- replace(covus1$count, is.na(covus1$count)== TRUE, 0)
+# Taking sum of death counts with respect to date and measure label
+covus2 <- aggregate(covus1$count, by = list(covus1$date, covus1$measure_label), sum)
+# Changing column names
+colnames(covus2) <- c("date", "Measure", "Count")
+# Choosing antibody, antigen, and PCR test types and date after January 21st, 2020
+total_test <- covus2 %>% filter(Measure==c("Total Test Encounters (PCR)","Total Antigen Tests" ,"Total Antibody Tests") & covus2$date>="2020-01-21" )
+# Change dataframe into pivot-wider format
+total_test <- total_test %>% 
+  pivot_wider(names_from = Measure, values_from = Count)
+colnames(total_test) <- c("date","antibody","antigen","pcr")
+# Choosing daily confirmed cases with date and considering time before March 07th, 2021
+daily_cases <- nytcovus %>% select(date, cases) %>%
+  filter(nytcovus$date<="2021-03-07")
+# Joining two dataframes, daily_cases and total_test
+new_df <- right_join(total_test,daily_cases, by= c("date"= "date"))
+#Changing dataframe into pivot longer format
+new_df <- new_df %>% pivot_longer(2:4, names_to = "test_type", values_to = "test_count")
+
+# Visualizing plot
+viz_02 <- plot_ly(na.omit(new_df),
+                  x = ~cases,
+                  y = ~test_count, 
+                  type = 'scatter', 
+                  mode = 'lines', 
+                  color = ~test_type,
+                  colors = "Dark2") %>%
+  layout(title = "Daily Total Number of Tests Ecountered Vs Daily Confirmed Cases by Test Type in United States",
+         legend = list(orientation = 'v', x = 100, y = 0.9, title=list(text='<b> Test Type </b>')),
+         yaxis = list(title = "Daily Confirmed Cases"),
+         xaxis = list(title = "Daily Total Number of Tests Ecountered"),
+         margin = list(b = 100))
+
+viz_02
+
+```
+
+#### Interpretation
+
+<div align="justify">
+It can be shown in figure 02 that all 3 test types, antibody, antigen, and PCR, have a positive relationship with the number of confirmed cases implying that the higher the number of COVID-19 tests encountered, the higher the number of confirmed cases.
+
+Furthermore, it can be identified that the rate of being positive (being confirmed) for both antibody and antigen tests are comparatively less than PCR tests. Therefore, it is valid enough to argue that the PCR test has a higher accuracy rate than antibody and antigen.
+
+Moreover, it can be considered as the number of PCR tests encountered and confirmed cases have an almost linear positive relationship, as the number of cases increases along with the number of tests encountered with an almost exact rate.
+
+In conclusion, it can be said that if the United States increased the number of COVID-19 tests, it would result in a higher number of confirmed cases concerning Figure 02.
+
+</div>
+
+## Visualization 03:
+### Topic: United States: Distribution of Daily COVID-19 Confirmed Cases By Regions
+
+```{r, fig.cap="Figure 03", fig.align = 'center', out.width = "100%"}
+# Choosing statefips and region_name from uspop dataframe
+us_region <- uspop %>% select(statefips, region_name)
+# Taking unique sets of statefips and region_name
+us_region <- distinct(us_region)
+# Region for statefip 11 is missing and replacing it with respective region, Northwest
+us_region$region_name <- replace(us_region$region_name, is.na(us_region$region_name)== TRUE, "Northeast")
+# Choosing date, fips and cases columns from nytcovstate
+covstate <- nytcovstate %>% select(date, fips, cases)
+# Fips 78, 66, 72, and 69 do not belong to any of these primary regions of the United States as per US geographical data
+# Remove those rows from dataframe
+covstate <- covstate %>% filter(fips %in% us_region$statefips)
+# Changing column names of us_region
+colnames(us_region) <- c("fips", "region")
+# Combining two dataframes, us_region and covstate
+covstate1 <- covstate %>% full_join(us_region)
+# Taking sum of cumulative cases with respect to date and region
+covstate1 <- aggregate(covstate1$cases, by= list(covstate1$date, covstate1$region), sum)
+# Changing the column names of the dataframe
+colnames(covstate1) <- c("date", "region", "cases")
+# Turning dataframe into pivot-wider format
+covstate_wide <- covstate1 %>% 
+  pivot_wider(names_from = region, values_from = cases)
+# Replacing NA values with zero
+covstate_wide <- replace(covstate_wide, is.na(covstate_wide)==TRUE, 0)
+# Order the dataframe data with respect to date
+covstate_wide <- covstate_wide[order(covstate_wide$date),]
+# Turning dataframe into pivot-longer format
+covstate_long <- covstate_wide %>% 
+  pivot_longer(2:5, names_to = "region", values_to = "cumcases")
+# Converting cumulative confirmed cases into daily confirmed cases
+covstatenew <- covstate_long %>% group_by(region) %>%
+  mutate(cases =  c(cumcases[1], abs(diff(cumcases))))
+# Calculating regional death averages
+cases_means <- covstatenew %>% 
+  group_by(region) %>% 
+  summarize(mean_val = mean(cases))
+
+# Visualizing plot
+viz_03 <- ggplot(covstatenew, aes(x=date, y=cases, fill=region)) +
+  geom_bar(stat = 'identity')  + 
+  scale_fill_brewer(type = 'qual', palette = 'Dark2') +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  scale_y_continuous(labels = label_number(suffix = "K", scale = 1e-3)) + 
+  geom_hline(data= cases_means, aes(yintercept=mean_val), colour="black") +
+  facet_grid(region~.) +
+  labs(title="United States: Distribution of Daily COVID-19 Confirmed Cases By Regions", x="Date", y="No of Cases")
+ggplotly(viz_03)
+
+```
+
+#### Interpretation
+
+<div align="justify" style=.my_text> The United States consists of four primary regional areas: Midwest, Northwest, South, and West. 
+These regions are cultural units rather than governmental, formed by history and geography and shaped by the economics, literature, and folkways that all the parts of a region share.
+Therefore, it is essential to identify how COVID-19 affects these regions separately, differentiating each other from their uniqueness.
+
+Figure 03 shows how the confirmed cases of 4 primary regions vary with time.
+It can be identified that all four regions have faced two COVID-19 waves, and currently, all of them are facing the third wave.
+All four regions have faced the second wave at the beginning of 2021, and the South region shows comparatively large confirmed cases while the Northeast shows the lowest.
+
+Northeast shows the lowest average confirmed cases, compared to three other regions.
+Even though it shows comparatively high confirmed cases in the beginning.
+Moreover, South shows the highest average confirmed cases, compared to three other regions.
+Both Midwest and West regions show almost the same average confirmed cases and almost the same number of cases during COVID-19 waves.
+
+July 2021 can be considered as the start of the third wave, and it can be identified that South shows the highest number of confirmed cases even in the third wave, while Northwest shows the lowest.
+
+In conclusion, it is reasonable to argue that regional areas affect the number of daily confirmed cases in the United States. Climate, geographical situation, culture, and economic situation differ from region to region, and it might be the reasons for the different patterns in COVID-19 confirmed cases in the United States.
+
+
+</div>
+
+
+## Visualization 04:
+### Topic: Deaths By Age Group, in United States during 2020 - August 2021
+
+```{r, fig.cap="Figure 04", fig.align = 'center', out.width = "110%"}
+# Filtering by total rows
+nchs_sas <- nchs_sas %>% filter(group=="By Total")
+# Filtering rows belongs to US as a whole
+nchs_sas <- nchs_sas %>% filter(state=="United States")
+# Filtering All Sexes rows
+nchs_sas <- nchs_sas %>% filter(sex=="All Sexes")
+# Filtering total,COVID-19 and pneumonia with COVID19 death rows from the dataframe
+nchs_sas <- nchs_sas %>% select(age_group,pneumonia_and_covid_19_deaths,covid_19_deaths,total_deaths)
+# Ages are categorized in 2 ways other than All Ages
+# Removing All Ages and  one age categorized type rows
+nchs_sas <- nchs_sas[-c(1,2,4,5,6,8,10,12,14),]
+# Changing column names
+colnames(nchs_sas) <- c("age_group", "pneumonia+covid19", "covid_19", "total")
+# Turning dataframe into pivot-longer format
+nchs_sas_long <- nchs_sas %>%
+  pivot_longer(2:4, names_to = "death_type", values_to = "death_count")
+
+# Visualizing plot
+viz_04 <- ggplot(nchs_sas_long, aes(x = death_type, y = death_count, fill = death_type)) + 
+  geom_bar(stat = 'identity') + facet_wrap(~ age_group) + 
+  coord_flip() +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+  scale_fill_brewer(type = 'qual', palette = 'Dark2') + 
+  labs(title="Deaths By Age Group, in United States during 2020 - August 2021", 
+       x="Death Type", 
+       y="Death Count") 
+ggplotly(viz_04)
+
+```
+
+#### Interpretation
+
+<div align="justify" >
+Figure 04 reflects that the risk of dying increases with age, the same for COVID-19, pneumonia with COVID-19, and total deaths in the United States from 2020 to August 2021.
+
+It can be identified that no COVID-19 death has occurred, age between 0-17, implying that both children and teenagers have a high survival rate during the COVID-19 pandemic compared to other age groups.
+
+Youth represents age between 18-29 years, and only around 3000 COVID-19 deaths occurred, and none of them represent a COVID-19 death with pneumonia. This implies that youth has a high immunity compared with ages above 29 to fight with pneumonia COVID-19 situation.
+
+Youth shows high COVID-19 death counts compared to children and teenagers between 0-17 years. Therefore, it can be concluded that the reasons for this number of youth COVID-19 deaths might be that youth have more chance of getting infected as they might work as front-line workers compared to 0-17 ages, and ignoring symptoms might lead to the COVID-19 deaths.
+
+Middle ages have a somewhat risk of being a victim of COVID-19 and pneumonia COVID-19, and Figure 04 shows moderate death counts for middle ages compared to other age groups.
+
+Figure 04 implies that ages above 50 have a high risk of being victims of COVID-19 and pneumonia COVID-19.
+Moreover, Figure 04 clearly shows that the ages above 75 have the highest COVID-19, pneumonia COVID-19 and total death counts.
+
+In conclusion, it can be concluded that older adults have a high risk of being a victim of COVID-19 and pneumonia COVID-19, and less immunity of older adults compared to other ages might be the reason for this.
+</div>
+
+## References
+
+<div align="justify" >
+Abadi, M., 2018. Insider. [Online] 
+Available at: https://www.businessinsider.com/regions-of-united-states-2018-5#the-us-census-bureau-divides-the-united-states-into-four-regions-theres-the-northeast--1
+[Accessed 5 October 2021].
+
+Study.com, 2021. What are the Regions of the United States?. [Online] 
+Available at: https://study.com/academy/lesson/what-are-the-regions-of-the-united-states.html
+[Accessed 5 October 2021].
+
+United States Department of Agriculture, 2021. State FIPS Codes. [Online] 
+Available at: https://www.nrcs.usda.gov/wps/portal/nrcs/detail/?cid=nrcs143_013696
+[Accessed 5 October 2021].
+
+
+</div>

@@ -1,0 +1,177 @@
+---
+title: " **Covid-19 Pandemic** "
+author: "AS2017468"
+date: "10/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<center>
+![](Covid-19.jpg)
+</center>
+
+```{r , echo=FALSE, include=FALSE}
+remotes::install_github("kjhealy/covdata@main")
+library(covdata)
+library(tidyverse)
+library(visdat)
+library(plotly)
+library(magrittr)
+library(lubridate)
+library(scales)
+library(skimr)
+
+```
+
+
+## 1. Daily Covid 19 cases by Continents  
+
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE, out.width= "100%" }
+
+countries_covnat_daily <- left_join(countries, covnat_daily, by = "iso3") %>%
+  
+  mutate(cases = abs(cases)) %>%
+  group_by(continent) %>%
+
+  separate(date, into = c("year","month", "day"),sep = "-") %>%
+  unite("Date",c("month","day"))
+
+ggplotly(ggplot(countries_covnat_daily, aes(x = Date, y = cases, color = continent)) +
+           geom_line () +
+           facet_wrap(~continent, scales = "free", ncol = 2) +
+           scale_x_discrete(breaks =  c("01_31","03_31","05_31","07_31","09_30","11_30")) + 
+           theme(legend.position = "none", panel.spacing = unit(5, "lines")) +
+           labs(title = "Daily reported  Covid 19 cases by continent in 2020", x = " Date", y = "  Covid 19 cases" ))
+           
+          
+    
+```
+
+* This figure shows that how the daily reported covid 19 cases distribute in the continents in 2020. According to the above figure we can see that North America Continent have most daily cases and its increasing rapidly end of 2020. Oceania continent have lowest cases .Asia continent show rapid increasing from May to September but end of the year cases are deceasing significantly. African and South American continents also show slight increasing in cases end of 2020
+
+## 2. Daily Covid 19 death cases by Countries
+
+```{r ,echo=FALSE, message=FALSE, warning=FALSE ,out.width= "100%" }
+
+a8 <- covnat_daily %>%
+  
+     #filter(cases==max(cases)) %>% arrange(desc(cases)) %>% # To filter out most number of cases 
+     #separate(date, c("year", "month","date"), sep = "-", convert= TRUE) %>%
+  
+  
+    mutate(date = date - min(date)) %>%
+
+    filter(iso3%in%c("USA","IND","FRA","BRA", "ITA","ESP","CHL", "GBR", "TUR", "POL")) 
+
+
+ggplotly(ggplot(a8,aes(x = date, y = cu_cases, col = cname))+
+           geom_path() +
+           scale_y_log10(labels = scales::label_number_si()) +
+           labs(x = "Days since first case", y = "Cummulative Count(log 10 scale)", 
+                title = "Covid 19 cummulative recorded death cases by Countries in 2020 " ) + 
+           theme(legend.title = element_blank()))
+           
+
+```
+
+* This figure shows top 10 countries that have reported most covid 19 deaths in 2020. We can clearly see that United States, India and Brazil have reached 10 million deaths end of the 2020. Other countries reached nearly 2 million deaths at the end of 2020. End of the year United State show slightly increasing in deaths than other countries . 
+
+## 3.  Covid Death cases by US States
+
+```{r ,echo=FALSE, message=FALSE, warning=FALSE ,out.width= "100%" }
+
+a5 <- cdc_deaths_by_state  
+ 
+
+a5<- a5 %>%
+  
+  mutate(parents = "Distribution of Covid Deaths by US States")
+
+plot_ly(data = a5,
+        type = "treemap",
+        labels =~ state,
+        parents =~ parents,
+        values =~ covid_deaths,
+        domain = list(column=0),
+        textinfo = "label+value+ percent parent")
+
+```
+
+* This map show that number of Covid 19 deaths in US states. We can clearly see that New York city reported majority of deaths . Total of New York and New jersey deaths are approximately equal to the New York City death cases. Among these all states only 7 states exceed the 1000 deaths.Many of states have death count below 500.  
+
+
+## 4. Death Cases by Age
+
+```{r ,echo=FALSE, message=FALSE, warning=FALSE  , out.width= "100%" }
+
+
+a3<- cdc_deaths_by_age[, c(2,5,8,10)] %>% 
+     filter(age_group != "All ages") 
+ 
+
+a3 <- rename( a3 ,"Influenza " = all_influenza_deaths_j09_j11,
+                    "Covid-19 "   = covid_deaths  ,
+                  "Pneumonia " = pneumonia_deaths )
+ 
+p1<- pivot_longer(a3,c(2:4),names_to="Type", values_to="Count") 
+
+
+p1$age_group <- factor(p1$age_group,levels= c("Under 1 yr" , "1–4 yr" , "5–14 yr" , "15–24 yr" , "25–34 yr" , "35–44 yr" , "45–54 yr" , "55–64 yr" , "65–74 yr" , "75–84 yr" , "85 yr"))
+  
+ggplotly(ggplot(p1,aes(x=age_group,y=Count, fill = Type)) +
+            geom_col(position="fill", width = 0.8) +
+            scale_fill_manual(values = c("darkred","purple","darkorange"),
+                              name = "Disease") + 
+            theme(legend.position = "top") +
+            labs(x= "Age group", y="Proportion of Count" , title=" Deaths involving COVID-19, Pneumonia and influenza by age group"))
+           
+
+```
+
+* This figure shows that how the deaths involving Covid-19, pneumonia, and influenza by each age group. we can clearly see that age  between 5-14  show  majority of deaths by influenza disease. There are less number of covid-19 deaths under 14 years  . But Covid-19 deaths increasing between 25-85 years and pneumonia deaths also increasing in that range. Influenza disease deaths are slightly decreasing among elders.   
+
+
+
+
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE ,out.width= "100%" ,include=FALSE}
+
+a10 <- covus  %>%
+  filter( measure== "positive") %>%
+
+#a10_max<- a10%>% filter(date==max(date)) %>% arrange(desc(count))
+
+ filter(state%in%c("CA","TX","FL","NY","IL","GA","OH","PA", "NC", "AZ")) %>%
+  mutate(date = date - min(date))
+
+a10$state <- factor(a10$state,levels= c("CA","TX","FL","NY","IL","GA","OH","PA", "NC", "AZ"))
+
+ggplotly(ggplot(a10,aes(x=date, y= count, col=state))+
+           geom_line()+ 
+           scale_y_log10(labels = scales::label_number_si())+
+           facet_wrap(~ state, ncol=2) +
+         
+           labs(x="Days since first case", y="Cummulative Count(log 10 scale)", title= "Comparison of total positive  cases by state"))
+
+```
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE ,out.width= "100%",,include=FALSE}
+
+a1 <- apple_mobility %>%
+    filter(region == "New York City")
+
+ggplotly(ggplot(a1, aes(date,score, color = transportation_type))+
+           geom_line(aes(color=transportation_type))+
+           scale_color_manual(values= c("purple","darkred","darkorange")))
+
+```
+
+
+
+
+
+

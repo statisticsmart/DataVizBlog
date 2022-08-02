@@ -1,0 +1,391 @@
+---
+title: "COVID-19 Outbreak in United States of America"
+
+
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+The COVID-19 outbreak has become a global health crisis that has affected all over the world. therefore, understanding the out breaking patterns over the time, and the root cases for those will help to get uncover the remedial measures in order to prevent from the disease.This report provides an explanatory analysis for **Confirmed Cases of COVID-19 out break in United States of America**. 
+
+
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results = 'hide', comment = " "}
+library(covdata)
+library(ggplot2)
+library(plotly)
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+library(maps)
+library(skimr)
+library(magrittr)
+library(viridis)
+library(readr)
+library(ggrepel)
+library(patchwork)
+
+
+```
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results = 'hide', comment = " "}
+covn1d <- covnat_daily %>%
+  drop_na()
+aa <-covn1d %>%
+filter(cases > 0)
+
+same_chart <- filter(aa, cname %in% c("United States", "United Kingdom", "Brazil", "China", "Canada"))
+samcht <-as_tibble(same_chart)
+
+new_datein <- samcht %>%
+  filter(date >= as.Date('2020-01-01'))
+ 
+
+```
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+**Plot 01: Time series plot for confirmed(log) cases  **
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, comment = " "}
+plot2 <- new_datein%>%
+  mutate(label = if_else(date == max(date), as.character(cname), NA_character_)) %>%
+  ggplot(aes(x = date, y = cases,color = cname, group = cname, frame = date)) +
+  geom_line(size = 1)+
+  scale_y_log10()+
+  scale_color_brewer(type = "qua", palette = "Accent")+
+  theme_bw()+
+  theme(legend.position = "none")+
+  labs(y= "Confirmed Cases (log sacale)", x = "Date")+
+  ggtitle("Time series plot for confirmed(log) cases")+
+  geom_label_repel(aes(label = label),nudge_x = 1,na.rm = TRUE)
+plot2 
+```
+
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+
+**What does this visualization show:**
+The above plot shows the COVID-19 confirmed cases for 1<sup>st</sup> January 2020 to 7<sup>th</sup> March 2021, for US and few other neighboring and countries with same characteristics. Y axis represent the log scale of confirmed cases
+ while X axis shows the date.  And it is important to know that there is no fixed amount of space on this chart for a certain number of cases. the rate of doing testings and the COVID variant spreading can be considered as hidden factors inside the plot (for exponential growth) 
+ 
+**How does this visualization help us to understand COVID-19 situation:**
+US, UK, Brazil and Canada have almost the same confirmed cases occurred somewhere around February 2020, US reported more counties than other countries. After recording first hundred confirmed cases by USA it took only few days to report hundred times more than previous confirmed cases in a day. While other countries show exponential growth of confirmed cases China shows a decreasing rate from January to July 2020. Some where after July log chart shows that curves are flattening, may be due to lockdowns, social distancing, virus is spreading at a lower rate than before.        
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results = 'hide', comment = " "}
+positive_cases1 <- covus %>%
+  filter(measure == "positive")
+#head(positive_cases1)
+positive_orderdate <- positive_cases1 %>%
+  arrange(ymd(positive_cases1$date))
+
+positivedayfilt <- positive_orderdate %>%
+  filter(count!= 0)
+#renaming
+ names(positivedayfilt)[names(positivedayfilt)== "state"] <- "state_abbr" 
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results = 'hide', comment = " "}
+###uspop
+ustotalpop_statotse <- uspop %>%
+  filter(sex_id =="totsex" )
+
+
+final_popcounts <- ustotalpop_statotse %>%
+  filter(hisp_id == "tothisp")
+#view(final_popcounts)
+
+popcounttib <- tibble(state_abbr= final_popcounts$state_abbr, state_name =final_popcounts$state ,population = final_popcounts$pop)
+
+
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results = 'hide', comment = " "}
+mergingtwodatasets <- merge(popcounttib , positivedayfilt,by = "state_abbr")
+#head(mergingtwodatasets)
+any(is.na(mergingtwodatasets))
+
+
+merged_orderdate1 <- mergingtwodatasets %>%
+  arrange(ymd(mergingtwodatasets$date))
+
+
+#giving_numbrtofinaldat <- merged_orderdate1%>%
+  #group_by(date) %>%
+  #mutate(days = cur_group_id())
+#view(giving_numbrtofinaldat)
+twentituwenty_one_dtaset <- merged_orderdate1 %>%
+  filter(date >= as.Date('2020-05-01')) 
+
+```
+
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results = 'hide', comment = " "}
+casesper_tcrecvf <- twentituwenty_one_dtaset %>%
+  mutate(positive_cases_per10000 = (count/population)*10000)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results = 'hide', comment = " "}
+ 
+casesper_thousand <- casesper_tcrecvf %>%
+  mutate(hover = paste0(state_name, "\n", positive_cases_per10000 ))
+
+```
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results = 'hide', comment = " "}
+giving_numbrtofinaldat <- casesper_thousand%>%
+  group_by(date) %>%
+  mutate(days = cur_group_id())
+#view(giving_numbrtofinaldat)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results = 'hide', comment = " "}
+fontStyle <- list(
+  family = "DM Sans",
+  size = 15,
+  color = "black"
+)
+
+label <- list(
+  bgcolor = "#EEEE",
+  bordercolor = "transparent",
+  font = fontStyle
+)
+
+
+
+```
+
+
+
+
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+
+**Plot2: United States COVID 19 Positive Cases per Ten Thousand people in Each State, from May 2020 to March 2021**
+
+<p>&nbsp;</p>
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, comment = " "}
+covi_us11 <- plot_geo(giving_numbrtofinaldat, locationmode = 'USA-states', frame = ~days)  %>%
+                    
+  add_trace(locations= ~state_abbr,
+            z = ~positive_cases_per10000,
+            zmin = 0,
+            zmax = max(casesper_thousand$positive_cases_per10000),
+            color = ~positive_cases_per10000,
+            colorscale = 'BuPu',
+            text = ~hover,
+            hoverinfo = 'text')  %>% 
+  layout(geo = list(scope='usa'),
+         font = list(family = "DM Sans"),
+         title = "United States COVID 19 Positive Cases per Ten Thousand people in Each State, from May 2020 to March 2021") %>%
+  style(hoverlabel = label)
+covi_us11
+
+```
+<p>&nbsp;</p>
+
+**What does this visualization show:**
+The above graph of United States of America, shows the COVID-19 confirmed cases pre ten thousand individuals in each State. Starting from 1<sup>st</sup> May 2020 to  March 2021.
+ 
+**How does this visualization help us to understand COVID-19 situation:**
+In the beginning of the May, positive cases mainly reported from New York, New Jersey & Massachusetts states (per ten thousand people). But when it comes to March 2021 the highest number of positive cases per ten thousand individuals were reported from South and North Dakota, Utah, Arizona states and Rhode Island etc. Compared to other states Rhode Island's geographical area is very low, but it shows a high positive COVID-19 cases per then thousand people, so that state can be considered as a state with high positive COVID-19 population density (per ten thousand individuals).        
+
+
+
+
+
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+
+
+**Plot3: Number of Confirmed Cases by Race (for each state)**
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results = 'hide', comment = " "}
+filt_cov <- covus_ethnicity%>%
+  filter(cases >0 )%>%
+  filter(deaths >0)
+
+arra_dateethnic <- filt_cov %>%
+  arrange(ymd(filt_cov$date))
+coveth_numg <- arra_dateethnic %>%
+  group_by(date) %>%
+  mutate(Days = cur_group_id())
+```
+
+
+
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, comment = " "}
+aaaaaa <- ggplot(coveth_numg, aes(x = date, y = cases,color = group, 
+                                  text = paste("<br>State: ",state))) +
+  geom_line(alpha=0.5)+
+  
+  facet_wrap(~group)+
+  scale_color_brewer(type = "qua", palette = "Set2")+
+  labs(y= "Confirmed Cases", x = "Date")+
+  theme_bw()
+
+ggplotly(aaaaaa)
+
+```
+<p>&nbsp;</p>
+**What does this visualization show:**
+The above plot shows the confirmed cases of United States of America by race of the individuals for each state, for Hispanic, Non-Hispanic, neither Hispanic or nor Non-Hispanic.  
+ 
+**How does this visualization help us to understand COVID-19 situation:**
+In March 2021 the most of the confirmed cases recorded from Texas is individuals that are no belongs to either Hispanic nor Non-Hispanic, and most confirmed cases reported from California in march 2021 is Hispanic.         
+
+
+
+
+
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+**Plot4: Compare Number of Confirmed Cases with Mobility (transport type-Walking & transit)**
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results = 'hide', comment = " "}
+
+
+
+applecovidmob <- apple_mobility %>%
+  filter(region == "United States" )
+
+
+head(covnat_daily)
+dailyconfusa <- covnat_daily %>%
+  filter(cname == "United States")
+
+gvh <- dailyconfusa %>% 
+  filter(cases > 0 )%>%
+  filter(date >= as.Date('2020-05-01'))
+
+
+applmob_fill <- applecovidmob %>%
+  filter(date >= as.Date('2020-05-01'))%>%
+  filter(date <= as.Date('2020-12-14'))%>%
+  filter(transportation_type =="walking")
+applemerged <- merge(gvh , applmob_fill,by = "date")
+
+
+applmob_fill11 <- applecovidmob %>%
+  filter(date >= as.Date('2020-05-01'))%>%
+  filter(date <= as.Date('2020-12-14'))%>%
+  filter(transportation_type =="transit")
+applemerged11 <- merge(gvh , applmob_fill11,by = "date")
+
+
+
+
+
+
+
+
+```
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results = 'hide', comment = " "}
+ap1ap2 <- ggplot(applemerged, aes(x = date))+
+  geom_line(aes(y = cases), color = "grey", size =1  )+
+  geom_line(aes(y = score*1000),color = "green",size = 1)+
+  scale_color_brewer(type = "qua", palette = "Accent")+
+  theme_bw()+
+  scale_y_continuous(name = "Confirmed cases",
+                     sec.axis = sec_axis(~./1000, name = "Mobility (Walking)"))
+
+
+
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results = 'hide', comment = " "}
+ap1ap33 <- ggplot(applemerged11, aes(x = date))+
+  geom_line(aes(y = cases), color = "grey", size =1 )+
+  geom_line(aes(y = score*1000),color = "blue",size = 1)+
+  scale_color_brewer(type = "qua", palette = "Accent")+
+  theme_bw()+
+  scale_y_continuous(name = "Confirmed cases",
+                     sec.axis = sec_axis(~./1000, name = "Mobility (transit)"))
+
+
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, comment = " "}
+ap1ap33 +ap1ap2
+```
+
+
+
+
+
+
+
+
+
+
+
+<p>&nbsp;</p>
+
+
+
+
+**What does this visualization show:**
+The above plot shows the confirmed cases of United States of America with mobility of the transportation mode for walking. Green(walking), blue(transit) lines shows the mobility while grey color line shows the number of confirmed cases.The line for mobility increasing at a decreasing rate and decreasing at a increasing rate. 
+ 
+**How does this visualization help us to understand COVID-19 situation:**
+When mobility(Walking) increases after few weeks the number of confirmed cases also have increases. 
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

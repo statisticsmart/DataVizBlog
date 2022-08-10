@@ -16,8 +16,8 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 
 📊 Week 2: [Scientific design choices in data visualization](/slides/lesson4viz2021.html)
 
-💻 [Practical class tutorial](/slides/diamonds_visualization.html)
 
+📊 Week 3: [Introduction to the grammar of graphics](/slides/lesson3viz2021.html)
 
 
 

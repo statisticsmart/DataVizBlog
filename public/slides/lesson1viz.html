@@ -1,33 +1,51 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Data Visualization</title>
+    <title>ASP 460 2.0 Data Visualization</title>
     <meta charset="utf-8" />
     <meta name="author" content="Dr Thiyanga Talagala" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
     <link href="libs/remark-css/duke-blue.css" rel="stylesheet" />
     <link href="libs/remark-css/hygge-duke.css" rel="stylesheet" />
-    <link rel="stylesheet" href="libs\cc-fonts.css" type="text/css" />
-    <link rel="stylesheet" href="libs\figure-captions.css" type="text/css" />
+    <link rel="stylesheet" href="libs/cc-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="libs/figure-captions.css" type="text/css" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Data Visualization
+# ASP 460 2.0 Data Visualization
 ### Dr Thiyanga Talagala
-### 2020 - 02 - 13
+### 1. Introduction to Data Visualization: Design Process
 
 ---
 
 
 
+
+
+
+background-image: url('plot1.png')
+background-size: contain
+
+
+---
 # What is data visualization?
 
-"The visual representation and presentation of data to facilitate understanding."
+The visual representation and presentation of data to facilitate understanding.
 
-Andy Kirk-
+Andy Kirk
+
+---
+
+# What is data visualization?
+
+The visual **representation** and **presentation** of **data** to **facilitate understanding**.
+
+Andy Kirk
 
 ---
 
@@ -55,9 +73,9 @@ Andy Kirk-
 
 - Design decisions as a means for communicating to others
 
-    - interactivity
+    - application of interactivity
     
-    - Annotations
+    - features of annotations
     
     - legend, titles, scales, caption
     
@@ -76,7 +94,7 @@ Andy Kirk-
 
 Perceiving --&gt; Interpreting --&gt; Comprehending
 
-- Three different cognitive focuses
+- Three different cognitive focuses.
 
 ---
 
@@ -97,7 +115,9 @@ Perceiving --&gt; Interpreting --&gt; Comprehending
     - Where are the least and most/ average?/largest and smallest?
     
 ---
-background-image: url('dodged.png')
+
+![](lesson1viz_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+
 ---
 
 # Interpreting
@@ -116,7 +136,15 @@ background-image: url('dodged.png')
 
 ---
 
-background-image: url('dodged.png')
+
+![](lesson1viz_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+---
+
+
+![](lesson1viz_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+
 ---
 # Comprehending
 
@@ -130,7 +158,13 @@ background-image: url('dodged.png')
 
 
 ---
-![](lesson1viz_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+![](lesson1viz_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+---
+
+![](lesson1viz_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+
 
 ---
 
@@ -155,12 +189,12 @@ What does it **mean**?
 What does it **mean to me**?
 ---
 
-# The Visualisation Design Process
+## The Visualisation Design Process
 
 - In visualisation there is no such thing as perfect solution.
 
 
-## Challenges
+### Challenges
 
 - Whether it will be understood as you wish
 
@@ -169,6 +203,8 @@ What does it **mean to me**?
 - Choice of graphical form: The same data may be plotted in many alternative ways, which is best and why? 
 
 - May look different in print than on a computer screen.
+
+- Other limitations: time, tools, demand of different audiences
 
 ---
 ## Organising your thinking: What, for whom, why
@@ -189,11 +225,21 @@ What does it **mean to me**?
   
     - What is the output format? (printout, mobile app, etc)
     
-    - Audience (How much assisstant do they need? How familiar are they with the charts?)
+    - Audience (How much assisstant do they need?,  How familiar are they with the charts?)
     
     - Time scale
     
     - Tools
+    
+
+    
+  
+
+---
+
+## Stage1: Formulating your brief (cont)
+
+
     
 - Purpose: 
 
@@ -206,7 +252,7 @@ What does it **mean to me**?
 ---
 
 background-image: url('e1.png')
-
+background-size: contain
 
 # Exhibitory
 
@@ -276,23 +322,16 @@ background-size: contain
 
 - Captions, legends
 
-- Positioning 
- 
-   - Same page or in the facing page, inconvenient to have to turn pages back and forth
-   
+- Positioning/ layout: Same page or in the facing page, inconvenient to have to turn pages back and forth
    
 - Size, Frames and Aspect Ratio
 
- 
-- Colour
-
-   - Blends well and distinguish between different categories
+- Colour: Blends well and distinguish between different categories
 
 - Consistency
 
 - Proximity: place graphics on the same page or on the facing page
 
-- Layout
 
 ---
 
@@ -307,6 +346,7 @@ background-size: contain
 
 background-image: url('charts-scale.jpg')
 background-size: contain
+
 
 
 
@@ -331,17 +371,49 @@ background-image: url('election.png')
 background-size: contain
 
 ---
+class: center,  inverse
+
+# Exercise
+
+Sketch suitable plots to visualize the frequency distribution.
+
+---
+
+**US Adults Opinions on Climate Change Relevant Regulations**
+
+1. Require producing 20% of electricity from clean energy
+
+2. Regulate `\(CO_2\)` as a pollutant
+
+3. Fund more research into renewable energy
+
+|   |  1 | 2  | 3  | 4  | 5  |
+|-----|-----|-----|-----|-----|-----|
+| Q1  |15   | 20  | 2  | 38  |  25 |
+| Q2  | 10  | 14  | 2  |  44 |   30|
+|  Q3 | 6  |  9 | 2  |  41 |  42|
+
+Response: Strongly support (1), Somewhat support (2), Refused (3), Somewhat oppose (4), Strongly opposed (5)
+
+
+
+---
+
+class: center,  inverse
+
 
 Acknowledgement
 
-Kirk, A. (2016). Data visualisation: a handbook for data driven design.
+Kirk, A. (2016). Data visualisation: a handbook for data driven design. 
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="libs/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
-"countIncrementalSlides": false
+"countIncrementalSlides": false,
+"ratio": "16:9"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
@@ -382,6 +454,32 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
 // adds .remark-code-has-line-highlighted class to <pre> parent elements
 // of code chunks containing highlighted lines with class .remark-code-line-highlighted
 (function(d) {
@@ -399,17 +497,6 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   }
   preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
 })(document);</script>
-
-<script>
-(function() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; i++) {
-    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
-      links[i].target = '_blank';
-    }
-  }
-})();
-</script>
 
 <script>
 slideshow._releaseMath = function(el) {

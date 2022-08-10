@@ -1,0 +1,153 @@
+---
+title: "Penguins"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+Overview
+=====================================
+
+Column {data-width=550}
+-----------------------------------------------------------------------
+
+### Data Description
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(visdat)
+library(palmerpenguins)
+glimpse(penguins)
+```
+
+
+### Chart 2
+
+```{r, echo=FALSE}
+library(plotly)
+p1 <- visdat::vis_dat(penguins)
+p1
+```
+
+
+
+Column {data-width=550}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+g1 <-ggplot(penguins, aes(x = sex, fill = species)) +
+  geom_bar(alpha = 0.8) +
+  scale_fill_manual(values = c("darkorange","purple","cyan4"),
+                    guide = FALSE) +
+  theme_minimal() +
+  facet_wrap(~species, ncol = 1) +
+  coord_flip()
+ggplotly(g1)
+```
+
+### Chart C
+
+```{r}
+
+g1 <- ggplot(data = penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(aes(color = species,
+                 shape = species),
+             size = 2) +
+  scale_color_manual(values = c("darkorange","darkorchid","cyan4"))
+ggplotly(g1)
+
+```
+
+Page 2
+=====================================
+
+```{r}
+p1 <- penguins %>%
+  select(species, body_mass_g, ends_with("_mm")) %>%
+  GGally::ggpairs(aes(color = species)) +
+  scale_colour_manual(values = c("darkorange","purple","cyan4")) +
+  scale_fill_manual(values = c("darkorange","purple","cyan4"))
+ggplotly(p1)
+```
+
+
+Page 3
+=====================================
+
+Column {data-width=550}
+-----------------------------------------------------------------------
+
+### Chart 1
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+
+a1 <- ggplot(penguins, aes(x = bill_length_mm, y = body_mass_g, color=species)) +
+   geom_point() + geom_density_2d() +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(title = "The scatter plot of body mass index vs bill length",
+       subtitle = "Bill length and body mass for Adelie, Chinstrap and Gentoo Penguins",
+       x = "Bill length (mm)",
+       y = "Body mass (g)",
+       color = "Penguin species")
+ggplotly(a1)
+
+```
+
+
+### Chart 2
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+
+a2 <- ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
+  #geom_density_2d() +
+  stat_density_2d(aes(fill = ..level..), geom = "polygon") +
+  scale_fill_viridis_c() +
+  geom_point(aes(color=species)) + 
+ scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(title = "The scatter plot of body mass index vs flipper length",
+       subtitle = "Flipper length and body mass for Adelie, Chinstrap and Gentoo Penguins",
+       x = "Flipper length (mm)",
+       y = "Body mass (g)",
+       color = "Penguin species") 
+ggplotly(a2)
+
+```
+
+Column {data-width=550}
+-----------------------------------------------------------------------
+
+### Chart 3
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+
+a3 <- ggplot(data = penguins, aes(x = species, y = bill_length_mm)) +
+  geom_boxplot(aes(color = species), width = 0.3, show.legend = TRUE) +
+  geom_jitter(aes(color = species), alpha = 0.5, show.legend = FALSE, position = position_jitter(width = 0.2, seed = 0)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(x = "Species",
+       y = "Bill length (mm)",
+       title="Distribution of bill length by species")
+ggplotly(a3)
+
+
+```
+
+
+### Chart 4
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+library(ggridges)
+a4 <- ggplot(penguins, aes(x = flipper_length_mm, y = species)) +
+  geom_density_ridges(aes(fill = species)) +
+  scale_fill_manual(values = c("darkorange","purple","cyan4")) + 
+  labs(x = "Flipper length (mm)", title="Distribution of flipper length by species")
+a4
+
+```

@@ -1,0 +1,177 @@
+---
+title: "**Covid-19 in the World and Asia**"
+author: "K.K.S.D.Kulathunga - AS2017416"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(plotly)
+library(covdata)
+library(ggplot2)
+library(viridis)
+```
+
+
+### **Covid-19 Weekly Confirmed Cases in the World**
+
+
+```{r, echo=FALSE, fig.height=5, fig.width=8, fig.align='center', messege=FALSE, warning=FALSE, comment=NA}
+#summary(covnat_weekly)
+
+covid <- covnat_weekly %>%
+  select(-r14_deaths,-r14_cases) %>%
+  mutate(cases = replace(cases, which(cases < 0), NA), 
+         deaths = replace(deaths, which(deaths < 0), NA)) %>% 
+  drop_na() %>%
+  group_by(cname, iso3, year_week) %>%
+  summarise(cases = sum(cases), deaths = sum(deaths)) 
+
+
+world_covid_map <- plot_geo(covid,
+                     frame = ~year_week) %>%
+  add_trace(locations = ~iso3,
+            z = ~cases, 
+            zmin=0,
+            zmax=max(covid$cases),
+            color=~cases,
+            text =~cname,
+            colorscale='Reds') %>%
+  layout(title=" Covid-19 Cases Around the World\nAs of September 1, 2021") %>%
+  colorbar(title = "Covid-19 Cases")
+
+world_covid_map
+```
+
+<p tyle = "text-align:center;">How the weekly changes of Covid-19 confirmed cases according to the countries in the world are shown by above world map. The first week is started from December 30, 2020 and the current cases as of September 1,2021. In the above world map, at the beginning of the week(2020-01) China has 59 confirmed cases while others countries shown as 0 cases of Covid-19 and again the 2nd week(2020-02), China shows zero cases as same as other countries. The Coronavirus has begun to spread over the countries from the 4th week of 2020 by confirming 5 cases from USA, 1 cases from Canada and 4 cases from Australia. Then the Coronavirus influenced patients are recorded in several countries in the world. By the week 16, all the countries have to face this pandemic situation with the higer rate of influence percentage of Covid-19.Confirmed cases of Brazil,India Russia also have higher rate of increasing. The highest increasing rate is shown in USA by weekly recorded cases. By the last week(2021-33 week) USA shows the dark color than other countries. This implies that most number of people who affected by covronavirus are recorded in USA. It's said that the world(All the continent) has became a victim of corona by little by little and by day by day. So the above map shows the victim of Covid-19 around the world.</p>  
+
+
+
+
+
+
+```{r , echo=FALSE, message=FALSE, comment=NA}
+##countries data-set to filter Asian countries' ISO3 
+
+Asia <- countries %>%
+  filter(continent == "Asia")
+Asia <- as.vector(Asia$iso3)
+
+#Used data sets 
+Asia_weekly <- covnat_weekly %>%
+  filter(iso3 %in% Asia) %>% select(-r14_cases, -r14_deaths)%>%
+  mutate(cases = replace(cases, which(cases < 0), NA), 
+         deaths = replace(deaths, which(deaths < 0), NA)) %>% 
+  drop_na()
+
+Asia_daily <- covnat_weekly %>%
+  filter(iso3 %in% Asia) %>% select(-r14_cases, -r14_deaths)%>%
+  mutate(cases = replace(cases, which(cases < 0), NA), 
+         deaths = replace(deaths, which(deaths < 0), NA)) %>% 
+  drop_na()
+# summary(Asia_weekly)
+
+df<-Asia_weekly %>%
+  group_by(cname, iso3, year_week) %>% 
+  summarise(cases = sum(cases), deaths = sum(deaths),
+  Active_cases = cu_cases - cu_deaths)
+
+```
+
+
+
+
+
+
+
+### **Weekly Spread of Covid-19 Active Cases in Asian Contries **
+
+```{r, echo=FALSE, fig.height=5, fig.width=10, fig.align='center',warning=FALSE,comment=NA, message=FALSE}
+
+g <- list(
+  scope = 'asia',
+  projection = list(type = 'albers asia'),
+  showlakes = TRUE,
+  lakecolor = toRGB('white')
+)
+
+fig3 <- df %>% 
+  plot_ly() %>% 
+  add_trace(type ='choropleth',
+            locations = ~iso3,
+            frame =~year_week,
+            z = ~Active_cases, 
+            zmin=0,
+            zmax=max(df$Active_cases),
+            text = ~cname, 
+            color = ~Active_cases) %>% 
+  layout(title = "Weekly spread of Covid-19 Active Cases By Country in Asia") %>% 
+  colorbar(title = "Covid-19 ctive Cases")
+
+
+fig3 <- fig3 %>% layout(geo = g)
+
+fig3
+
+```
+
+
+<p tyle = "text-align:center;">Weekly Spread of Covid-19 Active Cases by Asian Contries are shown in above Asia map. According to the Asia map, two coronavirus active cases are recorded in India by 5th week while China recoreded active cases are shown as 16850. The active cases of India has increased at higher rate of than China active cases. The count of active cases in India has passed the number of active cases in China by 20th week and covid-19 patients are recorded in all the Asian countries by that week. Among all the countries India, Iran, Turkey have higher confiremed active cases than other countries in Asia. Amongthem India is taken as the first place by confirming higher influenced people. The India active cases has shown increase trend of active cases by the last week (2021-33week). India had to face critical victim of covid-19.</p>
+
+
+```{r, echo=FALSE, fig.height=20, fig.width=10, fig.align='center',warning=FALSE,comment=NA, message=FALSE}
+
+a <- Asia_daily %>% 
+  filter(cu_cases > 0) %>%
+  group_by(cname) %>%
+  mutate(days_elapsed = date - min(date), 
+         deaths_percentage = round(cu_deaths * 100 / cu_cases, 2))
+
+a <- a %>%
+  ggplot(aes(x = days_elapsed, y = deaths_percentage , group = cname)) + 
+  geom_line(size = 0.7, color = "gray20")  +
+  facet_wrap(~cname, ncol = 5) +
+  labs(title = "Percentage of COVID-19 Deathes over Confirmed Cases in Asian Countries",
+       x = "Days since first case", y = "Deaths Percentage(%)") + 
+  theme_minimal()
+
+ggplotly(a)
+```
+
+
+<p tyle = "text-align:center;">Weekly spread of percentage of Covid-19 death ove confirmed cases are represent by abve table. The highest percentage of death count is in Yamens as the percentage arount 30%. That means 30 patients may be have to die due to covid when 100 cases are confirmed. The lowest death percentage shown in countries as Laos and Bhutan, Cambodia. Other countries are shows the death percentage below 10%.</p>
+```{r, echo=FALSE, fig.height=20, fig.width=10, fig.align='center',warning=FALSE,comment=NA, message=FALSE}
+
+Asia_long <- Asia_daily %>%
+  pivot_longer(cols = c('cases','deaths'), 
+               names_to = "Cases_Type", values_to = "count")%>%
+  pivot_longer(cols=c('cu_cases','cu_deaths'), 
+               names_to = "CU_Cases_Type", values_to = "cu_count")
+
+
+
+```
+
+
+
+```{r, echo=FALSE, fig.height=20, fig.width=10, fig.align='center',warning=FALSE,comment=NA, message=FALSE}
+p2<- Asia_long %>% mutate(count = replace(count,which(count==0),0.00000001))%>%
+  group_by(cname) %>%
+  mutate(days_elapsed = date - min(date)) %>% ggplot(aes(x = days_elapsed, y = count, color = Cases_Type,  group = cname)) +  
+  geom_line(size = 0.5)+
+   facet_wrap(~cname, ncol = 5) +
+  scale_y_log10(labels = scales::label_number_si())+
+  
+  labs(title = "COVID-19 Confirmed Cases and Death Cases by Days' count in Asica Countries",
+  subtitle= "Comparison of Countries in Asia",
+       x = "Days since first case", y = "Count of Cases (log 10 scale)-(Deaths and Cases)") + 
+  theme_minimal()
+
+ggplotly(p2)
+
+```
+
+<p tyle = "text-align:center;">Daily spread of Covid-19 Cases and death cases by count of days are shown in above graph and the cases are shown as country wise. According to the country wise comparison of the deaths and cases of covid-19, we can cealy see that cases count is higher and cases is never going to be zero count in all the countries according to the days count and cases are higher than zero count in all the countries at all the days count in Asia except from the countries called **Loas**, **Malaysia**,**Maldives**,**Mongolia** **Vietnam**,**Tajkistan**, **Thailand**, **yamen**, and **Nepal**. The Loas, Brunei Darusslam, Cambodia show the different confirmed cases in day by day. The count of cases of those countries are zero and then get the higher value as a seasonal pattern. The above mentioned part can be applied for death counts also as Turkey, United Arab Emirates, Oman, Pakistan,Nepal, Myanmar, Japan, Iran, Armenia, Azerbijan, India and Bangaladesh countries deths counts are not going to be low as much as sezor count of deaths with the time daily count.</p>
+
+

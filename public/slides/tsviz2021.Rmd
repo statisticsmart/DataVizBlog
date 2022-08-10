@@ -1,0 +1,772 @@
+---
+title: "ASP 460 2.0 Data Visualization"
+author: "Dr Thiyanga Talagala"
+date: "Visualizing Time Series Data"
+output:
+  xaringan::moon_reader:
+    chakra: libs/remark-latest.min.js
+    lib_dir: libs
+    css: 
+      - default
+      - default-fonts
+      - duke-blue
+      - hygge-duke
+      - libs/cc-fonts.css
+      - libs/figure-captions.css
+      - xaringan-themer.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  base_color = "#081d58",
+  text_bold_color = "#ce1256",
+  title_slide_text_color = "#edf8b1",
+  header_font_google = google_font("Josefin Sans"),
+  base_font_size = "20px",
+  text_font_size = "1.5rem"
+ #text_font_google   = google_font("Montserrat", "300", "300i")
+ # code_font_google   = google_font("Fira Mono")
+)
+```
+
+# Individual Time Series: Points
+
+.pull-left[
+```r
+library(mozzie)
+library(ggplot2)
+data(mozzie)
+colombo.dengue <- mozzie[, 1:4]
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_point()+xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, fig.cap='Figure 1', echo=FALSE}
+library(mozzie)
+library(ggplot2)
+data(mozzie)
+colombo.dengue <- mozzie[, 1:4]
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_point()+xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+---
+
+# Individual Time Series: Points
+
+.pull-left[
+```r
+library(mozzie)
+library(ggplot2)
+data(mozzie)
+colombo.dengue <- mozzie[, 1:4]
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_point()+xlab("Time")+
+  ylab("Number of dengue cases")
+  
+```
+
+This is NOT a scatter plot. Why?
+
+]
+
+.pull-right[
+```{r, comment=NA, fig.cap='Figure 1', echo=FALSE}
+library(mozzie)
+library(ggplot2)
+data(mozzie)
+colombo.dengue <- mozzie[, 1:4]
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_point()+xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+
+---
+
+
+# Individual Time Series: Points
+
+.pull-left[
+
+**This is NOT a scatter plot. Why?**
+
+
+- the points are spaced equally along the x-axis.
+
+- there is a order among points. 
+
+To emphasize time dependent relationship we can connect neighboring points with lines.
+
+
+
+]
+
+.pull-right[
+```{r, comment=NA, fig.cap='Figure 1', echo=FALSE}
+library(mozzie)
+library(ggplot2)
+data(mozzie)
+colombo.dengue <- mozzie[, 1:4]
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_point()+xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+---
+
+# Individual Time Series: Points and Lines
+
+.pull-left[
+```r
+library(mozzie)
+library(ggplot2)
+data(mozzie)
+colombo.dengue <- mozzie[, 1:4]
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_point()+
+*  geom_line()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, fig.cap='Figure 1', echo=FALSE}
+library(mozzie)
+library(ggplot2)
+data(mozzie)
+colombo.dengue <- mozzie[, 1:4]
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_point()+
+  geom_line()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+---
+
+# Individual Time Series: Points and Lines
+
+.pull-left[
+
+
+- Lines do not represent observed data. Lines are meant as a guide to the eye.
+
+- If few observed values a far apart or unevenly spaced, it is not suitable to connect points with lines.
+
+]
+
+.pull-right[
+```{r, comment=NA, fig.cap='Figure 1', echo=FALSE}
+library(mozzie)
+library(ggplot2)
+data(mozzie)
+colombo.dengue <- mozzie[, 1:4]
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_point()+
+  geom_line()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+---
+
+## Individual Time Series: Lines only
+
+.pull-left[
+```r
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+*  geom_line()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, fig.cap='Figure 1', echo=FALSE}
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_line()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+---
+
+## Individual Time Series: Lines only
+
+.pull-left[
+
+- Without points more emphasis is given on the overall trend and less on individual values.
+
+- In general, when there are too many points it is better to plot without points.
+
+
+]
+
+.pull-right[
+```{r, comment=NA, fig.cap='Figure 1', echo=FALSE}
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_line()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+---
+
+## Individual time series: Fill the area under the curve
+
+.pull-left[
+```r
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+*  geom_area()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, fig.cap='Figure 1', echo=FALSE}
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_area()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+---
+
+.pull-left[
+
+- Visually separates the area above and below the curve.
+
+- More emphasis is given to the overarching trend in the series. 
+
+- This visualization is only valid if the y axis starts at zero.
+
+]
+
+.pull-right[
+```{r, comment=NA, fig.cap='Figure 1', echo=FALSE}
+ggplot(colombo.dengue, aes(x=ID, y=Colombo))+
+  geom_area()+
+  xlab("Time")+
+  ylab("Number of dengue cases")
+```
+
+]
+
+---
+
+# Visualising multiple time series
+
+```{r, echo=FALSE, comment=NA,message=FALSE, warning=FALSE}
+library(tidyverse)
+library(magrittr)
+mozzie <- mozzie[,1:5]
+district_count <- mozzie %>%
+ pivot_longer(-c("ID", "Year", "Week"), names_to = "District", values_to = "count")
+```
+
+.pull-left[
+
+```{r, comment=NA, echo=FALSE, fig.height=3}
+ggplot(district_count, aes(x = ID, y = count, colour = District))+geom_point()
+
+```
+
+Difficult to read.
+
+]
+
+.pull-right[
+
+```{r, comment=NA, echo=FALSE, fig.height=3}
+ggplot(district_count, aes(x = ID, y = count, colour = District))+geom_line()
+
+```
+
+By connecting points with lines we help the reader to follow the paths of each individual time series.
+
+]
+
+---
+
+# Smoothing
+
+```{r}
+library(gapminder)
+head(gapminder)
+```
+
+---
+
+# Smoothing
+
+.pull-left[
+```{r, comment=NA, message=FALSE, eval=FALSE}
+library(tidyverse)
+gapminder_af <- gapminder %>%
+  filter(continent == "Africa")
+ggplot(gapminder_af, aes(x=year, y=lifeExp))+
+  geom_point()+
+  geom_line()+
+  facet_wrap(~country)
+```
+
+]
+
+
+
+.pull-right[
+```{r, comment=NA, message=FALSE, echo=FALSE}
+library(tidyverse)
+gapminder_af <- gapminder %>%
+  filter(continent == "Africa")
+ggplot(gapminder_af, aes(x=year, y=lifeExp))+
+  geom_point()+
+  geom_line()+
+  facet_wrap(~country)
+```
+
+]
+
+---
+# Smoothing
+
+.pull-left[
+```{r, comment=NA, message=FALSE, eval=FALSE}
+gapminder_af <- gapminder %>%
+  filter(continent == "Africa")
+ggplot(gapminder_af, aes(x=year, y=lifeExp))+
+  geom_line()+
+  facet_wrap(~country)+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+]
+
+
+
+.pull-right[
+```{r, comment=NA, message=FALSE, echo=FALSE}
+gapminder_af <- gapminder %>%
+  filter(continent == "Africa")
+ggplot(gapminder_af, aes(x=year, y=lifeExp))+geom_line()+facet_wrap(~country)+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+]
+
+---
+
+# Smoothing
+
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, eval=FALSE}
+library(tidyverse)
+gapminder_af <- gapminder %>%
+  filter(continent == "Africa")
+ggplot(gapminder_af, aes(x=year, y=lifeExp))+geom_smooth()+facet_wrap(~country)+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+]
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+library(tidyverse)
+gapminder_af <- gapminder %>%
+  filter(continent == "Africa")
+ggplot(gapminder_af, aes(x=year, y=lifeExp))+geom_smooth()+facet_wrap(~country)+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+]
+
+---
+
+# Time series plots
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, eval=FALSE}
+library(forecast)
+library(fpp2)
+mozcol <- ts(mozzie$Colombo, frequency = 52, start = c(2008, 52))
+autoplot(mozcol) +
+  ggtitle("Dengue Count - Colombo") +
+  ylab("Count") +
+  xlab("Year")
+```
+
+]
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+library(forecast)
+library(fpp2)
+mozcol <- ts(mozzie$Colombo, frequency = 52, start = c(2008, 52))
+autoplot(mozcol) +
+  ggtitle("Dengue Count - Colombo") +
+  ylab("Count") +
+  xlab("Year")
+```
+
+]
+
+---
+# Seasonal plots
+
+.pull-left[
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, eval=FALSE}
+ggseasonplot(mozcol, year.labels=TRUE, year.labels.left=TRUE) +
+  ylab("Count") +
+  ggtitle("Seasonal plot: Dengue Count - Colombo")
+```
+]
+
+
+.pull-right[
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+ggseasonplot(mozcol, year.labels=TRUE, year.labels.left=TRUE) +
+  ylab("Count") +
+  ggtitle("Seasonal plot: Dengue Count - Colombo")
+```
+]
+---
+# Polar seasonal plot
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, eval=FALSE}
+ggseasonplot(mozcol, polar=TRUE) +
+  ylab("Count") +
+  ggtitle("Polar seasonal plot: Dengue Count - Colombo")
+```
+
+]
+
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+ggseasonplot(mozcol, polar=TRUE) +
+  ylab("Count") +
+  ggtitle("Polar seasonal plot: Dengue Count - Colombo")
+```
+
+]
+
+---
+# Time series plot
+
+.pull-left[
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+autoplot(a10) +
+  ggtitle("Antidiabetic drug sales") +
+  ylab("$ million") +
+  xlab("Year")
+```
+
+]
+
+
+
+.pull-right[
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+autoplot(a10) +
+  ggtitle("Antidiabetic drug sales") +
+  ylab("$ million") +
+  xlab("Year")
+```
+
+]
+---
+# Seasonal plot
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, eval=FALSE}
+ggseasonplot(a10, year.labels=TRUE, year.labels.left=TRUE) +
+  ylab("$ million") +
+  ggtitle("Seasonal plot: antidiabetic drug sales")
+```
+
+]
+
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+ggseasonplot(a10, year.labels=TRUE, year.labels.left=TRUE) +
+  ylab("$ million") +
+  ggtitle("Seasonal plot: antidiabetic drug sales")
+```
+
+]
+
+---
+
+# Polar seasonal plot
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, eval=FALSE}
+ggseasonplot(a10, polar=TRUE) +
+  ylab("$ million") +
+  ggtitle("Polar seasonal plot: antidiabetic drug sales")
+```
+
+]
+
+
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+ggseasonplot(a10, polar=TRUE) +
+  ylab("$ million") +
+  ggtitle("Polar seasonal plot: antidiabetic drug sales")
+```
+
+]
+---
+
+# Seasonal subseries plots
+
+.pull-left[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, eval=FALSE}
+ggsubseriesplot(a10) +
+  ylab("$ million") +
+  ggtitle("Seasonal subseries plot: antidiabetic drug sales")
+```
+
+]
+
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+ggsubseriesplot(a10) +
+  ylab("$ million") +
+  ggtitle("Seasonal subseries plot: antidiabetic drug sales")
+```
+
+]
+
+---
+
+```{r, comment=NA}
+a10
+```
+---
+
+# Seasonal subseries plots
+
+.pull-left[
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+ggsubseriesplot(mozcol) +
+  ylab("Count") +
+  ggtitle("Seasonal subseries plot: Dengue count")
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, message=FALSE, warning=FALSE, fig.height=5, echo=FALSE}
+ggsubseriesplot(mozcol) +
+  ylab("Count") +
+  ggtitle("Seasonal subseries plot: Dengue count")
+```
+
+]
+
+---
+# Lag plots: a10
+
+.pull-left[
+Monthly anti-diabetic drug sales in Australia from 1991 to 2008.
+
+```{r, comment=NA, message=FALSE, eval=FALSE}
+gglagplot(a10)
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, message=FALSE, echo=FALSE}
+gglagplot(a10)
+```
+]
+---
+
+# Lag plots: mozzie 
+
+.pull-left[
+Dengue counts - Colombo
+
+```{r, comment=NA, message=FALSE, eval=FALSE}
+gglagplot(mozcol)
+```
+]
+
+.pull-right[
+```{r, comment=NA, message=FALSE, echo=FALSE}
+gglagplot(mozcol)
+```
+]
+---
+
+# Lag plots: ausbeer
+
+.pull-left[
+
+Monthly Australian beer production: Jan 1991 – Aug 1995.
+
+```{r, comment=NA, message=FALSE, eval=FALSE}
+beer2 <- window(ausbeer, start=1992)
+gglagplot(beer2)
+```
+
+
+]
+
+
+.pull-right[
+
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+beer2 <- window(ausbeer, start=1992)
+gglagplot(beer2)
+```
+
+]
+
+---
+
+### Time series features
+
+Transform a given time series $y=\{y_1, y_2, \cdots, y_n\}$ to a feature vector $F = (f_1(y), f_2(y), \cdots, f_p(y))'$. 
+
+**Examples of time series features**
+
+- strength of trend
+
+- strength of seasonality
+
+- lag-1 autocorrelation
+
+- spectral entropy
+
+- proportion of zeros
+
+
+
+---
+
+
+.pull-left[
+
+
+**Time-domain representation**
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+library(Mcomp)
+library(ggplot2)
+library(grid)
+library(gridExtra)
+library(ggrepel)
+library(png)
+library(tsfeatures)
+library(tidyverse)
+library(ggpubr)
+# Extract required series
+series_id <- c("N0001", "N0633", "N0625", "N0645","N1912", "N2012")
+color = c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e", "#e6ab02")
+six_series <- lapply(M3[series_id], function(u){u$x})
+p <- lapply(six_series,
+function(u) {autoplot(u) + xlab("") + ylab("")}
+)
+for (i in seq_along(six_series))
+p[[i]] <- p[[i]] +geom_line(color=color[i]) +ggtitle(series_id[i])+theme(title =element_text(size=10, face='bold'))
+grid.arrange(grobs = p, ncol = 2)
+```
+
+]
+
+
+.pull-right[
+
+**Feature-domain representation**
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+df <- tsfeatures(six_series, c("stl_features")) %>%
+  select(trend, seasonal_strength) %>%
+  rename(seasonality = seasonal_strength) %>%
+  replace_na(list(seasonality = 0))
+df$id <- names(six_series)
+ggplot(df, aes(x = trend, y = seasonality)) +
+  geom_point(size = 5, color = c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e", "#e6ab02")) +
+  xlim(0, 1) + ylim(0, 1) +
+  xlab("Strength of trend") + 
+  ylab("Strength of seasonality") + 
+  coord_fixed() +
+  geom_text_repel(
+    aes(label = id),
+    colour = "black",
+    size = 5,
+    box.padding = unit(0.5, "lines")
+  ) +
+  theme(legend.position = "none")
+```
+
+]
+
+---
+
+## References
+
+
+
+Talagala, T. S., Hyndman, R. J., & Athanasopoulos, G. (2018). Meta-learning how to forecast time series. Monash Econometrics and Business Statistics Working Papers, 6, 18.
+

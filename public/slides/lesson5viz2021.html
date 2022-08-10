@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>ASP 460 2.0 Data Visualization</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Dr Thiyanga Talagala" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/duke-blue.css" rel="stylesheet" />
+    <link href="libs/remark-css/hygge-duke.css" rel="stylesheet" />
+    <link rel="stylesheet" href="libs/cc-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="libs/figure-captions.css" type="text/css" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# ASP 460 2.0 Data Visualization
+### Dr Thiyanga Talagala
+### 5. Coordinate Systems and Axes
+
+---
+
+
+
+
+
+
+# Introduction
+
+- Position scales: How to place data points in the plot.
+
+&lt;!--To make any sort of data visualization, we need to define position scales, which determine where in a graphic different data values are located. We cannot visualize data
+without placing different data points at different locations,--&gt;
+  
+- Arrangement of axes
+
+     - horozontal x-axis and a vertical y-axis.
+
+     - y-axis run at an acute angle relative to the x-axis.
+     
+     - one axis run in a circle and the other run radially.
+
+&lt;!--For example, we could have the y axis run at an acute angle relative to the x axis--&gt;
+  
+
+
+## Definition: coordinate systems
+
+"The combination of a set of position scales and their relative geometric arrangement is called a coordinate system." (Claus O. Wilke)
+
+---
+
+class: middle, inverse, center
+
+# Cartesian Coordinates
+
+
+---
+
+### 2D Cartesian coordinate system
+
+- Two orthogonal axes (horizontal x-axis, vertical y-axis).
+
+&lt;!--The most widely used coordinate system for data visualization is the 2D Cartesian coordinate system.--&gt;
+
+- If X and Y axes are measured in the same units, the grid spacing for the two axes should be equal. The plot area should be a perfect square.
+
+.pull-left[
+
+
+```r
+library(ggplot2)
+ggplot(data=iris, 
+       aes(x=Sepal.Length, 
+           y=Sepal.Width))+
+  geom_point()+
+*  theme(aspect.ratio = 1)
+```
+]
+
+.pull-right[
+![](lesson5viz2021_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+### 2D Cartesian coordinate system (cont.)
+
+Cartesian coordinate systems are invariant under linear transformations.
+
+&lt;!-- What happens if you change the units of your data? A change in units is a linear transformation, where we add or substract a number to or from all data values and/or multiply all data values with another number. Cartisian coordinate systems are invariant under such linear transformations. Therefore, you can change the units of your data and the resulting figures will not change as long as you change the axes accordingly.Even though the grid lines are in different
+locations and the numbers along the axes are different, the two data visualizations
+look exactly the same.--&gt;
+
+.pull-left[
+
+```r
+ggplot(data=iris, 
+       aes(x=Sepal.Length, y=Sepal.Width))+
+  geom_point()+theme(aspect.ratio = 1)
+```
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+]
+.pull-right[
+
+```r
+ggplot(data=iris, 
+       aes(x=Sepal.Length*100, y=Sepal.Width*100))+
+  geom_point()+theme(aspect.ratio = 1)
+```
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+]
+
+---
+
+### 2D Cartesian coordinate system (cont)
+
+When two different types of variables are mapped to `\(X\)` and `\(Y\)` the plotting area can be stretched or compressed one relative to the other to maintain a valid visualization of the data.
+
+Example: X-Temperature, Y-Date
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+---
+
+### 2D Cartesian coordinate system (cont)
+
+.pull-left[
+
+**Square grid**
+
+&lt;img src="lesson5viz2021_files/figure-html/unnamed-chunk-6-1.png" width="70%" /&gt;
+
+
+]
+
+.pull-right[
+
+**Rectangular grid**
+
+&lt;img src="lesson5viz2021_files/figure-html/unnamed-chunk-7-1.png" width="200%" /&gt;
+
+&lt;img src="lesson5viz2021_files/figure-html/unnamed-chunk-8-1.png" width="200%" /&gt;
+
+]
+
+---
+
+# Nonlinear Axes
+
+
+```r
+x &lt;- c(1, 3.2, 12, 35, 100, 1000); x
+```
+
+```
+[1]    1.0    3.2   12.0   35.0  100.0 1000.0
+```
+
+```r
+log_10_x &lt;- log(x, base=10); log_10_x
+```
+
+```
+[1] 0.000000 0.505150 1.079181 1.544068 2.000000 3.000000
+```
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+&lt;!--The first is to respond to skewness towards large values; i.e., cases in which one or a few points are much larger than the bulk of the data--&gt;
+
+---
+
+### Nonlinear Axes (Cont.)
+
+.pull-left[
+![](lesson5viz2021_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+
+
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+]
+
+---
+
+- Frist 3 plots are correct. Fourth graph is incorrect.
+
+- No difference between plotting the log-transformed data on a
+linear scale or plotting the original data on a logarithmic scale. The only difference lies in labelling values. 
+
+- First two are preferable.
+
+- Third graph: high mental burden when reading the graph.
+
+
+&lt;!--Mathematically, there is no difference between plotting the log-transformed data on a
+linear scale or plotting the original data on a logarithmic scale. The only
+difference lies in the labeling for the individual axis ticks and for the axis as a whole. In most cases, the labeling for a logarithmic scale is preferable, because it places less
+mental burden on the reader to interpret the numbers shown as the axis tick labels.
+There is also less of a risk of confusion about the base of the logarithm. When working
+with log-transformed data, we can get confused about whether the data was transformed
+using the natural logarithm or the logarithm to base 10. And it’s not
+uncommon for labeling to be ambiguous—e.g., log(x), which doesn’t specify a base at
+all. I recommend that you always verify the base when working with log-transformed
+data. When plotting log-transformed data, always specify the base in the labeling of
+the axis.--&gt;
+
+---
+
+# Transformations
+
+Both logarithm scale and square-root scale compresses larger range into a smaller range.
+
+- Logarithmic scales 
+
+&gt; When the dataset contains wide range of values.
+
+&lt;!--There are two main reasons to use logarithmic scales in charts and graphs. The first is to respond to skewness towards large values; i.e., cases in which one or a few points are much larger than the bulk of the data. The second is to show percent change or multiplicative factors.--&gt;
+
+- Square-root scale
+
+&gt; When data contains 0, use square-root transformation.
+
+---
+
+# Logarithmic scales 
+
+Logarithmic scales can emphasize the rate of change in a way that linear scales do not. Italy seems to be slowing the corona virus infection rate, while the number of cases in Spain continues to double every few days.
+
+.pull-left[
+![](lesson5viz2021_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+]
+
+
+.pull-right[
+![](lesson5viz2021_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
+]
+
+&lt;!--At a quick glance, the rate of spread in the Spain looks similar to Italy’s, at least when plotted on a linear scale. But on a logarithmic scale, it is instantly apparent that the number of Americans becoming infected continues to double every three days or so. That indicates that the limited measures taken until recently did not sever social contact enough to slow the spreading. The U.S. curve has even bent upward in the last few days — an even faster exponential growth — perhaps reflecting more widespread testing.--&gt;
+
+
+---
+
+# Coordinate Systems with Curved Axes
+
+
+We specify positions through **angles** and **radial distance** from the origin.
+
+---
+
+.pull-left[
+
+**1. Cartesian coordinate system**
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+
+**2. Polar coordinate system**
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+
+]
+
+We have taken the x coordinates from (1) and used them
+as angular coordinates and the y coordinates from part (1) and used them as radial
+coordinates. The circular axis runs from 0 to 10 in this example, and therefore x = 0 and
+x = 10 are the same locations in this coordinate system.
+
+---
+
+## Coordinate Systems with Curved Axes (cont.)
+
+![](angular_coordinate_on_graph.jpg)
+
+A Polar chart draws the x and y coordinates in each series as ($\theta$,$r$), where `\(\theta\)` is amount of rotation from the origin and `\(r\)` is the distance from the origin.
+---
+
+## Coordinate Systems with Curved Axes (cont.)
+
+**Monthly anti-diabetic drug sales in Australia from 1991 to 2008.**
+
+
+```r
+autoplot(fpp2::qcement)
+```
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+
+
+---
+
+## Coordinate Systems with Curved Axes (cont.)
+
+### Seasonal plots
+
+- Emphasize seasonal patterns and show changes in these patterns over time.
+
+- Seasonal plot is similar to a time plot except that the data are plotted against the individual “seasons” in which the data were observed. 
+
+- Both plots illustrate a sharp decrease in values in February.
+
+- Notice the colour scale!!!
+
+---
+
+.pull-left[
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+
+
+]
+
+---
+
+.pull-left[
+
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;![](lesson5viz2021_files/figure-html/unnamed-chunk-21-2.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+
+- Polar coordinates are useful for data of a periodic nature (values at
+one end of the scale can be meaningfully joined to data values at the other end).
+
+- The polar version
+shows how similar the sales are in December and January. In the Cartesian coordinate system, this fact is
+obscured because the values in December and in January are
+shown in opposite parts of the graph.
+]
+
+
+---
+
+### Coordinate Systems with Curved Axes (cont.)
+
+.pull-left[
+
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;![](lesson5viz2021_files/figure-html/unnamed-chunk-22-2.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+
+- What is the angular coordinate?
+
+- What is the radial coordinate?
+]
+
+---
+
+# Coordinate systems in ggplot2
+
+1) `coord_cartesian()`: Zooming into a plot
+
+
+```r
+base1 &lt;- ggplot(iris, aes(Sepal.Length, Sepal.Width)) + 
+  geom_point() + 
+  geom_smooth()+ggtitle("base1")
+# Scaling to 5--7 throws away data outside that range
+base2 &lt;- base1 + scale_x_continuous(limits = c(5, 7))+ggtitle("base2")
+# Zooming to 5--7 keeps all the data but only shows some of it
+base3 &lt;- base2 + coord_cartesian(xlim = c(5, 7))+ggtitle("base3")
+base4 &lt;- base2 + coord_cartesian(ylim = c(2, 3.5))+ggtitle("base4")
+library(patchwork)
+base1|base2|base3|base4
+```
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-23-1.png)&lt;!-- --&gt;
+
+&lt;!--Setting coordinate system limits is like looking at the plot under a magnifying glass.--&gt;
+
+---
+
+### Coordinate systems in ggplot2 (cont.)
+
+2) `coord_flip()`:  Flipping the axes
+
+
+```r
+base1 &lt;- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width)) + 
+  geom_point() + geom_smooth()+ggtitle("base1")
+# curve is fitted to the original data, and then rotates
+base2 &lt;- ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width)) + 
+  geom_point() + geom_smooth()+
+  coord_flip()+ggtitle("base2")
+# curve is fit to the rotated data
+base3 &lt;- ggplot(iris, aes(x=Sepal.Width, y=Sepal.Length)) + 
+  geom_point() + geom_smooth()+ggtitle("base3")
+base1|base2|base3
+```
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+
+---
+
+3) `coord_fixed()`: Equal scales
+
+A fixed scale coordinate system forces a specified ratio between the physical representation of data units on the axes.
+
+**ratio:**	aspect ratio, expressed as `\(\frac{y}{x}\)`
+
+---
+
+
+```r
+p &lt;- ggplot(mtcars, aes(mpg, wt)) + geom_point()
+```
+
+.pull-left[
+
+```r
+p + coord_fixed(ratio = 1)
+```
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+]
+
+.pull-right[
+
+```r
+p + coord_fixed(ratio = 5)
+```
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
+]
+
+
+
+
+---
+
+### Non-linear coordinate with ggplot2
+
+
+```r
+#Acknowledgement- ggplot2: Elegant Graphics for Data Analysis Hadley Wickham
+rect &lt;- data.frame(x = 50, y = 50)
+line &lt;- data.frame(x = c(1, 200), y = c(100, 1))
+base &lt;- ggplot(mapping = aes(x, y)) + 
+  geom_tile(data = rect, aes(width = 50, height = 50)) + 
+  geom_line(data = line) + 
+  xlab(NULL) + ylab(NULL)
+base1 &lt;- base + ggtitle("base1")
+base2 &lt;- base + coord_polar("x") + ggtitle("base2 (line 50-60)")
+base3 &lt;- base + coord_polar("y") + ggtitle("base3 (line:  60-75)")
+base1|base2|base3
+```
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-28-1.png)&lt;!-- --&gt;
+
+
+---
+
+## Pie Chart vs Bar Chart
+
+The polar coordinates gives rise to pie charts, radar charts, etc.
+
+### sample dataset
+
+.pull-left[
+
+```r
+# Load ggplot2
+library(ggplot2)
+library(dplyr)
+
+# Create Data
+data &lt;- data.frame(
+  group=LETTERS[1:5],
+  value=c(13,7,9,21,2)
+)
+
+data
+```
+
+```
+  group value
+1     A    13
+2     B     7
+3     C     9
+4     D    21
+5     E     2
+```
+]
+
+.pull-right[
+
+```r
+# Compute the position of labels
+data &lt;- data %&gt;% 
+  arrange(desc(group)) %&gt;%
+  mutate(prop = value / sum(data$value) *100) 
+data
+```
+
+```
+  group value      prop
+1     E     2  3.846154
+2     D    21 40.384615
+3     C     9 17.307692
+4     B     7 13.461538
+5     A    13 25.000000
+```
+]
+
+---
+
+### Pie Chart vs Bar Chart
+
+.pull-left[
+
+
+```r
+# Basic barchart
+ggplot(data, aes(x="", y=prop, 
+                 fill=group)) +
+  geom_bar(stat="identity", 
+           width=1, color="white") 
+```
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-31-1.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+
+
+```r
+# Basic pie chart
+ggplot(data, aes(x="", y=prop, fill=group)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0)
+```
+
+![](lesson5viz2021_files/figure-html/unnamed-chunk-32-1.png)&lt;!-- --&gt;
+
+
+]
+
+Angles are harder read accurately than aligned bars.
+
+---
+
+## Map projections: `coord_map()` 
+
+- This is another use of polar coordinates.
+
+- `coord_map` projects a portion of the earth, which is approximately spherical, onto a flat 2D plane using any projection defined by the `mapproj` package
+
+- The earth is a sphere and its locations are specified by their longitude and latitude. Plotting raw latitude and longitude as Cartesian axes is
+misleading due to the spherical shape of the globe. Hence, we project data to  balances between conserving areas or angles relative to the true shape lines on the globe.
+
+---
+
+#### Map projections (cont.)
+
+
+```r
+world &lt;- map_data("world")
+worldmap &lt;- ggplot(world, aes(long, lat, group = group)) + geom_path() +
+  scale_y_continuous(NULL, breaks = (-2:3) * 30, labels = NULL) + scale_x_continuous(NULL, breaks = (-4:4) * 45, labels = NULL)
+
+w1 &lt;- worldmap + coord_map()
+# Some crazier projections
+w2 &lt;- worldmap + coord_map("ortho")
+```
+
+.pull-left[
+![](lesson5viz2021_files/figure-html/unnamed-chunk-34-1.png)&lt;!-- --&gt;
+
+]
+
+.pull-right[
+![](lesson5viz2021_files/figure-html/unnamed-chunk-35-1.png)&lt;!-- --&gt;
+
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

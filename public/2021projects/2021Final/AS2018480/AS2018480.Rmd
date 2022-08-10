@@ -1,0 +1,195 @@
+---
+title: "Final Project"
+author: "Lakna Perera"
+date: "10/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo = FALSE, include = FALSE}
+library(tidyverse)
+library(magrittr)
+library(plotly)
+library(ggridges)
+library(GGally)
+library(lubridate)
+```
+
+
+```{r echo = FALSE, include = FALSE}
+#remotes::install_github("kjhealy/covdata@main")
+
+library(covdata)
+```
+
+### **Reported cases as a percentage of total population**
+
+```{r message = FALSE, warning = FALSE}
+
+cases_deaths_world <- covnat_weekly
+df1 <- cases_deaths_world %>%
+  filter(date == max(date), !is.na(pop)) %>% 
+  mutate(pop_percentage_cases = round((cu_cases/pop)*100, digits = 2),
+         mytext = paste("Country: ", cname, "\n", 
+                        "Percentage: ", pop_percentage_cases, "%", sep=""))
+  
+plot_ly(df1, type='choropleth', 
+        locations=df1$iso3, 
+        z=df1$pop_percentage_cases,
+        text = df1$mytext,
+        colorscale= "#de2d26") %>%
+        layout(title = "Percentage of Reported Covid-19 Cases")
+```
+
+### Interpretation
+
+* Generally, the number of reported Covid-19 cases for each country is relative to the population of the respective country. Therefore, it is insightful to analyse the reported cases relative to the total population of each country.
+
+* This graph shows Covid-19 reported cases as a percentage to the total 
+population of different countries in the world. 
+
+* The percentage of infected people varies between zero and 20.01%.
+
+* The maximum percentage is recorded as Seychelles with a value of 20.01%.
+
+* Higher percentages are indicated by darker colors.
+
+* Percentage of reported Covid-19 cases for USA is recorded as 11.39%.
+
+* Percentage of reported Covid-19 cases is lower in Sri Lanka compared to the other countries.
+
+* However, countries such as Micronesia, Samoa, Soloman Islands and Vanuatu with zero cases
+of Covid-19 may not indicate that there is no Covid-19 cases in those countries.
+This may be due to lack of Covid-19 screening tests done in those countries.
+
+
+### **Statewise analysis of reported Covid-19 cases in USA**
+
+```{r fig.width = 15, fig.height = 20, message = FALSE, warning = FALSE}
+df4 <- nytcovcounty  
+
+df4 %>%
+  mutate(ym = format(date, '%Y-%m')) %>% 
+  group_by(ym, state) %>% 
+  summarize(ym_sum = sum(cases)) %>%
+   
+  ggplot(aes(x = ym, fill = ym_sum, y = reorder(state,ym_sum))) + 
+   geom_raster()+ 
+   scale_fill_viridis_c() +
+   ggtitle("Reported Covid-19 cases by State in USA") +
+   labs(x = "Month", y = "State Name")
+```
+
+### Interpretation
+
+* This graph shows reported Covid-19 cases aggregated monthly for each state in USA.
+
+* In January 2020 only California, Illinois, Arizona and Washington had reported Covid-19 cases.
+
+* In February another six states namely Texas, Wisconsin, Massachusetts, Utah, Nebraska and Oregon were reported with Covid-19 cases. 
+
+* From March 2020 the Covid-19 virus started to spread in almost every state in USA.
+
+* California is reported as the state with highest cases of Covid-19 followed by Texas, Florida and New York respectively.
+
+* The reported cases in the period 2020 December to 2021 August are comparatively higher.
+
+* The highest Covid-19 cases were also reported in California in August 2021.
+
+
+### **Analysis of Covid-19 deaths by age in USA**
+
+```{r message = FALSE, warning = FALSE}
+df2 <- nchs_sas 
+
+age_group_names <- c("Under 1 year","1-4 years","5-14 years","15-24 years",
+                     "25-34 years","35-44 years","45-54 years","55-64 years",
+                     "65-74 years","75-84 years","85 years and over")
+ 
+selected_data <- df2 %>% 
+  filter(group == "By Month",
+         sex == "All Sexes",
+         age_group %in% age_group_names,
+         state != "United States")  # Remove data stored 
+                                    # as United States (repeated values) 
+
+# Assign zero to missing values in covid-19 deaths
+selected_data$covid_19_deaths[is.na(selected_data$covid_19_deaths)] <- 0
+
+selected_data %>%
+  filter(covid_19_deaths > 0) %>%
+  mutate(age_group = as.factor(age_group)) %>%
+  ggplot(aes(x = covid_19_deaths,
+             y = age_group, 
+             fill = age_group)) + 
+   geom_density_ridges(position = "raincloud", 
+                      jittered_points = TRUE) +
+   coord_cartesian(xlim = c(0, 300)) +
+   labs(title = "Distribution of Monthly Covid-19 Deaths by Age in USA",
+       x = "Number of Covid-19 Deaths",
+       y = "Age Group") +
+   theme_bw()
+
+
+```
+
+### Interpretation
+
+* This graph shows reported Covid-19 deaths aggregated monthly under each age category in USA.
+
+* There were no reported Covid-19 deaths below the age of 15.
+
+* Most of the monthly death counts are within the range of 1 - 100 for every age group.
+
+* The variance of the reported monthly death counts is increasing with the age. For an instance Covid-19 deaths in the age group 15 -24 vary between 1 to 50 but for the people who are aged 85 and above has reported monthly deaths over 300. 
+
+* Also this graph clearly shows that age is a critical parameter which determines the deaths due to Covid-19.
+
+### **Analysis of reported Covid-19 deaths, Pneumonia deaths and Influenza deaths in USA**
+
+```{r message = FALSE, warning = FALSE}
+
+selected_data_2 <- df2 %>% 
+  filter(group == "By Month",
+         sex %in% c("Female", "Male"),
+         age_group %in% age_group_names,
+         state != "United States")  # Remove data stored 
+                                    # under United States (repeated values) 
+
+# Assign zero to missing values 
+selected_data_2$covid_19_deaths[is.na(selected_data_2$covid_19_deaths)] <- 0
+selected_data_2$pneumonia_deaths[is.na(selected_data_2$pneumonia_deaths)] <- 0
+selected_data_2$influenza_deaths[is.na(selected_data_2$influenza_deaths)] <- 0
+
+selected_data_2 %>%
+  filter(covid_19_deaths > 0, pneumonia_deaths > 0, influenza_deaths > 0) %>%
+  mutate(age_group = as.factor(age_group),
+         sex = as.factor(sex)) %>%
+  ggpairs(mapping = aes(color=sex, alpha =0.2),
+         columns =c ("covid_19_deaths", "pneumonia_deaths", "influenza_deaths"))+
+   ggtitle("Scatter plot matrix for Covid-19, Pneumonia and Influenza Deaths")
+```
+
+### Interpretation
+
+* This graph shows the information about the pearson correlation coefficients, scatter plots and individual distributions for both male and female deaths reported under as Covid-19, Pneumonia and Influenza.
+
+* According to the individual distributions in the plot, both female and male deaths due to Covid-19, Pneumonia and Influenza are distributed in similar way.
+
+* Overall pearson correlation for Covid-19 and Pneumonia is 0.937 which indicates that there is a strong correlation with the deaths reported as Covid-19 and Pneumonia. 
+
+* There is a small relationship between deaths reported as Covid-19 and Influenza as well. However, it is  not a strong relationship as Covid-19 and Pneumonia.
+
+
+
+
+
+
+
+
+
+
+

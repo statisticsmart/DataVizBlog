@@ -1,0 +1,188 @@
+---
+title:  "STA 472 2.0 Special Topics in Statistics"
+author: "Sadrushi Dissanayake (AS2018346)"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+## Analysis of COVID-19 pandemic for USA
+
+```{r}
+library(tidyverse)
+library(covdata)
+library(magrittr)
+library(skimr)
+library(plotly)
+library(gganimate)
+```
+
+
+#### **Figure 1: Top 10 countries by number of reported COVID-19 deaths as of August 16, 2021**
+
+```{r, fig.align='center', fig.width=10}
+
+# Global View
+
+global_deaths <- covnat_weekly %>% select(c("cname", "cu_deaths")) %>% group_by(cname) %>% filter(cu_deaths == max(cu_deaths)) %>% arrange(-cu_deaths)
+
+top_10_countries <- covnat_weekly %>% filter(cname %in% c("United States Of America", "Brazil", "India", "Mexico", "Peru", "Russia", "United Kingdom", "Italy", "Indonesia", "Colombia")) %>% select(c("date", "cname", "pop", "cu_deaths")) 
+
+plot1 <- ggplot(top_10_countries, aes(x = date, y = log(cu_deaths), color = cname)) +
+  geom_line() + 
+  labs(title = "Cumulative Number of reported COVID-19 deaths", x = "Date", y = "Cumulative reported deaths in log 10 scale", color = "Country name") + scale_color_brewer(type = "qual", palette = "Paired") 
+
+ggplotly(plot1)
+
+```
+
+
+Figure 1 depicts the top 10 countries which have reported highest number of covid deaths as of 16th August 2021. Out of the top countries United States reported the highest number of death cases while Brazil and India reported second and third highest cumulative number of death cases. When compared to other countries lower number of deaths were reported for United Kingdom, Italy, Indonesia and Colombia.
+
+
+
+
+#### **Figure 2: Total COVID-19 related hospitalizations for USA by Hispanic/Non-Hispanic ethnicity and state**
+
+```{r, fig.align='center', fig.width=10, fig.height=10}
+
+hosp_counts <- covus_ethnicity %>% select(c("date", "state", "group", "hosp")) %>% 
+  na.omit() %>% 
+  pivot_wider(names_from = "group", values_from = "hosp") %>% select(1:4) %>%
+  pivot_longer(3:4, names_to = "group", values_to = "hosp") %>%
+  pivot_wider(names_from = "state", values_from = "hosp") %>%
+  rename(Alaska = AK, Arizona = AZ, Florida = FL, Georgia = GA, Hawaii = HI, Kansas = KS, Massachusetts = MA, Maine = ME, Minnesota = MN, Nebraska = NE, `New Hampshire` = NH, `New Jersey` = NJ, `New Mexico` = NM, `New York` = NY, Ohio = OH, Oregon = OR, `Rhode Island` = RI, `South Carolina` = SC, `South Dakota` = SD, Utah = UT, Virginia = VA, Washington = WA, Wisconsin = WI) %>%
+  select(c(1:5, 8:14, 16:19, 21:24)) %>%
+  pivot_longer(3:20, names_to = "state", values_to = "hosp") %>% na.omit()
+
+plot2 <- ggplot(hosp_counts, aes(x = date, y = log(hosp), color = group)) +
+  geom_line(size = 1) + 
+  labs(title = "Total COVID-19 hospitalizations for USA by Hispanic/Non-Hispanic ethnicity and state ", x = "Date", y = "Total hospitalizations in log 10 scale", color = "Ethnic group") + scale_color_brewer(type = "qual", palette = "Dark2") +
+  facet_wrap( ~state, scales = "free_y") + scale_x_date(date_labels = "%m-%y") + theme(axis.text.x = element_text(angle = 60, hjust = 1), legend.position = "top")
+plot2
+
+```
+
+
+Figure 3 represents that there is a significant difference between non hispanic and hispanic ethic groups for number of covid-19 hosplitalizations for almost all the states. However total number of hospitalizations for Arizona and New Mexico shows a smaller difference for non hispanic and hispanic ethic groups than other states. According to the figure non hispanic ethic group reported the highest number of hospitalizations across all the Sates. 
+
+
+
+
+#### **Figure 3: COVID-19 death cases for United States by state and racial group**
+
+```{r, fig.align='center', fig.width=10, fig.height=8}
+
+death_counts <- covus_race %>% select(c("date", "state", "group", "deaths")) %>% na.omit() %>%
+  pivot_wider(names_from = "group", values_from = deaths) %>% select(c(1:8, 11)) %>% pivot_longer(3:9, names_to = "group", values_to = "deaths") %>% pivot_wider(names_from = "state", values_from = deaths) %>%
+  rename(Alaska = AK, Alabama = AL, Arkansas = AR, Arizona = AZ, California = CA, Colorado = CO, Connecticut = CT, Delaware = DE, Florida = FL, Georgia = GA, Hawaii = HI, Iowa = IA, Idaho = ID, Illinois = IL, Indiana = IN, Kansas = KS, Kentucky = KY, Louisiana = LA, Massachusetts = MA, Maryland = MD, Maine = ME, Michigan = MI, Minnesota = MN, Missouri = MO, Mississippi = MS, Montana = MT, `North Carolina` = NC, `North Dakota` = ND, Nebraska = NE, `New Hampshire` = NH, `New Jersey` = NJ, `New Mexico` = NM, Nevada = NV, `New York` = NY, Ohio = OH, Oklahoma = OK, Oregon = OR, Pennsylvania = PA, `Rhode Island` = RI, `South Carolina` = SC, `South Dakota` = SD, Tennessee = TN, Texas = TX, Utah = UT, Virginia = VA, Vermont = VT, Washington = WA, Wisconsin = WI, `West Virginia` = WV, Wyoming = WY) %>% select(c(1:9, 11:13, 16:28, 30:33, 35:36)) %>%
+  pivot_longer(3:31, names_to = "state", values_to = "deaths") %>% na.omit()
+  
+plot3 <- ggplot(death_counts, aes(x = date, y = deaths, color = group)) + geom_line() +
+   labs(title = "Total COVID-19 death count for USA by state and Racial group", subtitle = "Count as of September 1, 2021", x = "Date", y = "Total death count", color = "Racial group") + scale_color_brewer(type = "qual", palette = "Dark2") +
+  facet_wrap( ~state, scales = "free_y") + scale_x_date(date_labels = "%m-%y") + theme(axis.text.x = element_text(angle = 60, hjust = 1), legend.position = "top") + guides(color = guide_legend(reverse = TRUE)) 
+
+plot3
+
+```
+
+
+According to figure 3 white people had the highest total corona death cases for allmost all the states. In Alaska covid deaths were nearly same for white people and American Indian or Alaska Native (AI/AN) for time between July 2020 and January 2021. In contrast California reported highest number of total covid-19 deaths for Latino people than white people. Hence when compared across America majority of white people lost many lives because of covid-19.
+
+
+
+
+#### **Figure 4: How different causes of deaths in United States change over year 2014 to 2021**
+
+
+```{r, fig.align='center', fig.width=20}
+
+# for 2014 data
+
+d14 <- nchs_wdc %>% filter(year == "2014") %>% pivot_wider(names_from = "cause", values_from = "n") %>% select(c(year, week, week_ending_date, 7:13, 15:16)) %>% 
+  pivot_longer(4:12, names_to = "death_cause", values_to = "deaths") %>%
+  na.omit() %>% group_by(death_cause)  %>% mutate(total = sum(deaths)) %>% head(9) %>% select(-deaths)
+
+# for 2015 data
+
+d15 <- nchs_wdc %>% filter(year == "2015") %>% pivot_wider(names_from = "cause", values_from = "n") %>% select(c(year, week, week_ending_date, 7:13, 15:16)) %>% 
+  pivot_longer(4:12, names_to = "death_cause", values_to = "deaths") %>%
+  na.omit() %>% group_by(death_cause)  %>% mutate(total = sum(deaths)) %>% head(9) %>% select(-deaths)
+
+# for 2016 data
+
+d16 <- nchs_wdc %>% filter(year == "2016") %>% pivot_wider(names_from = "cause", values_from = "n") %>% select(c(year, week, week_ending_date, 7:13, 15:16)) %>% 
+  pivot_longer(4:12, names_to = "death_cause", values_to = "deaths") %>%
+  na.omit() %>% group_by(death_cause)  %>% mutate(total = as.integer(sum(deaths))) %>% head(9) %>% select(-deaths)
+
+# for 2017 data
+d17 <- nchs_wdc %>% filter(year == "2017") %>% pivot_wider(names_from = "cause", values_from = "n") %>% select(c(year, week, week_ending_date, 7:13, 15:16)) %>% 
+  pivot_longer(4:12, names_to = "death_cause", values_to = "deaths") %>%
+  na.omit() %>% group_by(death_cause)  %>% mutate(total = sum(deaths)) %>% head(9) %>% select(-deaths)
+
+# for 2018 data
+
+d18 <- nchs_wdc %>% filter(year == "2018") %>% pivot_wider(names_from = "cause", values_from = "n") %>% select(c(year, week, week_ending_date,7:13, 15:16)) %>% 
+  pivot_longer(4:12, names_to = "death_cause", values_to = "deaths") %>%
+  na.omit() %>% group_by(death_cause)  %>% mutate(total = sum(deaths)) %>% head(9) %>% select(-deaths)
+
+# for 2019 data
+
+d19 <- nchs_wdc %>% filter(year == "2019") %>% pivot_wider(names_from = "cause", values_from = "n") %>% select(c(year, week, week_ending_date, 7:13, 15:16)) %>% 
+  pivot_longer(4:12, names_to = "death_cause", values_to = "deaths") %>%
+  na.omit() %>% group_by(death_cause)  %>% mutate(total = sum(deaths)) %>% head(9) %>% select(-deaths)
+
+# for 2020 data
+
+d1 <- nchs_wdc %>% filter(year == "2020") %>% select(c(year, week, week_ending_date)) %>% head(9)
+
+d2 <- nchs_wdc %>% filter(year == "2020") %>% pivot_wider(names_from = "cause", values_from = "n") %>% select(c(year, week, week_ending_date, 7:17)) %>% 
+  pivot_longer(4:14, names_to = "death_cause", values_to = "deaths") %>%
+  na.omit() %>% group_by(death_cause)  %>% mutate(total = sum(deaths)) %>%
+  head(11) %>% select(c("death_cause", "total")) %>% pivot_wider(names_from = "death_cause", values_from = "total") %>% mutate(`COVID-19` = sum(`COVID-19 Multiple cause`+`COVID-19 Underlying`)) %>%
+  select(c(1:3,6:9, 11:12)) %>% pivot_longer(1:9, names_to = "death_cause", values_to = "total")
+
+d20 <- bind_cols(d1, d2)
+
+# for 2021 data
+
+d3 <- nchs_wdc %>% filter(year == "2021") %>% select(c(year, week, week_ending_date)) %>% head(9)
+
+d4 <- nchs_wdc %>% filter(year == "2021") %>% pivot_wider(names_from = "cause", values_from = "n") %>% select(c(year, week, week_ending_date, 7:17)) %>% 
+  pivot_longer(4:14, names_to = "death_cause", values_to = "deaths") %>%
+  na.omit() %>% group_by(death_cause)  %>% mutate(total = sum(deaths)) %>%
+  head(11) %>% select(c("death_cause", "total")) %>% pivot_wider(names_from = "death_cause", values_from = "total") %>% mutate(`COVID-19` = sum(`COVID-19 Multiple cause`+`COVID-19 Underlying`)) %>%
+  select(c(1:3,6:9, 11:12)) %>% pivot_longer(1:9, names_to = "death_cause", values_to = "total")
+  
+d21 <- bind_cols(d3, d4)
+
+# binding yearly data in to one tibble
+
+death_causes <- bind_rows(d14, d15, d16, d17, d18, d19, d20, d21)
+death_causes <- death_causes %>% mutate(label_value = as.character(total))
+
+# plot
+
+plot4 <- ggplot(death_causes, aes(x = death_cause, y = total, fill = death_cause)) + geom_bar(stat = "identity", show.legend = FALSE) + 
+  labs(title = "Total number of Deaths for USA by Select Causes for years 2014 to 2021", subtitle = " Year: {closest_state}", x = "Cause of death", y = "Total count of deaths") +  geom_text(aes(label = label_value), position = position_dodge(0.9), vjust = -1) + theme(axis.text.x = element_text(angle = 60, hjust = 1)) + transition_states(states = year) + enter_fade() + exit_shrink() + ease_aes('linear')
+
+animate(plot4, width = 900, height = 500)
+
+```
+
+
+According to figure 4, cancer and heart disease were the most common causes for deaths in USA for years 2014 to 2019.There is a significant rise in death cases caused by corona virus for the year 2020. however in the year 2021 the total number of death cases for covid-19 was decreased to 901,876. This can be due to lock downs and vaccinations. Even though the covid death cases decreased in 2021, it had the highest number of cases than other causes of deaths. Hence according to data corona virus had major impact on  deaths in United States than other causes for years 2020 and 2021. 
+
+
+#### **References:**
+
+[State Abbreviations for the 50 US States](https://www.50states.com/abbreviations.htm)
+
+
+
+
+
+
+

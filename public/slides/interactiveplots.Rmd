@@ -1,0 +1,288 @@
+---
+title: "Interactive graphics and animated graphics"
+output: 
+  html_document:
+    toc: true
+    toc_float: true 
+    theme: darkly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  gganimate = list(
+    nframes = 50
+  ),
+  out.width = '100%'
+)
+```
+
+# Data 
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+library(tidyverse)
+library(magrittr)
+library(patchwork)
+data(penguins, package="palmerpenguins")
+penguins <- penguins %>%
+    rename(
+         culmen_length = bill_length_mm, 
+         culmen_depth = bill_depth_mm, 
+         flipper_length = flipper_length_mm, 
+         body_mass = body_mass_g
+         ) %>% filter(!(is.na(culmen_length))) %>% filter(!(is.na(sex)))
+head(penguins)
+summary(penguins)
+```
+
+# Static graphic
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T, fig.width=8}
+library(tidyverse)
+g <- ggplot(penguins, aes(x=flipper_length, y=body_mass, col=species))+
+          geom_point() + theme_bw(base_size=16) 
+g
+```
+
+# Interactive graphics
+
+- allows the use to interact with the graphical information presented on the display.
+
+- Cross filtering
+
+    - Zoom by selecting an area of interest
+
+    - Hover the line to get exact information.
+    
+# Creating Interactive plots    
+    
+## Method 1: ggplotly
+
+`ggplotly`() converts your static plots to an interactive web-based version.
+    
+**Example 1**    
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T, fig.width=8}
+library(plotly)
+ggplotly(g)
+```
+
+**Example 2**
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T, fig.width=8}
+p <- ggplot(penguins, aes(x=body_mass, color=sex)) + 
+  geom_freqpoly(stat = "density") + 
+  facet_wrap(~species)
+ggplotly(p)
+```
+
+
+**Example 3**
+
+
+```{r, comment=NA}
+library(gapminder)
+head(gapminder, 25)
+p1 <- ggplot(gapminder, aes(gdpPercap, pop, color = continent, frame = year)) +
+  geom_point(aes(size = pop, ids = country)) + 
+   geom_smooth(method = "lm", se=FALSE) +
+  scale_x_log10() +
+  theme_bw()
+
+ggplotly(p1)
+```
+
+**Example 4**
+
+```{r, comment=NA, message=FALSE, warning=FALSE}
+p2 <- ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country, frame=year)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  facet_wrap(~continent) 
+
+ggplotly(p2)
+```
+
+
+
+
+
+
+
+## Method 2: plotly
+
+ - powered by the JavaScript library plotly.js
+ 
+ - Mapping variables: Instead of `aes` use `~`
+ 
+ - plotly finds a suitable geometric representation for us.
+
+- Users can also define geometries.
+
+- Functions to encode data
+
+    - color: map each level to a different colour
+    - colors: specify a range of colours
+    - stroke
+    - span
+    - symbol
+    - linetype
+ 
+ **Example 1 - 1**
+ 
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T, fig.height=5}
+plot_ly(penguins, x = ~species)
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T, fig.height=5}
+plot_ly(penguins, x = ~species, y= ~island)
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T, fig.height=5}
+plot_ly(
+  penguins, 
+  x = ~species, 
+  color = "green"
+) # Doesn't give green bars
+
+plot_ly(
+  penguins, 
+  x = ~species, 
+  color = I("green"), 
+  stroke = I("black"), 
+  span = I(2)
+)
+```
+
+**Example 2 - 1**
+
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T}
+library(magrittr)
+plot_ly(penguins, x = ~flipper_length, y = ~body_mass, color=~species)
+```
+
+**Example 2 - 2**
+
+There are a family of `add_*` functions.
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T}
+library(magrittr)
+plot_ly(penguins, x = ~flipper_length, y = ~body_mass) %>%  add_markers(color=~species)
+```
+
+**Example 3**
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T}
+library(magrittr)
+plot_ly(penguins, x = ~flipper_length, y = ~body_mass, z = ~culmen_depth, color=~species)
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T}
+library(magrittr)
+plot_ly(penguins, x = ~flipper_length, y = ~body_mass, z = ~culmen_depth) %>% add_markers(color=~species)
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T}
+library(magrittr)
+df <- data.frame(x=1:100, y=rnorm(100))
+plot_ly(df, x = ~x, y = ~y) 
+```
+
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T}
+library(magrittr)
+df <- data.frame(x=1:100, y=rnorm(100))
+plot_ly(df, x = ~x, y = ~y)  %>%
+  add_lines(color = I("black"))
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T}
+plot_ly(df, x = ~x, y = ~y)  %>%
+   add_trace(y = ~y,  mode = 'markers')
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T}
+plot_ly(df, x = ~x, y = ~y)  %>%
+   add_trace(y = ~y,  mode = 'line')
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T}
+plot_ly(df, x = ~x, y = ~y)  %>%
+   add_trace(y = ~y,   mode = 'lines+markers')
+```
+
+# Modify graphs: add_*
+
+> add_histogram
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T}
+penguins %>% plot_ly() %>% add_histogram(x=~body_mass)
+
+```
+
+
+> add_bars (requires pre calculated counts)
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=T}
+penguins %>% dplyr::count(species) %>%
+  plot_ly() %>% add_bars(x=~species, y=~n)
+
+```
+
+
+```{r, comment=NA, echo=T, comment=NA, message=FALSE, warning=FALSE, fig.height=5}
+library(dplyr)
+
+penguins %>%
+  plot_ly(x = ~species) %>% 
+  add_histogram() %>%
+  group_by(species) %>%
+  summarise(n = n()) %>%
+  add_text(
+    text = ~scales::comma(n), y = ~n, 
+    textposition = "top middle", 
+    cliponaxis = FALSE
+  )
+```
+
+
+
+# A Grammar of Animated Graphics
+
+gganimate is an extension of the ggplot2 package for creating animated ggplots.
+
+```{r, comment=NA, warning=FALSE, message=FALSE}
+library(ggplot2)
+library(gganimate)
+
+g <- ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  facet_wrap(~continent) 
+g
+
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE, eval=FALSE}
+ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  facet_wrap(~continent) +
+  # Here comes the gganimate specific bits
+  labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'life expectancy') +
+  transition_time(year) +
+  ease_aes('linear')
+
+```
+
+
+

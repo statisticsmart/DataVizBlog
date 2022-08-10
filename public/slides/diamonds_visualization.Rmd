@@ -1,0 +1,202 @@
+---
+output: 
+  html_document:
+    toc: true
+    toc_float: true 
+    theme: darkly
+---
+
+# Practical Class Tutorial: Week 4
+
+Learning objective:
+
+- Produce barcharts, scatter plots, and boxplots plots using the ggplot2 package.
+
+- Apply faceting in ggplot.
+
+
+- Customized plots using `scale_*`
+
+# Resources
+
+ggplot cheat sheet: [Click here](/slides/data-visualization-2.1.pdf)
+
+# Data set
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This question is based on `diamonds` dataset in the `ggplot2` package. Load the `ggplot2` package and `diamonds` dataset using the following command.
+
+```{r, comment=NA}
+library(ggplot2)
+data(diamonds)
+```
+
+
+You can observe the data structure using the following command
+
+```{r, comment=NA}
+str(diamonds)
+```
+
+To get a summary use the command
+
+```{r, comment=NA}
+summary(diamonds)
+```
+
+# Exercise
+
+## Write R codes to reproduce the following plots using  the `ggplot` function in the `ggplot2` package. 
+
+### Plot 1
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(x=cut)) + geom_bar()
+
+```
+
+### Plot 2
+
+**Help: `?geom_bar`**
+
+**Click here to view the colour names:** https://www.r-graph-gallery.com/42-colors-names.html
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(x=cut)) + geom_bar(colour="cornflowerblue")
+
+```
+
+### Plot 3
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(x=cut)) + geom_bar(colour="cornflowerblue", fill="deeppink")
+
+```
+
+### Plot 4
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(x=cut)) + geom_bar(colour="cornflowerblue", fill="cornflowerblue")
+
+```
+
+### Plot 5
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(x=cut)) + geom_bar(aes(fill=cut))
+
+```
+
+### Plot 6
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(x=cut, fill=cut)) + geom_bar(aes( y=after_stat(100*count/sum(count))))
+
+```
+
+### Plot 7
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(carat, fill = cut)) +
+  geom_density(position = "stack")
+```
+
+### Plot 8
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(depth, fill = cut, colour = cut)) +
+  geom_density(alpha = 0.1)
+```
+
+### Plot 9
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(depth, colour = cut)) +
+  geom_density()
+```
+
+### Plot 10
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(x = color, y = carat)) +
+  geom_boxplot(aes(fill = color))
+```
+
+
+### Plot 11
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(x = color, y = carat)) +
+  geom_boxplot(aes(fill = color)) +
+  facet_wrap(~cut, scales="free")
+
+```
+
+### Plot 12
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(y=price, x=carat)) +
+  geom_point()
+```
+
+
+### Plot 13
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(y=price, x=carat, color=cut)) +
+  geom_point()
+```
+
+### Plot 14
+
+**Help (R colorbrewer palette):** https://www.datanovia.com/en/blog/the-a-z-of-rcolorbrewer-palette/
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(y=price, x=carat, color=cut)) +
+  geom_point() + scale_color_brewer(type="seq", palette="BuPu")
+```
+
+
+### Plot 15
+
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(y=price, x=carat, color=cut)) + geom_point() + 
+  scale_color_brewer(type="div", palette="Dark2")
+```
+
+### Plot 16
+
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(y=price, x=carat, color=cut)) + geom_smooth() 
+```
+
+### Plot 17
+
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(y=price, x=carat, color=cut)) + geom_point() + geom_smooth() 
+```
+
+### Plot 18
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(y=price,  x=cut)) + geom_jitter() 
+```
+
+### Plot 19
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(y=price,  x=cut)) + geom_jitter(alpha=0.5) 
+```
+
+### Plot 20
+
+```{r, comment=NA, echo=FALSE}
+ggplot(diamonds, aes(y=price,  x=cut)) + geom_violin() 
+```
+

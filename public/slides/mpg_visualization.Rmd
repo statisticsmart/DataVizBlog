@@ -1,0 +1,298 @@
+---
+output: 
+  html_document:
+    toc: true
+    toc_float: true 
+    theme: darkly
+---
+
+# Flipped Classroom Exercises
+
+# What is a flipped classroom?
+
+<div class="alert alert-info">
+  <strong>"A flipped classroom is an instructional strategy and a type of blended learning, which aims to increase student engagement and learning by having students complete readings at their home and work on live problem-solving during class time ." Source: </strong>https://en.wikipedia.org/wiki/Flipped_classroom
+</div>
+
+# Learning objectives
+
+i. Create data graphics using the ggplot2 package
+
+ii. Identify suitable aesthetics and geoms to create plots using `qplot` and `ggplot`
+
+iii. Identify what faceting is and apply faceting in ggplot
+
+iv. Customize data graphics using ggplot
+
+
+
+# Learning materials
+
+Check the video lectures in Google Classroom.
+
+
+
+# Data set
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This question is based on `mpg` dataset in the `ggplot2` package. Load the `ggplot2` package and `mpg` dataset using the following command.
+
+```{r, comment=NA}
+library(ggplot2)
+data(mpg)
+```
+
+
+<span style="color:green">Fuel economy data from 1999 to 2008 for 38 popular models of cars</span>.
+
+
+This dataset contains a subset of the fuel economy data that the EPA makes available on https://fueleconomy.gov/. It contains only models which had a new release every year between 1999 and 2008 - this was used as a proxy for the popularity of the car. To find out more information about the dataset you can run the command
+
+```{r, comment=NA}
+help(mpg) # or ?mpg
+```
+
+You can observe the data structure using the following command
+
+```{r, comment=NA}
+str(mpg)
+```
+
+To get a summary use the command
+
+```{r, comment=NA}
+summary(mpg)
+```
+
+# Exercise
+
+## Write R codes to reproduce the following plots using both the `qplot` function and the `ggplot` function in the `ggplot2` package. The first one is done for you.
+
+Help:
+
+1. Identify the `x` variable, `y` variable, `color` variable.
+
+2. Identify the geom type: `point`, `hist`, `smooth`, `density`
+
+3. Identify the attribute: `color`, `shape`, etc.
+
+## Plot 1
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+qplot(displ, hwy, data=mpg, geom="point")
+
+```
+
+### qplot command:
+
+```{r, comment=NA, message=FALSE, warning=FALSE, eval=FALSE}
+qplot(displ, hwy, data=mpg, geom="point")
+
+```
+
+
+### ggplot command:
+
+```{r, comment=NA, message=FALSE, warning=FALSE, eval=FALSE}
+## method 1
+ggplot(data=mpg aes(x=displ, y=hwy)) + geom_point()
+## method 2
+ggplot(data=mpg) + geom_point(aes(x=displ, y=hwy))
+```
+
+## Plot 2
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+qplot(displ, hwy, color=drv, data=mpg, geom="point")
+
+```
+
+### qplot command:
+
+--------
+
+---------
+
+### ggplot command:
+
+---------
+
+-------
+
+## Plot 3
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+qplot(displ, hwy, data=mpg, geom=c("point", "smooth"))
+
+```
+
+### qplot command:
+
+--------
+
+---------
+
+### ggplot command:
+
+---------
+
+-------
+
+## Plot 4
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+qplot(hwy, data=mpg)
+
+```
+
+### qplot command:
+
+--------
+
+---------
+
+### ggplot command:
+
+---------
+
+-------
+
+## Plot 5
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+qplot(hwy, fill=drv, data=mpg)
+
+```
+
+### qplot command:
+
+--------
+
+---------
+
+### ggplot command:
+
+---------
+
+-------
+
+## Plot 6
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+qplot(displ, hwy, data=mpg, facets = .~drv)
+
+```
+
+### qplot command:
+
+--------
+
+---------
+
+### ggplot command:
+
+---------
+
+-------
+
+
+## Plot 6
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+qplot(displ, hwy, data=mpg, facets = drv ~ .)
+
+```
+
+### qplot command:
+
+--------
+
+---------
+
+### ggplot command:
+
+---------
+
+-------
+
+## Plot 7
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+qplot(hwy, data=mpg, facets = drv ~ ., binwidth=2)
+
+```
+
+### qplot command:
+
+--------
+
+---------
+
+### ggplot command:
+
+---------
+
+-------
+
+## Plot 8
+
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+qplot(hwy, color=drv, data=mpg, geom="density")
+
+```
+
+### qplot command:
+
+--------
+
+---------
+
+### ggplot command:
+
+---------
+
+-------
+
+## Plot 9
+
+
+
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+qplot(hwy, cty, data=mpg, geom=c("point", "smooth"),
+      method="lm", facets = .~drv)
+
+```
+
+### qplot command:
+
+--------
+
+---------
+
+### ggplot command:
+
+---------
+
+-------
+
+## Plot 10
+
+
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+
+ggplot(data=mpg, aes(y=hwy, x=cty)) + geom_point() + facet_wrap(drv~., ncol=3) + labs(x="number of cylinders") + 
+  labs(y="highway miles per gallon") + labs(title="Scatterplot of highway miles per gallon vs number of cylinders")
+```
+
+
+ggplot command only:
+
+--------
+
+------

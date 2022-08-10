@@ -1,0 +1,288 @@
+---
+title: "Final Examination Project"
+author: "AS2017378"
+date: "Covid-19 pandemic situation"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, comment = NA)
+```
+
+
+
+## Plot 01
+### Reported deaths and confirmed cases by countries (Jan-2020 : Jul-2021)
+
+```{r include=FALSE}
+
+library(covdata)
+library(plotly)
+library(tidyverse)
+
+sep <- covnat_weekly%>%
+  filter(year_week > "2020-01")%>%
+  separate(date, into=c("year", "month", "date"), sep="-")
+
+uni <- sep%>%
+  unite("Month", c("year", "month"), sep="-")
+
+new_covnat_weekly <- uni %>%
+  group_by(Month, cname)%>%
+  select(Month, cname, pop, cases, deaths)
+
+new_covnat_weekly$cases[which(new_covnat_weekly$cases < 0) ] <- mean(new_covnat_weekly$cases > 0)
+new_covnat_weekly$deaths[which(new_covnat_weekly$deaths < 0) ] <- mean(new_covnat_weekly$deaths > 0)
+
+new_covnat_weekly <- new_covnat_weekly%>%
+  summarise(pop = mean(pop), cases = sum(cases), deaths = sum(deaths))
+```
+
+
+```{r}
+library(ggthemes)
+
+g1 <- new_covnat_weekly %>%
+  plot_ly(x = ~deaths,
+          y = ~cases,
+          size = ~pop,
+          color = ~pop,
+          frame = ~Month,
+          text = ~paste('</br> Country:',cname,
+                        '</br> Deaths:', deaths,
+                        '</br> Cases:', cases),
+          hoverinfo = "text",
+          type = 'scatter',
+          mode = 'markers')%>%
+  layout(xaxis = list(type = "log"))
+
+g1
+
+```
+
+<div align="justify">
+
+**Interpretation**
+
+The data set : covnat_weekly
+
+This graph is plotted from Jan-2020 to Jul-2021 time period and is shown month vise collected data set. While x-axix is represented the number of deaths, y-axix is represented the number of confirmed cases. It is also compare deaths and confirmed cases with the population of country. When moving along the time period, most of countries have approximately similar cases in both of case types, but some are deviated from those countries.
+
+</div>
+
+
+
+
+
+
+## Plot 02
+
+### Comparison of real deaths and expected deaths in US, Brazil and Mexico
+```{r include=FALSE}
+
+library(ggplot2)
+library(gganimate)
+library(ggthemes)
+library(covdata)
+library(tidyverse)
+library(magrittr)
+
+higher_death_countries <- covnat_daily%>%
+  separate(date, into=c("year", "month", "day"), sep="-") %>%
+  filter(year == 2020)%>%
+  group_by(year, cname)%>%summarise(deaths = sum(deaths))%>%
+  arrange(desc(deaths))
+
+head(higher_death_countries, 4)
+
+com_countries <- nytexcess%>%
+  filter(year == 2020, country == c("United States", "Brazil", "Mexico"))
+
+
+edt_com_countries <- com_countries%>%
+  filter(!(start_date %in% "NA"))%>%
+  group_by(country)%>%
+  pivot_longer(9:10, names_to="Deaths", values_to = "Cases")
+  
+```
+
+
+```{r}
+
+g2 <- edt_com_countries%>%
+  ggplot(aes(x=start_date, y= Cases, color=Deaths))+
+  geom_line(alpha=0.8)+
+  geom_point(size=2)+
+  theme_solarized_2(light=F)+
+  facet_wrap(country~., ncol = 1) +
+  
+  theme(text=element_text(colour="#EEEEEE"),
+        title=element_text(colour="#EEEEEE",size=8,face = "bold"),
+        plot.title=element_text(hjust=0.5),
+        axis.title.x = element_blank(),
+        panel.grid.minor.x=element_blank(),
+        legend.background = element_blank(),
+        legend.key= element_blank(),
+        legend.position="bottom",
+        plot.margin = unit(c(0.5,1.3,0.5,0.5), "cm"))+ 
+  scale_x_date(date_labels = "%b",date_breaks  ="1 month")+
+  labs(title = 'COMPARISON OF REAL DEATHS AND EXPECTED DEATHS IN US, Brazil and Mexico')
+ 
+ 
+plot.animation= g2 +
+  transition_reveal(start_date)+
+  view_follow(fixed_y=T)
+ 
+animate(plot.animation, height=420,width=700,fps=30,duration=10,end_pause = 120,res=100,rewind=F) 
+anim_save("COMPARISON OF REAL DEATHS AND EXPECTED DEATHS IN US, Brazil and Mexico")
+
+
+```
+
+<div align="justify">
+
+**Interpretation**
+
+The data sets : covnat_daily, nytexcess
+
+This graph is plotted only for 2020 year. While x-axis is represented the months, y-axis is represented the number of real death cases or number of expected death cases. These death cases are included by all types of death cases s.t. deaths from Covid-19 as well as others (epidemics, wars and natural disasters). By following covnat_daily data set, it is selected four countries which have reported most Covid-19 death cases in 2020 year. As the result, United Stated, Brazil, India and Mexico have higher number of Covid-19 death cases respectively. Since having lack of data in India, it is considered only US, Brazil and Mexico for the comparison. When look at the entire plot, after March in 2020, all three countries have higher death cases than they are expected. And also they all are expected death cases in a similar level in this pandemic year. In the April, the gap of real deaths and expected deaths in US has noticeable higher value. 
+
+</div>
+
+
+## Plot 03
+
+### Analysis of Covid-19 deaths with and without Pneumonia
+```{r include=FALSE}
+
+library(covdata)
+
+Monthly <- nchs_sas%>%
+  filter(group == "By Month")
+
+new_col <- Monthly%>%
+  mutate(only_covid_19_deaths = covid_19_deaths - pneumonia_and_covid_19_deaths)
+
+age_gp <- new_col%>%
+  filter(!(age_group %in% c("5-14 years", "0-17 years", "18-29 years", "30-39 years", "40-49 years", "50-64 years", "All ages", "Under 1 year")))
+
+summary(age_gp)
+
+clean_set <- age_gp%>%
+  filter(only_covid_19_deaths != "NA", pneumonia_and_covid_19_deaths != "NA")
+
+summary(clean_set)
+
+new_set <- clean_set%>%
+  separate(start_date, into=c("month", "day", "year"), sep="/") %>%
+  group_by(year, month, age_group)%>%
+  summarise(pneumonia_and_covid_19_deaths = sum(pneumonia_and_covid_19_deaths), only_covid_19_deaths = sum(only_covid_19_deaths)) %>%
+  rename('Deaths with only Covid-19' = only_covid_19_deaths, 'Deaths with Covid-19 & Pneumonia' = pneumonia_and_covid_19_deaths)
+
+new_nchs_sas <- new_set %>% 
+  pivot_longer(4:5, names_to="Death_type", values_to = "cases")
+
+
+```
+
+```{r fig.height=7, fig.width=12}
+
+library(ggplot2)
+library(ggthemes)
+
+g3 <- new_nchs_sas %>%
+  ggplot(aes(x = age_group, y = cases, fill = Death_type)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  facet_wrap(year~., ncol = 1) +
+  theme_solarized_2(light=F)+
+  theme(text=element_text(colour="#EEEEEE"),
+        title=element_text(colour="#EEEEEE",size=8,face = "bold"),
+        plot.title=element_text(hjust=0.5),
+        axis.title.x = element_blank(),
+        panel.grid.minor.x=element_blank(),
+        legend.background = element_blank(),
+        legend.key= element_blank(),
+        legend.position="bottom",
+        plot.margin = unit(c(0.5,1.3,0.5,0.5), "cm"))
+
+library(gganimate)
+
+g3 + transition_time(as.integer(month)) +
+  labs(title = 'Covid-19 deaths due to with & without Pneumonia w.r.t age groups',
+       subtitle = 'month: {frame_time}')
+
+
+
+```
+
+
+<div align="justify">
+**Interpretation**
+
+The data sets : nchs_sas
+
+The time period of the graph is 01/Jan/2020 - 28/Aug/2021. While x-axis is represented the age groups, Y-axis is represented the number of Covid-19 death cases. The main reason to plot this graph is that some who catch the new coronavirus get severe pneumonia in both lungs, and Covid-19 pneumonia is a serious illness that can be deadly. According to the plot, most people who are in 65 year or over have highly attack from deaths with Covid-19 and pneumonia. Among those, 75-84 year range adults have most effect from pneumonia in both Dec/2020 and Jan/2021 months.
+
+
+</div>
+
+
+## Plot 04
+### Regional Syndromic Surveillance Program (NSSP) for visiting COVID-19-Like Illness and Influenza-like Illness
+
+```{r}
+library(ggplot2)
+library(gganimate)
+library(covdata)
+
+
+nssp_covid_er_reg$visit_type[which(nssp_covid_er_reg$visit_type == "cli") ] <- "COVID-19-Like Illness"
+nssp_covid_er_reg$visit_type[which(nssp_covid_er_reg$visit_type == "ili") ] <- "Influenza-like Illness"
+
+
+
+g4 <- ggplot(nssp_covid_er_reg,
+            aes(x = visit_type, y = visits, label = visit_type, color = visit_type)) +
+  
+  geom_point(stat = "identity", size = 5)+
+  geom_segment(aes(xend = visit_type, yend = 0))+
+  
+  facet_wrap(region~., ncol = 2, nrow = 5 )+
+  theme_solarized_2(light=F)+
+  
+  coord_flip()+
+  xlab(" ")+
+  
+  theme(legend.position = "bottom") +
+ scale_color_manual(values = c("#1b9e77", "#d95f02"))+
+
+  theme(text=element_text(colour="#EEEEEE"),
+        title=element_text(colour="#EEEEEE",size=8,face = "bold"),
+        plot.title=element_text(hjust=0.5),
+        axis.title.x = element_blank(),
+        panel.grid.minor.x=element_blank(),
+        legend.background = element_blank(),
+        legend.key= element_blank(),
+        legend.position="bottom",
+        plot.margin = unit(c(0.5,1.3,0.5,0.5), "cm"))
+
+                 
+                 
+    
+  g4 + transition_time(as.integer(year)) +
+  labs(title = 'NSSP Regional COVID-19 Visits',
+       subtitle = 'year: {frame_time}')
+
+
+
+```
+
+
+<div align="justify">
+**Interpretation**
+
+The data sets : nssp_covid_er_reg
+
+This plot for only 2019 and 2020 years. This data was collected by the Regional Syndromic Surveillance Program (NSSP). They were collected this data from eight regions. while x-axix is represnted number of visits for Covid-19 like illness or Influenza like illness, y-axis is represented type of illness. For both 2019 and 2020, region 8 has lower number of COVID-19-Like Illness and Influenza-like Illness visits. In region 4 and 5, there are higher Covid-19 like illness visits and Influenza like illness visits. 
+
+</div>

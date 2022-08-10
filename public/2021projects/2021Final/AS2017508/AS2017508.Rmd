@@ -1,0 +1,134 @@
+---
+title: "Final Project - Covid 19 Pandemic"
+author: "Geethma Liyanage - AS2017508"
+date: "10/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### **1.Daily international COVID-19 Cases By Continent.**
+
+
+``` {r,message=FALSE,warning=FALSE,echo=FALSE}
+remotes::install_github("kjhealy/covdata@main")
+library(tidyverse)
+library(covdata)
+library(magrittr)
+con_covnat_daily <- left_join(countries, covnat_daily, by = "iso3")
+new_con_covnat_daily <- con_covnat_daily
+new_con_covnat_daily[new_con_covnat_daily < 0] <- 0 
+x <- new_con_covnat_daily %>% group_by(continent)
+sep_data <- x %>% separate(date, into = c("year","month", "day"),sep = "-")
+un_data <- sep_data %>% unite("day_of_month",c("month", "day"))
+ggplot(un_data) + geom_line(aes(x= day_of_month, y=cu_cases, color= continent))+ 
+facet_wrap(~continent, scales = "free", ncol = 2) +scale_x_discrete(breaks =  c("01_31","03_31","05_31","07_31","09_30","11_30")) + 
+labs(title = "Daily Covid 19 cases in the world by Region", subtitle= " Data in 2020",x= " Day of Month", y= " Cummutattive Number of Covid 19 cases" ) 
+
+
+```
+
+
+Figure 01: Cumulative covid cases of the world by continent.
+
+Above Figure 02, can be seen the cumulative cases of  Covid 19 for the all countries in the world by the continent. The Covid 19 cases start from Asian country earlier. After that the Covid 19 spread to the Europe countries, Oceania countries  and North African counties in order. Then lastly, Covid 19 spread to the South African counties. Then consider the shape of the each graph, Europe countries have been faced as the dangerous situation. And also , in there data available on 2020 year. In this year, covid 19 Cases growth of Europe countries also increase with time than other countries.
+
+
+
+### **2.Europe Countries Death Counts by Age Group.**
+
+
+```{r, message=FALSE,warning=FALSE,echo=FALSE}
+remotes::install_github("kjhealy/covdata@main")
+library(tidyverse)
+library(covdata)
+library(skimr)
+library(magrittr)
+
+age_by_deaths <- cdc_deaths_by_age %>% select(age_group,covid_deaths,pneumonia_deaths,all_influenza_deaths_j09_j11,pneumonia_and_covid_deaths,total_deaths)
+
+library(dplyr)
+x <-age_by_deaths %>% mutate_at(vars(2:5) ,funs(P = ./age_by_deaths$total_deaths * 100))
+precent_death <- x %>% select(age_group,7:10)
+
+long_age_by_deaths <- precent_death %>% pivot_longer(2:5, names_to = "cases", values_to = "percent_of_deaths")
+
+long_age_by_deaths$age_group <- factor(long_age_by_deaths$age_group,levels = c("All ages","Under 1 yr", "1–4 yr","5–14 yr","15–24 yr","25–34 yr","35–44 yr","45–54 yr","55–64 yr","65–74 yr","75–84 yr","85 yr"))
+
+long_age_by_deaths$cases <- factor(long_age_by_deaths$cases, levels= c("covid_deaths_P","pneumonia_deaths_P",                                                         "pneumonia_and_covid_deaths_P","all_influenza_deaths_j09_j11_P"))
+library(ggplot2)	
+ggplot(long_age_by_deaths,aes(x= cases, y= percent_of_deaths, fill= cases))+ geom_bar(stat = "identity") + facet_wrap(~age_group, scales = "free_y") + theme(axis.text.x =element_blank(),axis.ticks.x = element_blank(),axis.title.y = element_text(margin = margin(t = 50)), legend.position = "bottom") + 
+labs( title= "Disease Cases with  Age Groups",subtitle = "Percentage numberof deaths by total number of deaths", x= "Type Of cases", y= "percentage Deaths")
+
+
+```
+
+Figure 02: Percentage number of death by total number of deaths.
+
+Above figure 02 shows that the Percentage of the each diseases death cases of the each age group of the closed diseases of Covid 19 virus in the same time period. Then consider the all age group, the percentage of only Covid 19 death cases are small than generally pneumonia percentage by the total number of death. But it is highest that the other influenza deaths by compare the the total deaths. Then consider the covid 19 percentage death of the all age group separately. Under 25 years age groups Covid 19 death cases are very lowest than the pneumonia death cases. But consider the after age 25, Covid 19 death cases have highest value than other groups. And also Covid 19 pneumonia death cases are also higer than other age before 25 years. However, age group 65 -84 has highest Covid death cases(precentage Compare the Total cases).
+
+
+
+### **3.Covid 19 Data For US by States.**
+
+```{r, echo=FALSE,message=FALSE,warning=FALSE}
+remotes::install_github("kjhealy/covdata@main")
+library(tidyverse)
+library(covdata)
+library(magrittr)
+library(plotly)
+
+a<- nytcovstate %>% group_by(state) %>% filter(state %in% c("California","Texas","Florida","New York"))%>%
+  mutate(cum_cases = cumsum(cases), cum_deaths = cumsum(deaths)) %>% 
+  pivot_longer(6:7, names_to = "type_of_cases",values_to = "count") 
+
+g <-ggplot(a, aes(x=date, y= count, colour = type_of_cases)) + geom_path(size = 1) +
+  facet_wrap(~state, scales = "free", ncol = 5) + scale_y_log10(labels = scales::label_number_si()) + labs(title = "Cumulative Death and Cases of States in US", subtitle = "current as of Wednesday, September 1, 2021", x= " Date", y="log(10) Cases Count") +
+  theme_minimal() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplotly(g)
+
+
+```
+
+
+
+Figure 03: Cumulative Cases and Deaths for UK Countries.
+
+Above Figure 03 shows that the Cumulative death and cases of the Us. There separate the four state of the Us which are reported the highest values of Covid 19 cases. Such as California,Texas,Florida,New York. The State California represent the highest values of the Covid 19 cases. But New York represent the highest death cases in the US. After the July of 2020, California Covid 19 cases growth is decrease the time before the Wednesday, September 1, 2021. When consider the cases of Covid 19, Los Angelese report the first Covid cases compare the other states anfd first Death also reported the Los Angelese.
+
+
+
+
+### **4.Covid 19 Data For US by County.**
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+remotes::install_github("kjhealy/covdata@main")
+library(tidyverse)
+library(covdata)
+library(magrittr)
+library(plotly)
+a <- nytcovcounty %>% group_by(state) %>% filter(state %in% c("California","Texas","Florida","New York")) 
+b <-  filter(a,county %in% c("Los Angeles", "Harris", "Hillsborough","New York City")) %>% 
+  pivot_longer(5:6,names_to = "case_type", values_to = "count")
+g <-ggplot(b, aes(x= date, y= log10(count), color= case_type )) + geom_line() + geom_point()+facet_wrap(~county) +theme_bw() + labs(title = "County of each state", x= " Date", y= "log10(nimber of cases)") + theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+ggplotly(g)
+
+```
+
+Figure 04: Cumulative Cases and Deaths for US Counties.
+
+
+Above Figure 04 shows that the Counties of the Us which have highest values of Covid 19 cases. such as Los Angeles from California, Harris from Texas ,Hillsborough from Florida and New York City from New York. all graph growth of the cases and deaths are decrease the days which closed to current as of Wednesday, September 1, 2021. the compare of the Cumulative deaths and cases, Cumulative values in New York city  in last days are closed than the other counties of UK in each states. compare the these four continent, Los Angelese reported the first covid cases bur firth death reported in the New York City. It is on 14 th of March 2020, and also first Covid cases reported in the New yark city in 02nd March 2020. 
+
+
+
+
+
+
+
+
+

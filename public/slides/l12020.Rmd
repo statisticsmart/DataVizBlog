@@ -1,0 +1,341 @@
+---
+title: "Data Visualization"
+author: "Dr Thiyanga Talagala"
+date: "2020 - 02 - 13"
+output:
+  xaringan::moon_reader:
+    chakra: libs/remark-latest.min.js
+    lib_dir: libs
+    css: 
+      - default
+      - default-fonts
+      - duke-blue
+      - hygge-duke
+      - libs/cc-fonts.css
+      - libs/figure-captions.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+# What is data visualization?
+
+"The visual representation and presentation of data to facilitate understanding."
+
+Andy Kirk-
+
+---
+
+# What is data visualization?
+
+The **visual representation** and presentation of data to facilitate understanding.
+
+Andy Kirk-
+
+- How you are going to plot your data
+
+- Building blocks of charts
+    
+    - marks: points, lines or shapes to represent data
+    
+    - attributes: visual variations of marks: different scales, positions, sizes
+
+---
+
+# What is data visualization?
+
+The visual representation and **presentation** of data to facilitate understanding.
+
+Andy Kirk-
+
+- Design decisions as a means for communicating to others
+
+    - interactivity
+    
+    - Annotations
+    
+    - legend, titles, scales, caption
+    
+    - dimentions of the chart area
+
+
+---
+
+# What is data visualization?
+
+The visual representation and presentation of data to facilitate **understanding**.
+
+Andy Kirk-
+
+## The three phases of understanding
+
+Perceiving --> Interpreting --> Comprehending
+
+- Three different cognitive focuses
+
+---
+
+# Perceiving
+
+- **What do I see?: Reading the chart**
+
+    - What data is shown?
+    
+    - What is on x-axis/ y-axis?
+    
+    - What do colours represent? 
+    
+    - What range of values are displayed?
+    
+    - stepped magnitude judgement?
+    
+    - Where are the least and most/ average?/largest and smallest?
+    
+---
+background-image: url('dodged.png')
+---
+
+# Interpreting
+
+- Translate what you see into quantitative and/or qualitative meaning.
+
+- Reader's ability to perform relational interpretation
+
+    - Are these patterns normal, expected or unusual?
+    
+    - What features are interesting?
+    
+    - What features are important given the subject knowledge?
+    
+    - If you do not have any knowledge about the subject your understanding stops after the perceiving phase.
+
+---
+
+background-image: url('dodged.png')
+---
+# Comprehending
+
+- What does it mean to me?
+
+- What does one do with this understanding?
+
+- Have I learned something I did not know before?
+
+- Was it confirmed I did not know before?
+
+
+---
+```{r, echo=FALSE, message=FALSE}
+library(mozzie)
+library(ggplot2)
+library(forecast)
+autoplot(as.ts(mozzie$Colombo))+labs(x="time index", y="counts", title="Time series plot of dengue cases in Colombo")
+```
+
+---
+
+# What is data visualization?
+
+The visual representation and presentation of data to **facilitate** understanding.
+
+- Visualisers can control the output but not the outcome.
+
+---
+
+## Perceiving:
+
+What does it **show**?
+
+## Interpreting
+
+What does it **mean**?
+
+## Comprehending
+
+What does it **mean to me**?
+---
+
+# The Visualisation Design Process
+
+- In visualisation there is no such thing as perfect solution.
+
+
+## Challenges
+
+- Whether it will be understood as you wish
+
+- Plots which are common in one kind of field may be unfamiliar to the readers of another research field.
+
+- Choice of graphical form: The same data may be plotted in many alternative ways, which is best and why? 
+
+- May look different in print than on a computer screen.
+
+---
+## Organising your thinking: What, for whom, why
+
+- Stage 1: Formulating your brief
+
+- Stage 2: Working with data
+
+- Stage 3: Establishing your editorial thinking
+
+- Stage 4: Developing the design solution
+
+---
+
+## Stage1: Formulating your brief
+
+- Planning:
+  
+    - What is the output format? (printout, mobile app, etc)
+    
+    - Audience (How much assisstant do they need? How familiar are they with the charts?)
+    
+    - Time scale
+    
+    - Tools
+    
+- Purpose: 
+
+  - Exhibitory
+  
+  - Explanatory
+  
+  - Exploratory
+
+---
+
+background-image: url('e1.png')
+
+
+# Exhibitory
+
+---
+
+background-image: url('e2.jpg')
+background-size: contain
+
+# Explanatory
+
+---
+
+background-image: url('e3.png')
+background-size: contain
+
+# Exploratory
+
+---
+
+## Stage 2: Working with data
+
+- Gathering, handling and preparing your data
+
+- Qualitative vs Quantitative
+
+- Nominal, Ordinal, Interval, Ratio
+
+- Minimum, Maximum, Number of Categories
+
+---
+## Stage 3: Establishing your editorial thinking
+
+- What questions are you trying to answer in support of the overriding curiosity?
+
+- Selecting items to include or exclude
+
+---
+
+## Stage 4: Developing your design solution
+
+
+- Scales
+
+    - Simplicity
+
+    - Granularity: relative size, scale, level of detail
+
+    - Coverage
+    
+- Sorting and ordering
+
+- Annotation (Overlaying information)
+
+    - Highlight particular feature of a graphic
+
+    - Guides the reader
+    
+    - Emphasizing particular issue
+    
+    - Overlaying (Statistical) information
+    
+    - Challenge: overlapping or cluttered display
+    
+---
+
+## Stage 4: Developing your design solution (cont.)
+
+- Captions, legends
+
+- Positioning 
+ 
+   - Same page or in the facing page, inconvenient to have to turn pages back and forth
+   
+   
+- Size, Frames and Aspect Ratio
+
+ 
+- Colour
+
+   - Blends well and distinguish between different categories
+
+- Consistency
+
+- Proximity: place graphics on the same page or on the facing page
+
+- Layout
+
+---
+
+### Three principles of good visualisation design (From Andy Kirk)
+
+- **Trustworthy:** Is it reliable?
+
+- **Accessible** Is it usable/ understandable?
+
+- **Elegant** 
+---
+
+background-image: url('charts-scale.jpg')
+background-size: contain
+
+
+
+---
+
+background-image: url('mis.jpeg')
+background-size: contain
+
+---
+
+background-image: url('election3.png')
+background-size: contain
+
+---
+
+background-image: url('election2.gif')
+background-size: contain
+
+---
+
+background-image: url('election.png')
+background-size: contain
+
+---
+
+Acknowledgement
+
+Kirk, A. (2016). Data visualisation: a handbook for data driven design. 

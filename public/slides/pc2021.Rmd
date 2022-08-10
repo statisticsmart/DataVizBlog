@@ -1,0 +1,414 @@
+---
+title: "ASP 460 2.0 Data Visualization"
+author: "Dr Thiyanga Talagala"
+date: "Principal Component Analysis"
+output:
+  xaringan::moon_reader:
+    chakra: libs/remark-latest.min.js
+    lib_dir: libs
+    css: 
+      - default
+      - default-fonts
+      - duke-blue
+      - hygge-duke
+      - libs/cc-fonts.css
+      - libs/figure-captions.css
+      - xaringan-themer.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  base_color = "#081d58",
+  text_bold_color = "#ce1256",
+  title_slide_text_color = "#edf8b1",
+  header_font_google = google_font("Josefin Sans"),
+  base_font_size = "20px",
+  text_font_size = "1.5rem"
+ #text_font_google   = google_font("Montserrat", "300", "300i")
+ # code_font_google   = google_font("Fira Mono")
+)
+```
+
+# PCA
+
+- Finding low-dimensional combinations (or projections) of high dimensional data that capture most of the variability in the original data.
+
+- Objective: Take $P$ variables $X_1, X_2, X_3,...X_p$ and find combinations of these to produce variables (components) $Z_1, Z_2...Z_p$ that are uncorrelated.
+
+> Number of PCs =  Number of variables in the original data.
+
+- The components are ordered so that $Z_1$ captures the largest proportion of the data, $Z_2$ captures the next largest proportion of the variability
+
+> $Var(Z_1) \geq Var(Z_2)...\geq Var(Z_p)$
+
+---
+
+# PCA (cont.)
+
+
+- If original variables are uncorrelated then PCA does nothing at all. The PCs are the same as the original data.
+
+- PCs are formed by calculating the eigen vectors and eigen values of the data covariance matrix.
+
+---
+
+# Data 
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+library(tidyverse)
+library(magrittr)
+library(patchwork)
+data(penguins, package="palmerpenguins")
+glimpse(penguins)
+summary(penguins)
+```
+
+
+---
+# Data Cleaning
+
+```{r, comment=NA, message=FALSE, echo=FALSE}
+penguins <- penguins %>%
+    rename(
+         culmen_length = bill_length_mm, 
+         culmen_depth = bill_depth_mm, 
+         flipper_length = flipper_length_mm, 
+         body_mass = body_mass_g
+         ) %>% filter(!(is.na(culmen_length))) %>% filter(!(is.na(sex)))
+
+head(penguins)
+summary(penguins)
+```
+---
+```{r, comment=NA, message=FALSE, echo=FALSE, warning=FALSE, fig.width=9, fig.height=9}
+library(GGally)
+ggpairs(penguins, mapping = aes(color = species), 
+        columns = c("culmen_length", "culmen_depth", 
+                    "flipper_length", "body_mass",
+                    "island", "sex"))
+
+```
+
+---
+background-image: url('lter_penguins.png')
+background-size: contain
+
+
+.footer-note[.tiny[.green[Artwork by @allison_horst]]]
+
+---
+
+background-image: url('culmen_depth.png')
+background-size: contain
+
+.footer-note[.tiny[.green[Artwork by @allison_horst]]]
+
+---
+
+# PCA
+
+1. Select numerical variables
+
+2. scale the data to 0 mean and unit variance.
+
+3. Perform PCA.
+
+---
+# PCA
+
+```{r,fig.height=5, comment=NA, message=FALSE, comment=NA, warning=FALSE, echo=FALSE}
+pca <-  prcomp (~ culmen_length + culmen_depth + flipper_length + body_mass, data=penguins, na.action=na.omit, scale. = TRUE)
+pca
+
+screeplot(pca, type = "line", lwd=3, cex=3, 
+        main="Variances of PCA Components")
+```
+
+---
+# Standard deviations associated with PCs
+
+```{r, comment=NA, message=FALSE}
+summary(pca)
+```
+
+# PCA rotation matrix
+
+
+```{r, comment=NA, message=FALSE}
+pca$rotation
+```
+
+---
+# Predict PCs
+
+```{r, comment=NA, message=FALSE}
+predict(pca, newdata=tail(penguins))
+```
+
+```{r, comment=NA, message=FALSE}
+tail(pca$x)
+```
+---
+
+# PCA
+
+```{r, comment=NA, message=FALSE, comment=NA, warning=FALSE, echo=FALSE}
+head(pca$x)
+```
+
+# Original data
+
+```{r, comment=NA, message=FALSE, comment=NA, warning=FALSE, echo=FALSE}
+head(penguins)
+```
+
+---
+
+# Combine PCA + original data
+
+```{r, comment=NA, message=FALSE}
+pcadf <- data.frame(pca$x)
+penguins_pca <- bind_cols(penguins, pcadf)
+head(penguins_pca )
+```
+
+---
+
+# PC1 vs PC2
+
+```{r, comment=NA, message=NA, warning=FALSE, echo=FALSE}
+ggplot(penguins_pca, aes(x=PC1, y=PC2, color=species)) + geom_point()
+
+```
+
+
+---
+
+# Plotting PCA
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+pca
+percent <- 100*pca$sdev^2/sum(pca$sdev^2)
+percent
+```
+
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.height=4}
+# devtools::install_github("sinhrks/ggfortify")
+library(ggfortify)
+autoplot(pca, loadings = TRUE, loadings.label = TRUE,
+         data = penguins_pca, colour = 'species')
+```
+---
+## Biplot - plot each variables coefficients  inside a unit circle
+
+.pull-left[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+# devtools::install_github("sinhrks/ggfortify")
+library(ggfortify)
+autoplot(pca, loadings = TRUE, loadings.label = TRUE,
+         data = penguins_pca, colour = 'species')+
+  theme(legend.direction = 'horizontal', legend.position = 'top') 
+
+```
+
+]
+
+
+.pull-right[
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE}
+# devtools::install_github("vqv/ggbiplot")
+library(ggbiplot)
+ggbiplot(pca, obs.scale = 1, var.scale = 1,
+         groups = penguins$species, 
+         ellipse = TRUE, circle = TRUE) +
+  scale_color_discrete(name = 'Penguin Species') +
+  theme(legend.direction = 'horizontal', legend.position = 'top') 
+```
+]
+
+PCA rotation
+
+```{r, comment=NA, echo=FALSE, message=FALSE}
+pca$rotation
+```
+---
+class: middle, center
+
+# Plotting PCA - PC1
+
+---
+
+.pull-left[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.height=3}
+# devtools::install_github("sinhrks/ggfortify")
+library(ggfortify)
+autoplot(pca, loadings = TRUE, loadings.label = TRUE,
+         data = penguins_pca, colour = 'species')
+
+ggplot(penguins_pca, aes(x=PC1, y=PC2, color=flipper_length)) + geom_point()+scale_colour_continuous(type='viridis')
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE,fig.width=7, fig.height=3}
+p1 <- ggplot(penguins_pca, aes(y=flipper_length, x=species))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(aes(col=species))
+
+p2 <- ggplot(penguins_pca, aes(y=body_mass, x=species))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(aes(col=species))
+p1|p2
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.height=3}
+ggplot(penguins_pca, aes(x=PC1, y=PC2, color=body_mass))+
+ geom_point()+scale_colour_continuous(type='viridis')
+```
+
+]
+
+---
+class: middle, center
+
+# Plotting PCA - PC1
+
+
+---
+
+.pull-left[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.height=3}
+# devtools::install_github("sinhrks/ggfortify")
+library(ggfortify)
+autoplot(pca, loadings = TRUE, loadings.label = TRUE,
+         data = penguins_pca, colour = 'species')
+
+ggplot(penguins_pca, aes(x=PC1, y=PC2, color=flipper_length)) + geom_point()+scale_colour_continuous(type='viridis')+geom_vline(xintercept=0)
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE,fig.width=7, fig.height=3}
+p1 <- ggplot(penguins_pca, aes(y=flipper_length, x=species))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(aes(col=species))
+
+p2 <- ggplot(penguins_pca, aes(y=body_mass, x=species))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(aes(col=species))
+p1|p2
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.height=3}
+ggplot(penguins_pca, aes(x=PC1, y=PC2, color=body_mass))+
+ geom_point()+scale_colour_continuous(type='viridis')+geom_vline(xintercept=0)
+```
+
+]
+
+---
+class: middle, center
+
+# Plotting PCA - PC2
+
+---
+
+.pull-left[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.height=3}
+# devtools::install_github("sinhrks/ggfortify")
+library(ggfortify)
+autoplot(pca, loadings = TRUE, loadings.label = TRUE,
+         data = penguins_pca, colour = 'species')
+
+ggplot(penguins_pca, aes(x=PC1, y=PC2, color=culmen_length)) + geom_point()+scale_colour_continuous(type='viridis')
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE,fig.width=7, fig.height=3}
+p1 <- ggplot(penguins_pca, aes(y=culmen_length, x=species))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(aes(col=species))
+
+p2 <- ggplot(penguins_pca, aes(y=culmen_depth, x=species))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(aes(col=species))
+p1|p2
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.height=3}
+ggplot(penguins_pca, aes(x=PC1, y=PC2, color=culmen_depth))+
+ geom_point()+scale_colour_continuous(type='viridis')
+```
+
+]
+
+---
+class: middle, center
+
+# Plotting PCA - PC2
+
+
+---
+
+.pull-left[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.height=3}
+# devtools::install_github("sinhrks/ggfortify")
+library(ggfortify)
+autoplot(pca, loadings = TRUE, loadings.label = TRUE,
+         data = penguins_pca, colour = 'species')
+
+ggplot(penguins_pca, aes(x=PC1, y=PC2, color=culmen_length)) + geom_point()+scale_colour_continuous(type='viridis')+geom_hline(yintercept = 0)
+```
+
+]
+
+.pull-right[
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE,fig.width=7, fig.height=3}
+p1 <- ggplot(penguins_pca, aes(y=culmen_length, x=species))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(aes(col=species))
+
+p2 <- ggplot(penguins_pca, aes(y=culmen_depth, x=species))+
+  geom_boxplot(outlier.shape = NA)+
+  geom_jitter(aes(col=species))
+p1|p2
+```
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.height=3}
+ggplot(penguins_pca, aes(x=PC1, y=PC2, color=culmen_depth))+
+ geom_point()+scale_colour_continuous(type='viridis')+geom_abline(intercept = 2, slope=-1)
+```
+
+]
+
+---
+
+# Visualising instance space
+
+```{r echo=FALSE, fig.width=10, message=FALSE, warning=FALSE, fig.width=25}
+p1 <- ggplot(penguins_pca, aes(x=PC1, y=PC2, color=species)) + geom_point()+coord_equal()
+p2 <- ggplot(penguins_pca, aes(x=PC1, y=PC2, color=island)) + geom_point()+coord_equal()
+p3 <- ggplot(penguins_pca, aes(x=PC1, y=PC2, color=culmen_length)) + geom_point()+scale_colour_continuous(type='viridis')+coord_equal()
+p4 <- ggplot(penguins_pca, aes(x=PC1, y=PC2, color=culmen_depth)) + geom_point()+scale_colour_continuous(type='viridis')+coord_equal()
+p5 <- ggplot(penguins_pca, aes(x=PC1, y=PC2, color=flipper_length)) + geom_point()+scale_colour_continuous(type='viridis')+coord_equal()
+p6 <- ggplot(penguins_pca, aes(x=PC1, y=PC2, color=body_mass)) + geom_point()+scale_colour_continuous(type='viridis')+coord_equal()
+p7 <- ggplot(penguins_pca, aes(x=PC1, y=PC2, color=sex)) + geom_point()+coord_equal()
+(p1|p2|p7)
+(p3|p4|p5|p6)
+```
+

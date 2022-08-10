@@ -1,0 +1,164 @@
+---
+title: "Final Project"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+
+
+
+### **Plot_01**
+
+```{r}
+library(tidyverse) 
+library(magrittr)
+library(covdata)
+library(ggplot2)
+library(plotly)
+library(scales)
+cv_wide <- covnat_weekly %>% rename(cucases=cu_cases,cudeaths=cu_deaths) %>% select(cname,iso3, date, cucases, cudeaths,pop) %>%  pivot_wider(names_from = date, values_from = c(cucases, cudeaths, pop)) 
+
+a <- full_join(cv_wide, countries, by="cname")
+cdata <- a %>% pivot_longer(3:260 ,names_to = c("Type", "Date") ,names_sep = "_", values_to = "value") %>%  pivot_wider(names_from = "Type", values_from = "value" )
+
+cdata$Date <- as.Date(cdata$Date)
+
+cw <- cdata %>% drop_na(c(cucases,cudeaths, continent)) 
+
+
+cw <- as.data.frame(unclass(cw), stringsAsFactors = TRUE)
+
+
+ddata <- ggplot(cw, aes(x=Date, y=cudeaths, colour = continent)) + geom_line(aes(ids = cname), alpha =0.7) + 
+  facet_wrap(~continent,  scales = "free") + scale_color_viridis_d("continent") +  
+  ggtitle("COVID-19 cumulative Death cases grouped by Continent") + ylab("Death cases") + xlab("Week")  + 
+  scale_x_date(breaks = pretty_breaks(4))  + theme(plot.title = element_text(size=13, face="bold"), axis.title = element_text(size=11), axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 8))  +  theme(panel.spacing = unit(1,"lines"))
+
+ggplotly(ddata)
+```
+
+
+
+
+This implies the International cumulative covid - 19 weekly deaths cases within 6 continents from January 2020 to July 2021. South America n Asia show the higher deaths cases weekly. Also weekly cumulative death cases  is very low in Oceania compared to other continents. Considering the continents individually South Africa, India, Mexico, Australia and Brazil show the considerable highest cumulative death cases within the continent Africa, Asia, North America, Oceania and South America respectively. On the other hand most of the countries in Europe continent show same cumulative death rate pattern in the given period.
+
+
+
+### **Plot_02**
+```{r}
+
+library(tidyverse) 
+library(magrittr)
+library(tibbletime)
+library(covdata)
+library(ggplot2)
+library(plotly)
+library(scales)
+
+
+stmf <- as_tbl_time(stmf, index = approx_date)
+n_stmf <- stmf %>% filter_time('2020-01-05' ~ '2021-07-18') %>% filter(sex == "b") 
+
+p_stmf <- n_stmf %>% ggplot(aes(x=approx_date, y= death_rate, group = age_group, color = age_group )) +
+  geom_line() + scale_color_brewer(type = "qual", palette = "Set1") +  
+  ggtitle("Weekly Death rate in USA grouped by Age \n (January 2020 - July 2021 ) ") + ylab("Death rate (In log scale)") + xlab("Week") + labs(color = "Age groups") + 
+  scale_x_date(breaks = pretty_breaks(8)) + theme_bw() + 
+  theme(plot.title = element_text(size=13, face="bold"), axis.title = element_text(size=10), axis.text.x = element_text(size = 8)) 
+
+ggplotly(p_stmf)
+
+```
+
+
+
+This implies the weekly death rate in USA by age groups from January 2020 to July 2020. Here, the death rate is considered in log scale. For 0-14 years and 15-64 years the  rate of change in death rate is very low compared to other age groups. Furthermore, 65-74 , 75-84 and above 85 years shows same pattern in rate of changing in deaths rate from January 2020 to July 2021.  As well as those age groups show some unusual higher death rate in some months.
+
+
+
+### **Plot_03**
+```{r}
+
+library(tidyverse) 
+library(magrittr)
+library(covdata)
+library(ggplot2)
+library(plotly)
+
+age <- cdc_deaths_by_age %>%  mutate(cdper = 100*covid_deaths/total_deaths) %>%  filter(!age_group == "All ages")
+
+age$age_group <- factor(age$age_group, levels= c("Under 1 yr","1–4 yr","5–14 yr","15–24 yr","25–34 yr","35–44 yr","45–54 yr","55–64 yr","65–74 yr","75–84 yr","85 yr"), ordered=TRUE)
+
+p_age <- ggplot(age,aes(x = cdper, y = age_group))+ geom_point(color = "darkorange1" , stat = "identity" ) + 
+  scale_x_continuous(limits = c(0,6)) + theme_bw() + theme(axis.text.y = element_text(size = 7), axis.text.x = element_text(size =7))
+fig_a <- ggplotly(p_age)
+
+sex <- cdc_deaths_by_sex %>% filter(!sex =="Unknown") %>%  mutate(cdper = 100*covid_deaths/total_deaths)
+
+p_sex <- ggplot(sex,aes(x = cdper, y = sex))+ geom_point(color = "blue1" , stat = "identity" ) + scale_x_continuous(limits = c(0,6) ) + 
+  theme_bw() + theme(axis.text.x = element_text(size = 7))
+
+fig_g <- ggplotly(p_sex) 
+
+
+
+sta <- cdc_deaths_by_state %>% drop_na(covid_deaths) %>%  mutate(cdper = 100*covid_deaths/total_deaths) %>% arrange(cdper)
+
+sta$state <- factor(sta$state, levels = sta$state[order(sta$cdper)])
+
+p_sta <- ggplot(sta,aes(x = cdper, y = state))+ geom_point(color = "darkgreen" ) + scale_x_continuous(limits = c(0,36) ) + 
+  theme_bw() + theme(axis.text.y = element_text(size = 7), axis.text.x = element_text(size =7))
+
+fig_s <- ggplotly(p_sta)  
+
+
+fig <- subplot (fig_s, fig_a, fig_g, margin = 0.08 ) %>% 
+  layout(title = 'COVID-19 Death percentage by States, Age & Gender in USA"')
+fig
+
+
+```
+
+
+These three plots given the idea about how provincial deaths percentage of COVID-19 in USA changes with State, Age and Gender in February to April 2020. Considering the deaths percentage by State, New York city in New York state the highest value. Here, Now York city is get out from New York state.Also, except New York state, the death percentage of other states show a value below 20. Considering the deaths percentage by Age groups after 15-24 group, it shows a trend upto 45-54 years. Furthermore, COVID-19 death percentage gets low value compared to 75-84 years. Last plot implies the COVID-19 deaths percentage by gender. Males deaths percentage is higher than females but there's is not much considerable value.
+
+
+
+
+
+### **Plot_04**
+```{r}
+
+library(tidyverse) 
+library(magrittr)
+library(tibbletime)
+library(covdata)
+library(ggplot2)
+library(gganimate)
+library(av)
+library(gifski)
+library(lubridate)
+
+date <- parse_date_time(paste(nssp_covid_er_nat$year, nssp_covid_er_nat$week, 1, sep="-"),'Y/W/w')
+date <- as.Date(date)
+
+nat <- nssp_covid_er_nat %>%  mutate(Date = date) %>% arrange(Date)
+
+p_nat <-  ggplot(nat, aes(x=Date, y=visits, group = visit_type, color = visit_type )) +
+  geom_point() + geom_line() + scale_color_brewer(type = "qual", palette = "Dark2") +
+  ggtitle("National Emergency Department Visits in USA") +  scale_x_date(breaks = pretty_breaks(8)) +
+  theme_bw() + ylab("Emergency visits") + xlab("Weeks") + labs(color = "Type of visit \n (COVID-19-like illness (cli) \n /  Influenza-like illness (ili))") + 
+  theme(plot.title = element_text(size=14, face="bold"),  axis.title = element_text(size=12), axis.text.x = element_text(size = 11),axis.text.y = element_text(size =11)) + transition_reveal(Date)
+
+animate(p_nat, duration = 9, fps = 20, width = 600, height = 400, renderer = gifski_renderer())
+
+
+```
+
+
+
+This implies the National  Emergency department visits  in USA 2019 October to April. Here, visits are shown by Covid-19 like illness (CLI) and influenza-like illnesses (ILI). Both types of visits show the same pattern in given period. But generally ILI type takes the highest emergency visits all over the period.
+

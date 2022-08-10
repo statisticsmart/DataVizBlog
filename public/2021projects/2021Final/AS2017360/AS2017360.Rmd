@@ -1,0 +1,250 @@
+---
+title: "ASP 460 2.0 Data Visualization - Final Project"
+author: "Dilni T Ekanayake - AS2017360"
+output: html_document
+---
+<br><br>
+
+## COVID-19 Data Visualization 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+remotes::install_github("kjhealy/covdata@main")
+library(covdata)
+library(tidyverse)
+library(usmap)
+library(plotly)
+library(maps)
+```
+
+<br><br>
+Figure 01:
+
+```{r, echo=FALSE, warning=FALSE, fig.width= 10}
+
+world <- map_data("world") %>%
+  filter(region != "Antarctica")
+ 
+w <- covnat_weekly %>%
+  filter(!is.na(cases)) %>%
+  unite("name" , c("cname", "iso3")) %>%
+  group_by(name) %>%
+  summarise(cases = sum(cases)) %>%
+  mutate(cases = cases/100000) %>%
+  separate(name, into = c("cname", "code"), sep = "_") %>%
+  inner_join(maps::iso3166 %>%
+               select(a3, mapname), by = c(code = "a3")) %>%
+  mutate(mapname = ifelse(as.character(mapname) == 
+                            "China(?!:Hong Kong|:Macao)",
+                          "China", as.character(mapname))) %>%
+  right_join(world, by = c(mapname = "region")) %>%
+  ggplot(aes(long, lat, group = group, fill = cases,
+             text = paste('Counrty:', mapname,
+                 '<br> cases: ', cases))) +
+  geom_polygon() +
+  theme_void() +
+  scale_fill_distiller(palette = "Spectral", 
+                       name = "Cases per \n 100,000People") +
+  labs(title = "Global Prevalence of COVID-19 Infection",
+       subtitle  = expression(atop("hfkd"))) +
+  theme(plot.title = element_text(size=14,face="bold.italic"))
+  
+
+
+
+ggplotly(w, tooltip=c("text")) 
+```
+
+<br>
+_Period    : January 2020 to August 16th 2021_ <br>
+
+_Data From :  European Centers for Disease Control | Graph Source: convat_weekly_
+<br><br>
+<div align="justify">In here according to the worldwide spared, we can say that United State shows a significantly high number of cases, approximately 377 cases per 100,000people or 37.7 million cases compared to other countries. Secondly most highest cases shows in India and it approximately 32.4 million cases (approximately 324 cases per 100,000people) and then Brazil, 20.6 million cases (approximately 206 cases per 100,000people). But neighbor countries of the United States, India and Brazil can't see that much of spread within country. This can be happen because of high population of the US and India. But China is where the COVID-19 pandemic started and also population is very high, But the total COVID-19 cases are approximately 100,000. Other than that Russia, Turkey, Argentina, France show infected cases in between 100-50 per100,000 people(10-5 million cases). In overall most of the countries have less infected cases. Furthermore we can say the spread of COVID-19 is not equal in globally.</div>
+
+
+<br><br><br>
+
+
+figure 02:
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+
+covnat_daily %>%
+  filter(date != "2019-12-31") %>%
+  group_by(cname) %>%
+  summarise(deaths = sum(deaths)) %>%
+  arrange(desc(deaths))
+```
+
+```{r ,echo=FALSE, fig.width= 12, fig.height=8}
+d3 <- covnat_daily %>%
+  filter(date != "2019-12-31") %>%
+  separate("date", into= c("year", "month", "date"), sep = "-")%>%
+  filter(cname %in% c("United States", "Brazi", "India", "Mexico",
+                     "Italy", "United Kingdom", "France", 
+                     "Iran, Islamic Republic of", "Spain",
+                     "Russian Federation", "Argentina", "Colombia",
+                     "Peru", "South Africa", "Poland", "Germany",
+                     "Indonesia", "Belgium", "Turkey", "Chile")) %>%
+  unite("m_cname", c("cname", "month")) %>%
+  group_by(m_cname) %>%
+  summarise(m_cases = sum(cases)/100000,
+            m_deaths = sum(deaths)/10000) %>%
+  separate(m_cname, into = c("cname", "month"), sep = "_")
+
+c1 <- d3 %>%
+  ggplot(aes(month, y= reorder(cname, m_deaths), fill = m_deaths))+
+  geom_raster() +
+  scale_fill_distiller(palette = "Spectral" , name ="Cases per 100,000
+                        People") +
+   theme(legend.position = "bottom") +
+  labs(title = "Higest COVID-19 Cases Reported Countries \n 2020",
+       subtitle  = expression(atop("Monthly Reported Cases")),
+       x= "Months", y= "Countries")+
+  theme(plot.title = element_text(size=14,face="bold.italic"))
+  
+       
+  
+
+
+
+
+
+c2 <- d3 %>%
+  ggplot(aes(month, y= reorder(cname, m_cases), fill = m_cases))+
+  geom_raster() +
+  scale_fill_distiller(palette = "Spectral", name = "Cases per 10,000
+                       People") +
+  theme(legend.position = "bottom") +
+  labs(subtitle  = expression(atop("Monthly Reported Deaths")),
+       x= "Months", y= "Countries")
+ 
+library(patchwork)
+c1 | c2
+
+
+
+```
+
+<br>
+_Period    : January 2020 to December 2020_ <br>
+
+_Data From :  European Centers for Disease Control | Graph Source: convat_daily_
+<br><br>
+
+<div align="justify">First thing we can clearly identify, April and May there is significance high number of cases reported in United State, but number of reported deaths are less compared to cases in April and May, and also we can see, there is significance high number of deaths reported in November and number of cases also high compared to other months. Furthermore after April, monthly cases becomes low but monthly deaths increasing. In India starting from June, monthly cases are increasing and after September it's decreasing. we can see similar pattern in monthly deaths in India also. Other countries show slightly increasing and decreasing patterns in monthly cases compared to deaths. Mexico and Iran total cases are high but compared to other countries, total deaths are low. But we can see Turkey show opposite way.</div> 
+
+
+<br><br><br><br>
+
+Figure 03: 
+<br><br>
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+p1 <- nchs_sas %>%
+  filter(group == "By Total") %>%
+  group_by(state) %>%
+  filter(!is.na(covid_19_deaths))%>%
+  summarise(deaths= sum(covid_19_deaths)) %>%
+  filter(state != "United States") %>%
+  filter(state != "New York City") %>%
+  filter(state != "Puerto Rico")
+
+colnames(p1) <- c("states", "deaths")
+p1
+ 
+p1$fips <- statepop$fips
+p1$abbr <- statepop$abbr
+
+colnames(p1) <- c("states", "deaths", "state_fips", "abber")
+p1
+```
+
+
+```{r, echo=FALSE, warning=FALSE, fig.width= 10}
+f <- p1 %>% mutate(hover = paste0(states, "- ", deaths))
+
+g1 = plot_geo(f,
+              locationmode = 'USA-states') %>%
+  add_trace(locations = ~abber,
+            z = ~deaths,
+            color = ~deaths,
+            text = ~hover,
+            hoverinfo = 'text') %>%
+  layout(geo = list(scope = 'usa'),
+         title = " COVID-19 Deaths in the United States by State 
+         \n2020 - 2021/August")
+g1
+```
+
+<br>
+_Period   : January 2020 to August 2021_ <br>
+
+_Data From:  U.S. National Center for Health Statistics | Graph Source: Provisional COVID-19 Death Counts by Sex, Age, and State (nchs_sas)_
+<br><br>
+
+<div align="justify">According to this graph, California shows highest number of deaths and it approximately 300,000 deaths. second highest deaths reported in Texas and it approximately 275,000 deaths. After that Florida and number of deaths are near to 190,000. Furthermore we can see, neighbor states of California (Arizona, Nevada, Oregon) and neighbor states of Texas (New Mexico, Colorado, Kansas, Oklahoma, Arkansas and Louisiana) is very low. Similar way in Florida. Other than to California, Texas and Florida, all other stats reported number of deaths are ver low and it less than to 120,000 and also these three states and New York are the highest population states in US.</div> 
+
+<br><br><br><br>
+Figure 04:
+<br><br>
+
+
+```{r, echo=FALSE, fig.width= 10, fig.height=10}
+b1 <- nchs_sas %>%
+  filter(group == "By Total") %>%
+  group_by(state) %>%
+  filter(!is.na(covid_19_deaths))%>%
+  summarise(t_deaths= sum(covid_19_deaths)) %>%
+  filter(state != "United States")
+
+
+
+b2 <- nchs_sas %>%
+  filter(group == "By Total") %>%
+  filter(sex != "All Sexes") %>%
+  filter(state != "United States")%>%
+  unite("s_state", c("state", "sex")) %>%
+  filter(!is.na(covid_19_deaths)) %>%
+  group_by(s_state) %>%
+  summarise(deaths = sum(covid_19_deaths)) %>%
+  separate(s_state, into = c("state", "sex"), sep = "_") %>%
+  arrange(desc(deaths))
+  
+ggplotly( b2 %>%
+  left_join(b1, by = "state") %>%
+  mutate(state = fct_reorder(state, t_deaths)) %>%
+  ggplot(aes(state, deaths, fill = sex)) +
+  geom_col() +
+    coord_flip() +
+    labs(title = "COVID-19 Deaths in the United States by State 
+    and Sex, 2020 - 2021/August",
+       x= "Deaths", y= "States")+
+  theme(plot.title = element_text(size=12,face="bold.italic")))
+  
+```
+
+<br>
+_Period   : January 2020 to August 2021_ <br>
+
+_Data From:  U.S. National Center for Health Statistics | Graph Source: Provisional COVID-19 Death Counts by Sex, Age, and State (nchs_sas)_
+<br><br>
+
+<div align="justify">This graph shows, how total number of COVID-19 deaths changes in United States according to states and according to the sex. in overall Vermont to Oregon,reported total number of deaths slightly increasing and Oregon and New Mexico reported number of deaths gap is little high. Then after Oregon to Mexico,  total number of deaths are increasing again. But in New York to California, total number of deaths increasing rate is high. According to sex, Vermont to California, total number of male deaths are higher than total number of female deaths. Similar to the total deaths, total male deaths and female deaths are increasing with states.</div> 
+
+
+
+<br><br><br><br>
+End.
+
+
+
+
+
+
+
+
+
+

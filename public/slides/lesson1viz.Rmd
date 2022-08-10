@@ -1,7 +1,7 @@
 ---
-title: "Data Visualization"
+title: "ASP 460 2.0 Data Visualization"
 author: "Dr Thiyanga Talagala"
-date: "2020 - 02 - 13"
+date: "1. Introduction to Data Visualization: Design Process"
 output:
   xaringan::moon_reader:
     chakra: libs/remark-latest.min.js
@@ -13,20 +13,50 @@ output:
       - hygge-duke
       - libs/cc-fonts.css
       - libs/figure-captions.css
+      - xaringan-themer.css
     nature:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
+      ratio: '16:9'
 ---
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
 ```
 
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  base_color = "#081d58",
+  text_bold_color = "#ce1256",
+  title_slide_text_color = "#edf8b1",
+  header_font_google = google_font("Josefin Sans"),
+  base_font_size = "20px",
+  text_font_size = "1.5rem"
+ #text_font_google   = google_font("Montserrat", "300", "300i")
+ # code_font_google   = google_font("Fira Mono")
+)
+```
+
+
+background-image: url('plot1.png')
+background-size: contain
+
+
+---
 # What is data visualization?
 
-"The visual representation and presentation of data to facilitate understanding."
+The visual representation and presentation of data to facilitate understanding.
 
-Andy Kirk-
+Andy Kirk
+
+---
+
+# What is data visualization?
+
+The visual **representation** and **presentation** of **data** to **facilitate understanding**.
+
+Andy Kirk
 
 ---
 
@@ -54,9 +84,9 @@ Andy Kirk-
 
 - Design decisions as a means for communicating to others
 
-    - interactivity
+    - application of interactivity
     
-    - Annotations
+    - features of annotations
     
     - legend, titles, scales, caption
     
@@ -75,7 +105,7 @@ Andy Kirk-
 
 Perceiving --> Interpreting --> Comprehending
 
-- Three different cognitive focuses
+- Three different cognitive focuses.
 
 ---
 
@@ -96,7 +126,20 @@ Perceiving --> Interpreting --> Comprehending
     - Where are the least and most/ average?/largest and smallest?
     
 ---
-background-image: url('dodged.png')
+
+```{r, comment=NA, echo=FALSE, warning=FALSE, message=FALSE, fig.width=15}
+library(coronavirus)
+library(tidyverse)
+coronavirus <- coronavirus %>% mutate(cases = replace(cases, which(cases<0), NA))
+confirmed <- coronavirus %>% 
+  filter(type == "confirmed", country=="Sri Lanka") %>%
+  group_by(country, date) %>%
+  summarise(cases = sum(cases)) 
+p <- ggplot(confirmed, aes(x=date, y=cases)) + geom_line() + ggtitle("Confirmed Cases: Sri Lanka") + theme(legend.position = "none") +
+  scale_x_date(date_breaks = '1 month')
+p
+```
+
 ---
 
 # Interpreting
@@ -115,7 +158,33 @@ background-image: url('dodged.png')
 
 ---
 
-background-image: url('dodged.png')
+
+```{r, comment=NA, comment=NA, echo=FALSE, warning=FALSE, message=FALSE, fig.width=15}
+
+coronavirus <- coronavirus %>% mutate(cases = replace(cases, which(cases<0), NA))
+confirmed <- coronavirus %>% 
+  filter(type == "confirmed", country=="Sri Lanka") %>%
+  group_by(country, date) %>%
+  summarise(cases = sum(cases)) 
+p <- ggplot(confirmed, aes(x=date, y=cases)) + geom_line() + ggtitle("Confirmed Cases: Sri Lanka") + theme(legend.position = "none")
+p + scale_x_date(date_breaks = '1 month')
+```
+
+---
+
+
+```{r, comment=NA, echo=FALSE, warning=FALSE, message=FALSE, fig.width=15}
+
+#coronavirus <- coronavirus %>% mutate(cases = replace(cases, which(cases<0), NA))
+confirmed <- coronavirus %>% 
+  filter(type == "confirmed", country=="US") %>%
+  group_by(country, date) %>%
+  summarise(cases = sum(cases)) 
+p <- ggplot(confirmed, aes(x=date, y=cases)) + geom_line() + ggtitle("Confirmed Cases: US") + theme(legend.position = "none")
+p + scale_x_date(date_breaks = '1 month')
+```
+
+
 ---
 # Comprehending
 
@@ -129,13 +198,96 @@ background-image: url('dodged.png')
 
 
 ---
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE, fig.width=15}
 library(mozzie)
 library(ggplot2)
 library(forecast)
-autoplot(as.ts(mozzie$Colombo))+labs(x="time index", y="counts", title="Time series plot of dengue cases in Colombo")
+library(viridis)
+drops <- c("ID", "Year", "Week")
+total <- colSums(mozzie[ ,!(names(mozzie)) %in% drops])
+sort.total <- sort(total, decreasing = TRUE)
+sort.names <- names(sort.total)
+district_count <- mozzie %>%
+ pivot_longer(-c("ID", "Year", "Week"), names_to = "District", values_to = "count")
+district_count$District <- factor(district_count$District , levels=sort.names)
+
+min_max_global <- function(x){
+  (x-0)/(max(mozzie$Colombo)-0)
+  
+}
+
+mozzie_crp <- mozzie[, !(colnames(mozzie)  %in% c("ID", "Year", "Week"))]
+mozzie_min_max_global <- data.frame(apply(mozzie_crp, 2, min_max_global))
+mozzie_min_max_global$ID <- mozzie$ID
+mozzie_min_max_global$Year <- mozzie$Year
+mozzie_min_max_global$Week <- mozzie$Week
+
+
+district_count_min_max_global <- mozzie_min_max_global %>% pivot_longer(-c("ID", "Year", "Week"), names_to = "District", values_to = "count")
+
+district_count_min_max_global$District <- factor(district_count$District , levels=sort.names)
+
+
+p1 <- ggplot(district_count_min_max_global,aes(x=Week, y=District, fill=count))+
+  #add border white colour of line thickness 0.25
+  geom_tile()+
+  labs(x="",y="")+
+  #remove extra space
+#  scale_y_discrete(expand=c(0,0))+
+  #define new breaks on x-axis
+ # scale_x_discrete(expand=c(0,0), 
+ #                  breaks=c("2016-01","2017-01","2018-01"))+
+  scale_fill_viridis(option = "B", name = "Count") +
+  ggtitle("Number of dengue cases in Sri Lanka (Global Min-max trnasformation)") +
+ # coord_fixed(xlim = c(1, 52))+
+  #set a base size for all fonts
+  theme_grey(base_size=8)+
+  #theme options
+  theme(
+    # vertical labels on x axis
+    axis.text.x = element_text(),
+    #bold font for both axis text
+    axis.text=element_text(face="bold"),
+    #set thickness of axis ticks
+    axis.ticks=element_line(size=0.4),
+    #remove plot background
+    plot.background=element_blank(),
+    #remove plot border
+    panel.border=element_blank()
+  ) + xlab("week")
+
+p1
+
+
 
 ```
+
+---
+
+```{r, comment=NA, message=FALSE, warning=FALSE, echo=FALSE, fig.width=15}
+min_max <- function(x){
+  (x-min(x))/(max(x)-min(x))
+  
+}
+
+mozzie_crp <- mozzie[, !(colnames(mozzie)  %in% c("ID", "Year", "Week"))]
+mozzie_min_max <- data.frame(apply(mozzie_crp, 2, min_max))
+mozzie_min_max$ID <- mozzie$ID
+mozzie_min_max$Year <- mozzie$Year
+mozzie_min_max$Week <- mozzie$Week
+
+
+district_count_min_max <- mozzie_min_max %>% pivot_longer(-c("ID", "Year", "Week"), names_to = "District", values_to = "count")
+
+district_count_min_max$District <- factor(district_count$District , levels=sort.names)
+
+local <- ggplot(district_count_min_max, aes(x = ID, fill = count, y = District))+geom_tile()+
+      scale_fill_viridis('')+ theme(axis.text.y = element_text(size=10))+theme(strip.placement = "outside") + scale_fill_viridis(option = "B") + coord_fixed(xlim = c(1, 52)) + xlab("week") + ggtitle("Number of dengue cases in Sri Lanka (Local Min-max trnasformation)") 
+local  
+
+```
+
+
 
 ---
 
@@ -160,12 +312,12 @@ What does it **mean**?
 What does it **mean to me**?
 ---
 
-# The Visualisation Design Process
+## The Visualisation Design Process
 
 - In visualisation there is no such thing as perfect solution.
 
 
-## Challenges
+### Challenges
 
 - Whether it will be understood as you wish
 
@@ -174,6 +326,8 @@ What does it **mean to me**?
 - Choice of graphical form: The same data may be plotted in many alternative ways, which is best and why? 
 
 - May look different in print than on a computer screen.
+
+- Other limitations: time, tools, demand of different audiences
 
 ---
 ## Organising your thinking: What, for whom, why
@@ -194,11 +348,21 @@ What does it **mean to me**?
   
     - What is the output format? (printout, mobile app, etc)
     
-    - Audience (How much assisstant do they need? How familiar are they with the charts?)
+    - Audience (How much assisstant do they need?,  How familiar are they with the charts?)
     
     - Time scale
     
     - Tools
+    
+
+    
+  
+
+---
+
+## Stage1: Formulating your brief (cont)
+
+
     
 - Purpose: 
 
@@ -211,7 +375,7 @@ What does it **mean to me**?
 ---
 
 background-image: url('e1.png')
-
+background-size: contain
 
 # Exhibitory
 
@@ -281,23 +445,16 @@ background-size: contain
 
 - Captions, legends
 
-- Positioning 
- 
-   - Same page or in the facing page, inconvenient to have to turn pages back and forth
-   
+- Positioning/ layout: Same page or in the facing page, inconvenient to have to turn pages back and forth
    
 - Size, Frames and Aspect Ratio
 
- 
-- Colour
-
-   - Blends well and distinguish between different categories
+- Colour: Blends well and distinguish between different categories
 
 - Consistency
 
 - Proximity: place graphics on the same page or on the facing page
 
-- Layout
 
 ---
 
@@ -312,6 +469,7 @@ background-size: contain
 
 background-image: url('charts-scale.jpg')
 background-size: contain
+
 
 
 
@@ -336,6 +494,36 @@ background-image: url('election.png')
 background-size: contain
 
 ---
+class: center,  inverse
+
+# Exercise
+
+Sketch suitable plots to visualize the frequency distribution.
+
+---
+
+**US Adults Opinions on Climate Change Relevant Regulations**
+
+1. Require producing 20% of electricity from clean energy
+
+2. Regulate $CO_2$ as a pollutant
+
+3. Fund more research into renewable energy
+
+|   |  1 | 2  | 3  | 4  | 5  |
+|-----|-----|-----|-----|-----|-----|
+| Q1  |15   | 20  | 2  | 38  |  25 |
+| Q2  | 10  | 14  | 2  |  44 |   30|
+|  Q3 | 6  |  9 | 2  |  41 |  42|
+
+Response: Strongly support (1), Somewhat support (2), Refused (3), Somewhat oppose (4), Strongly opposed (5)
+
+
+
+---
+
+class: center,  inverse
+
 
 Acknowledgement
 

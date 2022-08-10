@@ -1,0 +1,38 @@
+---
+output: html_document
+title: "ggplot: Global data vs Local data"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+data(penguins)
+names(penguins)
+```
+
+```{r}
+ggplot(data = penguins) +
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_smooth(mapping = aes(x = flipper_length_mm, y = body_mass_g))
+```
+
+
+```{r}
+ggplot(data = penguins, mapping = aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point() +
+  geom_smooth()
+```
+
+
+```{r}
+ggplot(data = penguins, mapping = aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(mapping = aes(color = species)) +
+  geom_smooth(
+    data = filter(penguins, species == "Gentoo"),
+    se = FALSE
+  )
+```

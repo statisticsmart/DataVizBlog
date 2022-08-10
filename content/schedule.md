@@ -19,6 +19,8 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 
 📊 Week 3: [Introduction to the grammar of graphics](/slides/lesson3viz2021.html)
 
+[Global variabls vs Local variable](/geom.html)
+
 
 📊 Week 4: 📊 Week 4: [Create different types of static graphics with ggplot2: categorical Data](/slides/Data_visualization_2021.html)
 

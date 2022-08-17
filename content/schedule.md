@@ -17,10 +17,12 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 📊 Week 2: [Scientific design choices in data visualization](/slides/lesson4viz2021.html)
 
 
-📊 Week 3: [Introduction to the grammar of graphics](/slides/lesson3viz2021.html)
+📊 Week 3-4: [Introduction to the grammar of graphics](/slides/lesson3viz2021.html)
 
 [Global variabls vs Local variable](/geom.html)
 
 
-📊 Week 4: 📊 Week 4: [Create different types of static graphics with ggplot2: categorical Data](/slides/Data_visualization_2021.html)
+📊 Week 5:  [Create different types of static graphics with ggplot2: categorical Data](/slides/Data_visualization_2021.html)
 
+
+📊 Week 6: [Visualizing distributions of data](/slides/dis22.html)

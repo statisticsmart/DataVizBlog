@@ -1,0 +1,38 @@
+---
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# ASP 460 2.0 Data Visualization
+
+**Marks: 20 Marks**
+
+In this assignment, you are going to work on a dataset from TidyTuesday project. TidyTuesday is a weekly social data project in R organized by the R for Data Science community. It is a great way of improving your Data wrangling and visualization techniques, sharing and learning from others.
+
+# TidyTuesday Data Repository
+
+Every week since 2018, TidyTuesday moderators have provided a weekly challenge focused on the creation of data visualizations based around interesting, timely, or socially-important topics, such as those with data about the Women’s World Cup, incarceration trends, and school diversity in the United States. The official TidyTuesday data repository is available at https://github.com/rfordatascience/tidytuesday (Scroll down on the page until you see DataSets) section.  Select any dataset from this repository for your assignment.
+
+
+# Task
+
+Data is just a collection of numbers until you turn it into a story. Here you are trying to deliver the story through data visualization. Analyze data and create a report to tell an engaging story for your data analysis. 
+
+# Submission
+
+Include suitable plots to uncover the stories, patterns in the data.
+
+Interpret the plots.
+
+Your report should be fully reproducible. Please submit .Rmd file, HTML output file and necessary documents to reproduce your dashboard.
+
+
+
+Final presentation: 5min
+
+
+# Deadline: 25 August 2022
+

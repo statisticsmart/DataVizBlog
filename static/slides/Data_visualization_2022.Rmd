@@ -38,6 +38,7 @@ p1 + geom_bar()
 
 ```{r, comment=NA, echo=FALSE}
 p1 + geom_bar(fill="forestgreen")
+
 ```
 
 3. R code: _______________________________
@@ -270,6 +271,9 @@ ggplot(gapminderAsia, aes(x=year, fill=lifeExp, y=country))+
 ggplot(gapminderAsia, aes(x=year, fill=lifeExp, y=reorder(country, lifeExp)))+
   geom_raster()+
   scale_fill_viridis_c()
+
+ggplot(gapminderAsia, aes(x=year, y=lifeExp, col=country))+
+  geom_line()
 ```
 ---
 

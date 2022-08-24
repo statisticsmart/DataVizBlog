@@ -22,7 +22,9 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 [Global variabls vs Local variable](/geom.html)
 
 
-📊 Week 5:  [Create different types of static graphics with ggplot2: categorical Data](/slides/Data_visualization_2022.html)
+📊 Week 5-6:  [Create different types of static graphics with ggplot2: categorical Data](/slides/Data_visualization_2022.html)
 
 
-📊 Week 6: [Visualizing distributions of data](/slides/dis22.html)
+📊 Week 7: [Visualizing distributions of data](/slides/dis22.html)
+
+📊 Week 8: [Coordinate systems and axes](/slides/lesson5viz2021.html)

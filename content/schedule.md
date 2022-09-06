@@ -25,6 +25,11 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 📊 Week 5-6:  [Create different types of static graphics with ggplot2: categorical Data](/slides/Data_visualization_2022.html)
 
 
-📊 Week 7: [Visualizing distributions of data](/slides/dis22.html)
+📊 Week 7-8: [Visualizing distributions of data](/slides/dis22.html)
 
-📊 Week 8: [Coordinate systems and axes](/slides/lesson5viz2021.html)
+📊 Week 9: [Coordinate systems and axes](/slides/lesson5viz2021.html)
+
+[Colour scales and coordinate systems with ggplot](/slides/lesson6viz2021.html)
+
+
+📊 Week 10: [Visualization of time series data](/slides/tsviz2021.html) [Feature-based Visualization](https://thiyangt.github.io/RLadiesMLTS/index.html#1)

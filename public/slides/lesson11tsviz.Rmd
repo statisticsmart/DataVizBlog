@@ -1,8 +1,8 @@
 ---
-title: "STA 479 2.0 Special Topics in Statistics"
+title: "ASP 460 2.0 Data Visualization"
 subtitle: "Visualizing time series data"
 author: "Thiyanga Talagala"
-date: "2020 - 06 - 10"
+date: ""
 output:
   xaringan::moon_reader:
     chakra: libs/remark-latest.min.js

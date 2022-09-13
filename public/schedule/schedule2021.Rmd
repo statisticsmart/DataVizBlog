@@ -1,0 +1,65 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# ASP 460 2.0 Data Visualization/ STA 491 2.0 Special Topics in Statistics
+
+## 2021: Semester 1
+
+Course outline: [here](/CO/ASP_460_20_DataVisualisation.pdf)
+
+Here's your roadmap for the semester! Class materials will be added on the day of the class.
+
+ 📊 Week 1: [Introduction to data visualization: Visualisation design process](/slides/lesson1viz.html) 
+
+
+📊 Week 2: [Introduction to the grammar of graphics](/slides/lesson3viz2021.html)
+
+[In-class R-script](/slides/code/scatterplot.R)
+
+📊 Week 3: [Introduction to the ggplot2 package - Flipped classroom](/slides/mpg_visualization.html)
+
+```r
+
+Flipped classroom
+
+Go to the Google Classroom for more information.
+
+```
+
+📊 Week 4: [Scientific design choices in data visualization](/slides/lesson4viz2021.html)
+
+💻 [Practical class tutorial](/slides/diamonds_visualization.html)
+
+
+📊 Week 5-1: [Coordinate systems and axes](/slides/lesson5viz2021.html)
+
+
+📊 Week 5-2: [Create different types of static graphics with ggplot2: categorical Data](/slides/Data_visualization_2021.html)
+
+📊 Week 6: [Colour scales and coordinate systems with ggplot](/slides/lesson6viz2021.html)
+
+📊 Week 7: [Visualizing distributions of data](/slides/dis.html)
+
+📊 Week 8:  [Linked data views of visual exploration/ Dashboard, interactive and animated displays](/slides/interactiveplots.html)
+
+📊 Week 9: [Higher-dimensional displays and special structures](/slides/hd.html)
+
+[Sample flexdashboard-HTML](/slides/flexdashboard/Flexdashboard1.html)
+
+[Sample flexdashboard-Rmd](/slides/flexdashboard/Flexdashboard1.Rmd)
+
+📊 Week 10: [Visualization of time series data](/slides/tsviz2021.html) [Feature-based Visualization](https://thiyangt.github.io/RLadiesMLTS/index.html#1)
+
+
+📊 Week 11: [Principal component analysis](/slides/pc2021.html)
+
+📊 Week 12: [Visualization of spatial data](https://rladiescolombo.netlify.app/talk/3_map/)
+
+📊 Week 13: Recap - Completed 
+
+

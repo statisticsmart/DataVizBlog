@@ -5,7 +5,7 @@ title: Previous Years Notes
 
 ## 2021 - Semester 1
 
-[Course materials](/schedule/schedule2021.md)
+[Course materials](/schedule/schedule2021.html)
 
 ## 2020 -  Semester 1 🦠 😷
 

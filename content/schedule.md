@@ -27,9 +27,19 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 
 📊 Week 7-8: [Visualizing distributions of data](/slides/dis22.html)
 
-📊 Week 9: [Coordinate systems and axes](/slides/lesson5viz2021.html)
+📊 Week 9-10: [Coordinate systems and axes](/slides/lesson5viz2021.html)
 
 [Colour scales and coordinate systems with ggplot](/slides/lesson6viz2021.html)
 
 
-📊 Week 10: [Visualization of time series data](/slides/tsviz2021.html) [Feature-based Visualization](https://thiyangt.github.io/RLadiesMLTS/index.html#1)
+📊 Week 11: [Visualization of time series data](/slides/tsviz2021.html) [Feature-based Visualization](https://thiyangt.github.io/RLadiesMLTS/index.html#1)
+
+📊 Week 11: [Colour scales and coordinate systems with ggplot](/slides/lesson6viz2021.html)
+
+📊 Week 12:  [Linked data views of visual exploration/ Dashboard, interactive and animated displays](/slides/interactiveplots.html)
+
+📊 Week 12: [Higher-dimensional displays and special structures](/slides/hd.html)
+
+[Sample flexdashboard-HTML](/slides/flexdashboard/Flexdashboard1.html)
+
+[Sample flexdashboard-Rmd](/slides/flexdashboard/Flexdashboard1.Rmd)

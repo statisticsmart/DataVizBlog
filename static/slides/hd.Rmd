@@ -2,7 +2,7 @@
 title: "ASP 460 2.0 Data Visualisation"
 subtitle: "Higher-dimensional Displays and Special Structures"
 author: "Thiyanga Talagala"
-date: "2021-09-07"
+date: ""
 output:
   xaringan::moon_reader:
     lib_dir: libs

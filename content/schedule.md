@@ -43,3 +43,7 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 [Sample flexdashboard-HTML](/slides/flexdashboard/Flexdashboard1.html)
 
 [Sample flexdashboard-Rmd](/slides/flexdashboard/Flexdashboard1.Rmd)
+
+📊 Week 13: [Principal component analysis](/slides/pc2021.html)
+
+📊 Week 14: [Visualization of spatial data](https://rladiescolombo.netlify.app/talk/3_map/)

@@ -46,4 +46,10 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 
 📊 Week 13: [Principal component analysis](/slides/pc2021.html)
 
-📊 Week 14: [Visualization of spatial data](https://rladiescolombo.netlify.app/talk/3_map/)
+📊 Week 14: 
+
+[Visualization of spatial data](/slides/spatiotemporal.html)
+
+[Visualization of Sri Lanka](https://github.com/thiyangt/ceylon)
+
+[Visualization of spatial data](https://rladiescolombo.netlify.app/talk/3_map/)

@@ -5,9 +5,7 @@ title: ASP 460 2.0 Data Visualization
 
 ## 2022: Semester 1
 
-Course outline: [here-ASP 460 2.0](/CO/ASP_460_20_DataVisualisation_2023.pdf)
-
-[here-STA 492 2.0](/CO/STA_492_2.0_DataVisualisation.pdf)
+Course outline: [here](/CO/ASP_460_20_DataVisualisation.pdf)
 
 Here's your roadmap for the semester! Class materials will be added on the day of the class.
 

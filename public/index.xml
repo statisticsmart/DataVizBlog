@@ -14,12 +14,12 @@
       
       <guid>/2021/08/01/milestones-in-the-history-of-data-visualization/</guid>
       <description>Early Maps and Diagrams
-  550 BC: The first world map?, Anaximander of Miletus
-  1350: Bar graph of theoretical function, N. Oresme, France
-  c. 1280: Diagrams of paired comparisons for electoral systems- Ramon Llull, Spain
-  1375: Catalan Atlas, an exquisitely beautiful visual cosmography, perpetual calendar, and thematic representation of the known world, Abraham Cresques, Spain
-  1600-1699: Measurement and Theory
-  1626: Visual representations used to chart the changes in sunspots over time, Christopher Scheiner</description>
+550 BC: The first world map?, Anaximander of Miletus
+1350: Bar graph of theoretical function, N. Oresme, France
+c. 1280: Diagrams of paired comparisons for electoral systems- Ramon Llull, Spain
+1375: Catalan Atlas, an exquisitely beautiful visual cosmography, perpetual calendar, and thematic representation of the known world, Abraham Cresques, Spain
+1600-1699: Measurement and Theory
+1626: Visual representations used to chart the changes in sunspots over time, Christopher Scheiner</description>
     </item>
     
     <item>
@@ -28,14 +28,14 @@
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
       
       <guid>/schedule/</guid>
-      <description>2022: Semester 1 Course outline: here
+      <description>2022: Semester 1 Course outline: here-ASP 460 2.0
+here-STA 492 2.0
 Here&amp;rsquo;s your roadmap for the semester! Class materials will be added on the day of the class.
 📊 Week 1: Introduction to data visualization: Visualisation design process
 📊 Week 2: Scientific design choices in data visualization
 📊 Week 3-4: Introduction to the grammar of graphics
 Global variabls vs Local variable
-📊 Week 5-6: Create different types of static graphics with ggplot2: categorical Data
-📊 Week 7-8: Visualizing distributions of data</description>
+📊 Week 5-6: Create different types of static graphics with ggplot2: categorical Data</description>
     </item>
     
     <item>
@@ -54,12 +54,29 @@ Flipped classroom Go to the Google Classroom for more information. 📊 Week 4: 
     </item>
     
     <item>
+      <title>ASP 460 2.0 Data Visualization</title>
+      <link>/schedule2022/</link>
+      <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
+      
+      <guid>/schedule2022/</guid>
+      <description>2022: Semester 1 Course outline: here
+Here&amp;rsquo;s your roadmap for the semester! Class materials will be added on the day of the class.
+📊 Week 1: Introduction to data visualization: Visualisation design process
+📊 Week 2: Scientific design choices in data visualization
+📊 Week 3-4: Introduction to the grammar of graphics
+Global variabls vs Local variable
+📊 Week 5-6: Create different types of static graphics with ggplot2: categorical Data
+📊 Week 7-8: Visualizing distributions of data</description>
+    </item>
+    
+    <item>
       <title>Previous Years Notes</title>
       <link>/about/</link>
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
       
       <guid>/about/</guid>
-      <description>2021 - Semester 1 Course materials
+      <description>2022 - Semester 1 Course materials
+2021 - Semester 1 Course materials
 2020 - Semester 1 🦠 😷 Course outline - 2020
 Slides</description>
     </item>
@@ -79,9 +96,8 @@ Slides</description>
       <pubDate>Thu, 05 May 2016 21:48:51 -0700</pubDate>
       
       <guid>/projects/</guid>
-      <description>2020 - Semester 1 Individual Project Assignment Outputs - 2020 Flexdashboard to visualize gapminder dataset by Thashikala Mendis 
-EDA gapminder dataset by Thashikala Mendis
-Consumers&#39; use of food label information Report - Rmd Report - html
+      <description>2020 - Semester 1 Individual Project Assignment Outputs - 2020 Flexdashboard to visualize gapminder dataset by Thashikala Mendis EDA gapminder dataset by Thashikala Mendis
+Consumers&amp;rsquo; use of food label information Report - Rmd Report - html
 Dashboard - Rmd Dashboard - html</description>
     </item>
     

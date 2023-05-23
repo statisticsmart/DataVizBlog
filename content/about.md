@@ -3,6 +3,11 @@ date: "2016-05-05T21:48:51-07:00"
 title: Previous Years Notes
 ---
 
+## 2022 - Semester 1
+
+[Course materials](/schedule/schedule2022.html)
+
+
 ## 2021 - Semester 1
 
 [Course materials](/schedule/schedule2021.html)

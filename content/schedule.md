@@ -15,7 +15,7 @@ Here's your roadmap for the semester! Class materials will be added on the day o
 
 
 
- 📊 Week 1: [Introduction to data visualization: Visualisation design process](/slides/lesson1viz.html) 
+ 📊 Week 1: [Introduction to data visualization: Visualisation design process](/slides/lesson1viz2023.html) 
 
 
 📊 Week 2: [Scientific design choices in data visualization](/slides/lesson4viz2021.html)
